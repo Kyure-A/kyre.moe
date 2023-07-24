@@ -1,13 +1,22 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+  import Accounts from "../components/accounts/index.svelte";
+  import Affiliation from "../components/affiliation/index.svelte";
+  import Interests from "../components/interests/index.svelte";
+  import Qualifications from "../components/qualifications/index.svelte";
+</script>
 
-
-<h1 class="text-3xl font-bold underline">
-  Hello world!
-</h1>
+<h1 class="text-3xl font-bold underline">Kyure_A</h1>
 
 <style lang="postcss">
   :global(html) {
     background-color: theme(colors.gray.100);
   }
 </style>
+
+<Accounts />
+
+<Affiliation />
+
+<Interests />
+
+<Qualifications />
