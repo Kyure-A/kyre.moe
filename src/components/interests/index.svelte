@@ -8,7 +8,9 @@
 
 <h2>Interests</h2>
 {#each interests as interest}
+  
 <li>
   <p>{interest.value}</p>
 </li>
+
 {/each}

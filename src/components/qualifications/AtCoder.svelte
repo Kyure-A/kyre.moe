@@ -10,5 +10,6 @@
     <li>
       <p> AtCoder Algo Rating: {rating}</p>
     </li>
-  {/await}
+    
+{/await}
   
