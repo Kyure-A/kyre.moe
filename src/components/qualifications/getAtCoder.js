@@ -1,20 +1,20 @@
 import axios from "axios"
 
 export async function getAtCoderHighest() {
-  
-  let highest = 0;
-  
+
   try {
-    const result = await axios.get("https://atcoder.jp/users/kyre/history/json");
-    const contests = result.data;
-    for (const contest in contests) {
-      highest = Math.max(highest, contest["NewRating"]);
+    let highest = 0;
+    const contests = await axios.get("https://atcoder.jp/users/kyre/history/json");
+    console.log(contests.data);
+    for (let i = 0; i < contests.data.length; ++i) {
+      highest = Math.max(contests.data[i].NewRating, highest);
     }
+    console.log(highest);
+    return highest;
   }
 
-  catch (error) {
-    highest = error;
+  catch {
+    let highest = "eeee";
+    return highest;
   }
-
-  return highest;
 }

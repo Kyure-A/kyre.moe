@@ -1,15 +1,16 @@
 <script>
-  import {getAtCoderHighest} from "./getAtCoder.js";
+  import { getAtCoderHighest } from "./getAtCoder.js";
+  import { onMount } from 'svelte';
+
+  let highest = 0;
   
-  let promise = getAtCoderHighest();
+  onMount(async () => {    
+    highest = await getAtCoderHighest();
+  });
+  
 </script>
 
-{#await promise}
-
-  {:then rating}
-    <li>
-      <p> AtCoder Algo Rating: {rating}</p>
-    </li>
-    
-{/await}
+<li>
+  <p> AtCoder Algo Rating {highest} (highest)</p>
+</li>
   
