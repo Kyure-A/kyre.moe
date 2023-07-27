@@ -7,5 +7,5 @@ export default defineConfig({
     noExternal: [
       "@fortawesome/*"
     ]
-  }
+  },
 });

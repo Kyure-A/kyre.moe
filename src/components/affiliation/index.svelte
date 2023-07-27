@@ -4,13 +4,13 @@
     {
       name: "Osaka Metropolitan University College of Technology",
       course: "Electronics and Information Course",
-      start: new Date("2021/04/01"),
+      start: new Date("2021/05/"),
       end: "",
       link: "https://www.ct.omu.ac.jp"
     },
   ];
 
-  function formatDate (date: Date) {
+  function formatDate (date: Date): string {
     const result: string = date.getFullYear().toString() + "/" + date.getMonth().toString();
     return result;
   }
@@ -22,7 +22,7 @@
 <ul class="px-8">
   {#each affiliations as affiliation}
     <li class="px-8">
-      <a href={affiliation.link}>{affiliation.name}, {affiliation.course}, ({affiliation.start} - {affiliation.end})</a>
+      <a href={affiliation.link}>{affiliation.name}, {affiliation.course}, ({formatDate(affiliation.start)} - {affiliation.end})</a>
     <li>
   {/each}
 </ul>
