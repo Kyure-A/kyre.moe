@@ -17,12 +17,12 @@
   
 </script>
 
-<h2 class="px-8">Affiliation</h2>
+<h2 class="px-8 font-bold text-lg">Affiliation</h2>
 
 <ul class="px-8">
   {#each affiliations as affiliation}
     <li class="px-8">
-      <a href={affiliation.link}>{affiliation.name}, {affiliation.course}, ({formatDate(affiliation.start)} - {affiliation.end})</a>
+      <a href={affiliation.link}>{affiliation.name}, {affiliation.course} ({formatDate(affiliation.start)} - {affiliation.end})</a>
     <li>
   {/each}
 </ul>

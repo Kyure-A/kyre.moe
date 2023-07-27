@@ -28,14 +28,13 @@
   
 </script>
 
-<ul class="px-8">Qualifications
-  <ul>
-    <li>
-      <p class="px-8">TOEIC L&R 465</p>
-      <p class="px-8">Paiza プログラミングスキルチェック (S ランク)</p>
-    </li>
-  </ul>
-  
+<ul class="px-8 list-disc list-inside"><p class="font-bold text-lg">Qualifications</p>
+  <li class="px-8">
+    <a>TOEIC L&R 465</a>
+  </li>
+  <li class="px-8">
+    <a>Paiza プログラミングスキルチェック (S ランク)</a>
+  </li>
 </ul>
 <!-- {#await promise} -->
 <!--   {:then highest} -->
