@@ -6,11 +6,10 @@
   ]
 </script>
 
-<h2>Interests</h2>
+<ul class="px-8">Interests
 {#each interests as interest}
-  
-<li>
-  <p>{interest.value}</p>
+<li class="px-8">
+  <a>{interest.value}</a>
 </li>
-
 {/each}
+</ul>
