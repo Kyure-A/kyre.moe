@@ -1,12 +1,17 @@
 <script lang="ts">
   import { accounts } from "../../accounts.ts"
+  import { TwitterBrand, GithubBrand, DiscordBrand, SteamBrand, LastfmBrand, InstagramBrand } from 'svelte-awesome-icons';
 </script>
 
-<!-- <FontAwesomeIcon icon={['fas', 'smile-wink']} size="xs" /> -->
-<ul class="px-8"><p class="font-bold text-lg">Accounts</p>
+<ul class="px-8">
+  <p class="font-bold text-lg">Accounts</p>
   
-  <i class="fa-brands fa-twitter"></i>
-  <ul class="px-8 list-disc list-inside"><p class="font-bold">Twitter</p>
+  <ul class="px-8 list-disc list-inside">
+    <div class="flex flex-row">
+      <p class="font-bold pr-2">Twitter</p>
+      <TwitterBrand color="#1DA1F2"/>
+    </div>
+    
     {#each accounts as account}
       {#if account.type == "Twitter"}
 	<li class="px-8">
@@ -14,9 +19,12 @@
 	</li>
       {/if}
     {/each}
+    
   </ul>
 
-  <ul class="px-8 list-disc list-inside"><p class="font-bold">Fediverse</p>
+  <ul class="px-8 list-disc list-inside">
+    <p class="font-bold">Fediverse</p>
+    
     {#each accounts as account}
       {#if account.type == "Fediverse"}
 	<li class="px-8">
@@ -24,19 +32,25 @@
 	</li>
       {/if}
     {/each}
+    
   </ul>
-
-    <ul class="px-8 list-disc list-inside"><p class="font-bold">Development</p>
+  
+  <ul class="px-8 list-disc list-inside">
+    <p class="font-bold">Development</p>
+    
     {#each accounts as account}
       {#if account.type == "Development"}
 	<li class="px-8">
-	  <a href={account.url}>{account.name}</a>
+	  <a href={account.url} class="pr-2 flex-none">{account.name}</a>
 	</li>
       {/if}
     {/each}
+    
   </ul>
   
-  <ul class="px-8 list-disc list-inside"><p class="font-bold">Games</p>
+  <ul class="px-8 list-disc list-inside">
+    <p class="font-bold">Games</p>
+    
     {#each accounts as account}
       {#if account.type == "Games"}
 	<li class="px-8">
@@ -44,15 +58,19 @@
 	</li>
       {/if}
     {/each}
+    
   </ul>
   
-  <ul class="px-8 list-disc list-inside"><p class="font-bold">Others</p>
+  <ul class="px-8 list-disc list-inside">
+    <p class="font-bold">Others</p>
+    
     {#each accounts as account}
       {#if account.type == "Others"}    
 	<li class="px-8">
 	  <a href={account.url}>{account.name}</a>
 	{/if}
       {/each}
+      
     </ul>
   
 </ul>

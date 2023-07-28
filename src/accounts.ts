@@ -1,4 +1,11 @@
-export const accounts = [
+type Account = {
+  type: string,
+  name: string,
+  url: string,
+  id: string
+};
+
+export const accounts: Account[] = [
   {
     type: "Twitter",
     name: "@kyureq (Main)",
@@ -19,9 +26,15 @@ export const accounts = [
   },
   {
     type: "Twitter",
-    name: "@3kyu4 (cosplay)",
+    name: "@3kyu4 (Cosplay)",
     url: "https://twitter.com/3kyu4",
     id: "@3kyu4"
+  },
+  {
+    type: "Twitter",
+    name: "@kyre_cpp (Competitive programming)",
+    url: "https://twitter.com/kyre_cpp",
+    id: "@kyre_cpp"
   },
   {
     type: "Development",
@@ -50,36 +63,42 @@ export const accounts = [
   {
     type: "Fediverse",
     name: "@kyre@misskey.kyoupro.com",
-    url: "https://misskey.kyoupro.com/@kyre"
+    url: "https://misskey.kyoupro.com/@kyre",
+    id: ""
   },
   {
     type: "Fediverse",
     name: "@Kyure_A@mstdn.jp",
-    url: "https://mstdn.jp/@Kyure_A"
+    url: "https://mstdn.jp/@Kyure_A",
+    id: ""
   },
   {
     type: "Games",
     name: "Steam",
-    url: "https://steamcommunity.com/id/kyure_a/"
+    url: "https://steamcommunity.com/id/kyure_a/",
+    id: ""
   },
   {
     type: "Games",
     name: "Epic Games",
-    url: "https://store.epicgames.com/ja/u/6637d18ee37d470b9e17de1784812aa0"
+    url: "https://store.epicgames.com/ja/u/6637d18ee37d470b9e17de1784812aa0",
+    id: ""
   },
   {
     type: "Games",
     name: "Minecraft",
-    url: "https://ja.namemc.com/profile/Kyure_A"
+    url: "https://ja.namemc.com/profile/Kyure_A",
+    id: ""
   },
   {
     type: "Games",
     name: "CHUNITHM (Chunirec)",
-    url: "https://chunirec.net/users/kyre"
+    url: "https://chunirec.net/users/kyre",
+    id: ""
   },
   {
     type: "Games",
-    name: "umamusume",
+    name: "ウマ娘 プリティーダービー",
     url: "",
     id: "785561379876"
   },
