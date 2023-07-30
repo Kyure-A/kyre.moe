@@ -1,5 +1,7 @@
 <script lang="ts">
-  import axios from "axios"
+  import { qualifications } from "../../constants/qualifications.ts"
+  import axios from "axios";
+  import { onMount } from "svelte";
   
   async function getAtCoderHighest(): number {
 
@@ -13,22 +15,25 @@
 
     return highest;
   }
+
+  onMount(async () => {
+    const highest = await getAtCoderHighest();
+  });
   
 </script>
 
 <div>
-<ul class="px-8 list-disc list-inside"><h2 class="font-bold text-lg text-[#f92672]">Qualifications</h2>
-  <li class="px-8">
-    <a>TOEIC L&R 465</a>
-  </li>
-  <li class="px-8">
-    <a>Paiza プログラミングスキルチェック (S ランク)</a>
-  </li>
-  {#await getAtCoderHighest()}
-    {:then highest}
-      <li class="px-8">
-	AtCoder Algo Rating {highest} (highest)
-      </li>
-    {/await}
-</ul>
+  <ul class="px-8 list-disc list-inside"><h2 class="font-bold text-lg text-[#f92672]">Qualifications</h2>
+      {#each qualifications as qualification}
+	<li class="px-8">
+	  {qualification}
+        </li>
+      {/each}
+    {#await getAtCoderHighest()}
+      {:then highest}
+	<li class="px-8">
+	  AtCoder Algo Rating {highest} (highest)
+	</li>
+      {/await}
+    </ul>
 </div>

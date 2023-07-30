@@ -1,6 +1,6 @@
 <script lang="ts">
 
-  import { affiliations } from "../../constants/index.ts";
+  import { affiliations } from "../../constants/affiliations.ts";
   
   function formatDate (date: Date): string {
     const result: string = date.getFullYear().toString() + "/" + date.getMonth().toString();

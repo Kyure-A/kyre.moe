@@ -1,11 +1,15 @@
-type Account = {
-  type: string,
+type Child = {
   name: string,
   url: string,
   id: string
 };
 
-export const accounts = [
+type Account = {
+  parent: string,
+  child: Child[]
+};
+
+export const accounts: Account[] = [
   {
     parent: "Twitter",
     child: [
@@ -153,50 +157,3 @@ export const accounts = [
   }
 
 ];
-
-
-type Affiliation = {
-  name: string,
-  course: string,
-  start: Date,
-  end: Date,
-  link: string
-};
-
-export const affiliations: Affiliation[] = [
-  {
-    name: "Osaka Metropolitan University College of Technology",
-    course: "Electronics and Information Course",
-    start: new Date("2021/05/"), // 2021/04
-    end: new Date("2026/04"), // 2026/03
-    link: "https://www.ct.omu.ac.jp/courses/electronics-and-information-course/"
-  }
-];
-
-type Experience = {
-  name: string,
-  team: string,
-  result: string,
-  url: string
-};
-
-export const experiences: Experience[] = [
-  {
-    name: "パソコン甲子園 2022 (予選)",
-    team: "参加部門:モバイル",
-    result: "63位",
-    url: "http://web.archive.org/web/20220910070431/https://radon.u-aizu.ac.jp/pckosien/stats/pck2022pre_standings.html"
-  },
-  {
-    name: "Kloud Hackathon #2",
-    team: "金重",
-    result: "",
-    url: ""
-  },
-  {
-    name: "高専プロコン 2023 (procon34) 競技部門",
-    team: "",
-    result: "",
-    url: ""
-  }
-]

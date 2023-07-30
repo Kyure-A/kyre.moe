@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { accounts } from "../../constants/index.ts"
+  import { accounts } from "../../constants/accounts.ts"
   import { TwitterBrand, GithubBrand, DiscordBrand, SteamBrand, LastfmBrand, InstagramBrand } from 'svelte-awesome-icons';
 </script>
 
