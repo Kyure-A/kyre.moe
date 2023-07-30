@@ -2,6 +2,18 @@
   import "../app.css";  
 </script>
 
+<style lang="postcss">
+  :global(html) {
+    background-color: #272822;
+    color: #BBBBBB;
+  }
+
+  h2 {
+    color: #F92672;
+  }
+  
+</style>
+
 <header>
   <nav class="px-8 py-4 text-right">
     <a href="/" class="px-2">About</a>

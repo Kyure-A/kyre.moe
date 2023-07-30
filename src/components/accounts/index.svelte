@@ -1,76 +1,23 @@
 <script lang="ts">
-  import { accounts } from "../../accounts.ts"
+  import { accounts } from "../../constants/index.ts"
   import { TwitterBrand, GithubBrand, DiscordBrand, SteamBrand, LastfmBrand, InstagramBrand } from 'svelte-awesome-icons';
 </script>
 
 <ul class="px-8">
-  <p class="font-bold text-lg">Accounts</p>
+  <h2 class="font-bold text-lg text-[#f92672]">Accounts</h2>
   
   <ul class="px-8 list-disc list-inside">
-    <div class="flex flex-row">
-      <p class="font-bold pr-2">Twitter</p>
-      <TwitterBrand color="#1DA1F2"/>
-    </div>
-    
     {#each accounts as account}
-      {#if account.type == "Twitter"}
-	<li class="px-8">
-	  <a href={account.url}>{account.name}</a>
-	</li>
+      <p class="font-bold pr-2">{account.parent}</p>
+      {#if account.child != []}
+	{#each account.child as child}
+	  <li class="px-8">
+	  <a href={child.url}>{child.name}</a>
+	  </li>
+	{/each}
       {/if}
     {/each}
     
   </ul>
-
-  <ul class="px-8 list-disc list-inside">
-    <p class="font-bold">Fediverse</p>
-    
-    {#each accounts as account}
-      {#if account.type == "Fediverse"}
-	<li class="px-8">
-	  <a href={account.url}>{account.name}</a>
-	</li>
-      {/if}
-    {/each}
-    
-  </ul>
-  
-  <ul class="px-8 list-disc list-inside">
-    <p class="font-bold">Development</p>
-    
-    {#each accounts as account}
-      {#if account.type == "Development"}
-	<li class="px-8">
-	  <a href={account.url} class="pr-2 flex-none">{account.name}</a>
-	</li>
-      {/if}
-    {/each}
-    
-  </ul>
-  
-  <ul class="px-8 list-disc list-inside">
-    <p class="font-bold">Games</p>
-    
-    {#each accounts as account}
-      {#if account.type == "Games"}
-	<li class="px-8">
-	  <a href={account.url}>{account.name}</a>
-	</li>
-      {/if}
-    {/each}
-    
-  </ul>
-  
-  <ul class="px-8 list-disc list-inside">
-    <p class="font-bold">Others</p>
-    
-    {#each accounts as account}
-      {#if account.type == "Others"}    
-	<li class="px-8">
-	  <a href={account.url}>{account.name}</a>
-	{/if}
-      {/each}
-      
-    </ul>
   
 </ul>

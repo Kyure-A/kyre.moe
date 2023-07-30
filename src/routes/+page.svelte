@@ -1,18 +1,23 @@
 <script lang="ts">
+  import Biography from "../components/biography/index.svelte"
   import Affiliation from "../components/affiliation/index.svelte";
   import Interests from "../components/interests/index.svelte";
-  import Qualifications from "../components/qualifications/index.svelte";  
+  import Qualifications from "../components/qualifications/index.svelte";
 </script>
 
-<style lang="postcss">
-  :global(html) {
-    background-color: theme(colors.gray.100);
+
+<style>
+  h2 {
+    color: #F92672;
   }
-  
 </style>
 
-<Affiliation />
+<div class="flex flex-col justify-center">
+  <Biography />
 
-<Interests />
+  <Affiliation />
 
-<Qualifications />
+  <Interests />
+
+  <Qualifications />
+</div>

@@ -1,45 +1,34 @@
 <script lang="ts">
   import axios from "axios"
-  import { onMount } from 'svelte';
-
-  let highest: number;
   
   async function getAtCoderHighest(): number {
 
     let highest: number;
-    
-    try {
-      const contests = await axios.get("https://atcoder.jp/users/kyre/history/json");
-      
-      console.log(contests.data);
-      for (let i = 0; i < contests.data.length; ++i) {
-	highest = Math.max(contests.data[i].NewRating, highest);
-      }
-      console.log(highest);
-      return highest;
+
+    const contests = await fetch("https://atcoder.jp/users/kyre/history/json");
+
+    for (let i = 0; i < contests.data.length; ++i) {
+      highest = Math.max(contests.data[i].NewRating, highest);
     }
 
-    catch {
-      highest = -1;
-      return highest;
-    }
+    return highest;
   }
-  
-  onMount(async () => {    
-    let promise = await getAtCoderHighest();
-    highest = promise;
-  });
   
 </script>
 
-<ul class="px-8 list-disc list-inside"><p class="font-bold text-lg">Qualifications</p>
+<div>
+<ul class="px-8 list-disc list-inside"><h2 class="font-bold text-lg text-[#f92672]">Qualifications</h2>
   <li class="px-8">
     <a>TOEIC L&R 465</a>
   </li>
   <li class="px-8">
     <a>Paiza プログラミングスキルチェック (S ランク)</a>
   </li>
-  <li class="px-8">
-    <p> AtCoder Algo Rating {highest} (highest)</p>
-  </li>
+  {#await getAtCoderHighest()}
+    {:then highest}
+      <li class="px-8">
+	AtCoder Algo Rating {highest} (highest)
+      </li>
+    {/await}
 </ul>
+</div>

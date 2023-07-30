@@ -1,16 +1,36 @@
 <script>
   let interests = [
-    {id: 1, value: "プログラミング"},
-    {id: 2, value: "競技プログラミング"},
-    {id: 3, value: "女装/コスプレ"},
-    {id: 4, value: "筋トレ"}
+    {
+      parent: "情報科学",
+      child: [
+	"競技プログラミング",
+	"プログラミング"
+      ]
+    },
+    {
+      parent: "女装/コスプレ",
+      child: []
+    },
+    {
+      parent: "筋トレ",
+      child: []
+    }
   ]
 </script>
 
-<ul class="px-8 list-disc list-inside"><p class="font-bold text-lg">Interests</p>
-{#each interests as interest}
-<li class="px-8">
-  <a>{interest.value}</a>
-</li>
-{/each}
+<div>
+<ul class="px-8 list-disc list-inside"><h2 class="font-bold text-lg text-[#f92672]">Interests</h2>
+  {#each interests as interest}
+    <li class="px-8">
+      {interest.parent}
+      {#if interest.child != []}
+	{#each interest.child as child}
+	  <li class="px-8">
+	    {child}
+	  </li>
+	{/each}
+      {/if}
+    </li>
+  {/each}
 </ul>
+</div>
