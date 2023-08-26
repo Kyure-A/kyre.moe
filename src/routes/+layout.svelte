@@ -5,11 +5,7 @@
 <style lang="postcss">
   :global(html) {
     background-color: #272822;
-    color: #BBBBBB;
-  }
-
-  h2 {
-    color: #F92672;
+    color: #FFFFFF;
   }
   
 </style>

@@ -3,13 +3,13 @@
   import Affiliation from "../components/affiliation/index.svelte";
   import Interests from "../components/interests/index.svelte";
   import Qualifications from "../components/qualifications/index.svelte";
+  import Favorite from "../components/favorite/index.svelte"
+  import Music from "../components/music/index.svelte"
 </script>
 
 
 <style>
-  h2 {
-    color: #F92672;
-  }
+  
 </style>
 
 <div class="flex flex-col justify-center">
@@ -19,5 +19,9 @@
 
   <Interests />
 
+  <Favorite />
+
+  <Music />
+  
   <Qualifications />
 </div>
