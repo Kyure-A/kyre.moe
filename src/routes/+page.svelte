@@ -24,4 +24,6 @@
   <Music />
   
   <Qualifications />
+  
+  <div class="py-10"></div>
 </div>
