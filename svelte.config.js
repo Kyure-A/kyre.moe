@@ -17,7 +17,10 @@ const config = {
 	    adapter: adapter(),
 	    paths: {
 		base: dev ? '' : "",
-            }
+            },
+	    alias: {
+	        '$components': './src/components'
+	    }
 	}
 }
 

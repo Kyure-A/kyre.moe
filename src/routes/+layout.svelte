@@ -12,8 +12,8 @@
 
 <header>
   <nav class="px-8 py-4 text-right">
-    <a href="/" class="px-2">About</a>
-    <a href="/accounts" class="px-2">Accounts</a>
+    <a href="/" class="px-2">Accounts</a>
+    <a href="/about" class="px-2">About</a>
     <a href="/blog" class="px-2">Blog</a>
     <hr class="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700">
   </nav>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Blog from "../../components/blog/index.svelte";
+  import Blog from "$components/blog/index.svelte";
 </script>
 
 <Blog/>

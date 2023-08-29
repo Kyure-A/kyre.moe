@@ -1,29 +1,11 @@
 <script lang="ts">
-  import Biography from "../components/biography/index.svelte";
-  import Affiliation from "../components/affiliation/index.svelte";
-  import Interests from "../components/interests/index.svelte";
-  import Qualifications from "../components/qualifications/index.svelte";
-  import Favorite from "../components/favorite/index.svelte"
-  import Music from "../components/music/index.svelte"
+  import Accounts from "$components/accounts/index.svelte";
 </script>
 
+<div>
 
-<style>
-  
-</style>
+<Accounts />
 
-<div class="flex flex-col justify-center">
-  <Biography />
+<div class="py-10"></div>
 
-  <Affiliation />
-
-  <Interests />
-
-  <Favorite />
-
-  <Music />
-  
-  <Qualifications />
-  
-  <div class="py-10"></div>
 </div>
