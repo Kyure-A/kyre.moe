@@ -3,7 +3,7 @@ export const interests = [
         parent: "情報科学",
         child: [
             "競技プログラミング",
-            "Open source software"
+            "Open Source Software"
         ]
     },
     {
@@ -18,6 +18,13 @@ export const interests = [
         child: [
             "腹筋",
             "脚"
+        ]
+    },
+    {
+        parent: "音楽",
+        child: [
+            "ベース（はじめたて）",
+            "音ゲー"
         ]
     },
 ];
