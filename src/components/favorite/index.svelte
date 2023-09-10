@@ -10,7 +10,7 @@
 	{#if thing.child != []}
 	  {#each thing.child as child}
 	    <li class="px-16 text-[#FFFFFF]">
-	      {child}
+	      『{child}』
 	    </li>
 	  {/each}
 	{/if}

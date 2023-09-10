@@ -33,7 +33,7 @@ export const experience: Experience[] = [
         team: "キュレェとゆかいななかまたち",
         result: "GitHub Repo",
         result_url: "https://github.com/Kyure-A/geocolle",
-        description: "位置情報を利用したすれちがい通信アプリケーションのフロントエンドを作成しました",
+        description: "位置情報を利用したすれちがい通信アプリケーションのフロントエンドを作成しました (Flutter)",
         public: true,
     },
     {

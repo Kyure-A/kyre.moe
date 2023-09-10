@@ -9,9 +9,9 @@
       {#if thing.public}
 	<a href="{thing.url}" class="px-8 font-bold pr-2 text-[#fd971f]">{thing.name}</a>
 	{#if thing.team != []}
-	  <li class="px-16 text-[#FFFFFF]">
-	    チーム名 「{thing.team}」
-	  </li>
+	  <p class="px-16 text-[#FFFFFF]">
+	    「{thing.team}」
+	  </p>
 	{/if}
 	{#if thing.result != [] && thing.result_url != []}
 	  <li class="px-16 text-[#FFFFFF]">
