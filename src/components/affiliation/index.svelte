@@ -14,7 +14,7 @@
 
 <ul class="px-8">
   {#each affiliations as affiliation}
-    <li class="px-8">
+    <li class="px-8 list-disc list-inside">
       <a href={affiliation.link}>{affiliation.name}, {affiliation.course} ({formatDate(affiliation.start)} - {formatDate(affiliation.end)})</a>
     <li>
   {/each}

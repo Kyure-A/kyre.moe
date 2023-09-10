@@ -7,7 +7,7 @@
     background-color: #272822;
     color: #FFFFFF;
   }
-  
+
 </style>
 
 <header>

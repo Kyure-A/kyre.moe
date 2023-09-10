@@ -2,9 +2,10 @@
   import Biography from "$components/biography/index.svelte";
   import Affiliation from "$components/affiliation/index.svelte";
   import Interests from "$components/interests/index.svelte";
-  import Qualifications from "$components/qualifications/index.svelte";
+  import Certification from "$components/certification/index.svelte";
   import Favorite from "$components/favorite/index.svelte"
   import Music from "$components/music/index.svelte"
+  import Experience from "$components/experience/index.svelte"
 </script>
 
 
@@ -22,8 +23,10 @@
   <Favorite />
 
   <Music />
+
+  <Experience />
   
-  <Qualifications />
+  <Certification />
   
   <div class="py-10"></div>
 </div>

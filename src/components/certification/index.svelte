@@ -23,7 +23,7 @@
 </script>
 
 <div>
-  <ul class="px-8 list-disc list-inside"><h2 class="font-bold text-lg text-[#f92672]">Qualifications</h2>
+  <ul class="px-8 list-disc list-inside"><h2 class="font-bold text-lg text-[#f92672]">Certification</h2>
       {#each qualifications as qualification}
 	<li class="px-8">
 	  {qualification}
