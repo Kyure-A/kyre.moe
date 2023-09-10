@@ -24,7 +24,7 @@ export const experience: Experience[] = [
         team: "金重",
         result: "GitHub Repo",
         result_url: "https://github.com/Kyure-A/status-visualizer",
-        description: "Flutter を用いて健康状態をゲームの「ステータスボード」のように可視化するアプリケーションのプロトタイプを作成しました．",
+        description: "健康状態をゲームの「ステータスボード」のように可視化するアプリケーションのプロトタイプを作成しました．",
         public: true,
     },
     {
