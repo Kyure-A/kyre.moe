@@ -5,7 +5,7 @@
 <style>
 </style>
   
-<div class="text-[15px]">
+<div class="text-[14px]">
   <Accounts />
   <div class="py-10"></div>
 </div>

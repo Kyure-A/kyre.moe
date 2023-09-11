@@ -12,7 +12,7 @@
 <style>
 </style>
 
-<div class="text-[15px] flex flex-col justify-center">
+<div class="text-[14px] flex flex-col justify-center">
   <Biography />
 
   <Affiliation />
