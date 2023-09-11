@@ -2,10 +2,10 @@
   import Accounts from "../../components/accounts/index.svelte";
 </script>
 
-<div>
-
-<Accounts />
-
-<div class="py-10"></div>
-
+<style>
+</style>
+  
+<div class="text-[15px]">
+  <Accounts />
+  <div class="py-10"></div>
 </div>

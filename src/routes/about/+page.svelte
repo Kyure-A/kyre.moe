@@ -10,10 +10,9 @@
 
 
 <style>
-  
 </style>
 
-<div class="flex flex-col justify-center">
+<div class="text-[15px] flex flex-col justify-center">
   <Biography />
 
   <Affiliation />
