@@ -42,7 +42,7 @@ export const experience: Experience[] = [
         team: "✊☺☝️†最強†☝️☺✊",
         result: "35 位 (大阪 1 位)",
         result_url: "http://web.archive.org/web/20230909072222/https://radon.u-aizu.ac.jp/pckosien/stats/pck2023pre_standings.html#:~:text=35,%E9%AB%98%E7%AD%89%E5%B0%82%E9%96%80%E5%AD%A6%E6%A0%A1",
-        description: "5 完 x 2でした 地域ごとなので大阪で 1 位でも本戦に通るわけではないですが......(泣)",
+        description: "本選出れるらしいです！やったー！",
         public: true,
     },
     {
