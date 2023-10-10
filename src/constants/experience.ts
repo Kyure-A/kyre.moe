@@ -5,6 +5,7 @@ type Experience = {
     result: string,
     result_url: string,
     description: string,
+    date: Date,
     public: boolean
 };
 
@@ -16,6 +17,7 @@ export const experience: Experience[] = [
         result: "63 位",
         result_url: "http://web.archive.org/web/20220910070431/https://radon.u-aizu.ac.jp/pckosien/stats/pck2022pre_standings.html#:~:text=63,%E9%AB%98%E7%AD%89%E5%B0%82%E9%96%80%E5%AD%A6%E6%A0%A1",
         description: "",
+        date: new Date("2022-09-10T13:30:00"),
         public: true,
     },
     {
@@ -25,6 +27,7 @@ export const experience: Experience[] = [
         result: "GitHub Repo",
         result_url: "https://github.com/Kyure-A/status-visualizer",
         description: "健康状態をゲームの「ステータスボード」のように可視化するアプリケーションのプロトタイプを作成しました．",
+        date: new Date("2023-05-12T13:00:00"),
         public: true,
     },
     {
@@ -34,6 +37,7 @@ export const experience: Experience[] = [
         result: "GitHub Repo",
         result_url: "https://github.com/Kyure-A/geocolle",
         description: "位置情報を利用したすれちがい通信アプリケーションのフロントエンドを作成しました (Flutter)",
+        date: new Date("2023-08-19T13:00:00"),
         public: true,
     },
     {
@@ -43,6 +47,7 @@ export const experience: Experience[] = [
         result: "35 位 (大阪 1 位)",
         result_url: "http://web.archive.org/web/20230909072222/https://radon.u-aizu.ac.jp/pckosien/stats/pck2023pre_standings.html#:~:text=35,%E9%AB%98%E7%AD%89%E5%B0%82%E9%96%80%E5%AD%A6%E6%A0%A1",
         description: "5 完 x 2でした 地域ごとなので大阪で 1 位でも本戦に通るわけではないですが......(泣)",
+        date: new Date("2023-09-09T13:30:00"),
         public: true,
     },
     {
@@ -52,6 +57,7 @@ export const experience: Experience[] = [
         result: "",
         result_url: "",
         description: "",
+        date: new Date("2023-10-14T00:00:00"),
         public: false,
     },
 ];
