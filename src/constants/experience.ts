@@ -66,7 +66,7 @@ export const experience: Experience[] = [
         team: "✊☺☝️†最強†☝️☺✊",
         result: "",
         result_url: "",
-        description: "",
+        description: "置物として出場しました",
         date: new Date("2023-11-11T00:00:00"),
         public: false,
     },
