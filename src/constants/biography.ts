@@ -1,6 +1,6 @@
 export const biography: string[] = [
   // "[kʲɯɾe]",
-  "気ままに Tweet をする",
-  "気ままにコードを書く",
+  "気まま",
+  "Emacs がすき",
   "INTP-T (16Personalities)"
 ];
