@@ -25,9 +25,12 @@
 <div>
   <ul class="px-8 list-disc list-inside"><h2 class="font-bold text-lg text-[#f92672]">Certification</h2>
       {#each qualifications as qualification}
+	<ul class="px-8 list-disc list-inside">
+	  {qualification.name}
 	<li class="px-8">
-	  {qualification}
-        </li>
+	  {qualification.description}
+	</li>
+        </ul>
       {/each}
     {#await getAtCoderHighest()}
       {:then highest}
