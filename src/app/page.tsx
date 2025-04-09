@@ -1,6 +1,5 @@
 "use client";
 
-import Balatro from "@/blocks/Backgrounds/Balatro/Balatro";
 import Dock, { DockItemData } from "@/blocks/Components/Dock/Dock";
 import Accounts from "@/pages/accounts";
 import Home from "@/pages/home";
