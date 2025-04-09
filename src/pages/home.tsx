@@ -1,4 +1,3 @@
-import Balatro from "@/blocks/Backgrounds/Balatro/Balatro";
 import ASCIIText from "@/blocks/TextAnimations/ASCIIText/ASCIIText";
 import Image from "next/image";
 import { useEffect, useState } from "react";
