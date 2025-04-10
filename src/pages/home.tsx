@@ -17,7 +17,7 @@ export default function Home () {
         <div className="flex flex-col">
           <div className="flex flex-col items-center">
             <ASCIIText
-                text={ isEnglish ? "Kyure_A" : "きゅれぇ"}
+                text={ isEnglish ? "Kyure_A" : "キュレェ"}
                 asciiFontSize={12}
                 textFontSize={20}/>
           </div>
