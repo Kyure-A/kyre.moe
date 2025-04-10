@@ -1,4 +1,5 @@
-import ASCIIText from "@/blocks/TextAnimations/ASCIIText/ASCIIText";
+
+import ASCIIText from "@/shared/ui/ASCIIText/ASCIIText";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
