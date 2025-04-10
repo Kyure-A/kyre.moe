@@ -6,6 +6,16 @@ type TimelineItemProps = {
     description: string
 }
 
+export type TimelineItem = {
+    date: string,
+    title: string,
+    description: string
+}
+
+type TimelineProps = {
+    items?: TimelineItem[]
+}
+
 const TimelineItem: React.FC<TimelineItemProps> = ({ date, title, description }) => {
     return (
         <div className="flex mb-8 relative z-10">
@@ -28,14 +38,13 @@ const TimelineItem: React.FC<TimelineItemProps> = ({ date, title, description })
     );
 };
 
-// メインのタイムラインコンポーネント
-export default function Timeline ({ items }) {
+
+export default function Timeline({ items = [] }: TimelineProps) {
     return (
         <div className="py-4 relative">
-          {/* 共通の縦線 */}
           <div className="absolute left-24 top-0 bottom-0 w-px bg-gray-300 z-0"></div>
-          
-          {items.map((item, index) => (
+
+          {items && items.map((item, index) => (
               <TimelineItem
                   key={index}
                   date={item.date}

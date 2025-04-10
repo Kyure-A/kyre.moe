@@ -1,7 +1,7 @@
-import Timeline from "./Timeline";
+import Timeline, { TimelineItem } from "./Timeline";
 
 export default function History () {
-    const timelineData = [
+    const timelineData: TimelineItem[] = [
         {
             date: "2005/07",
             title: "生まれる",
@@ -40,7 +40,7 @@ export default function History () {
         {
             date: "2023/10",
             title: "第34回 高専プロコン 競技部門",
-            descripton: "かばん持ち"
+            description: "かばん持ち"
         },
         {
             date: "2023/11",
