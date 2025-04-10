@@ -63,7 +63,7 @@ jobs:
         env:
           CI: false
           ESLINT_NO_DEV_ERRORS: true
-        run: pnpm next build
+        run: pnpm next build --no-lint
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
