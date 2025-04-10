@@ -15,22 +15,22 @@ type AccountProps = {
 function Account (props: AccountProps) {
     return (
         <a href={props.serviceUrl}>
-        <div className="flex justify-center border border-gray-600 rounded-lg w-1/3 mx-auto my-4">
-          <Image
-              className="rounded-full p-4"
-              alt=""
-              src={props.avatarUrl as string}
-              width={100}
-              height={100}
-          />
-          <div className="flex flex-col items-center justify-center mx-auto">
-            <div className="flex items-center">
-              <div className="px-2 py-2">{props.serviceIcon}</div>
-              <p>@{props.id}</p>
-            </div>
-            <p className="text-xs py-2">{props.description}</p>            
+          <div className="flex flex-col sm:flex-row justify-center border border-gray-600 rounded-lg w-full max-w-md mx-auto my-4 p-2">
+            <Image
+                className="rounded-full p-2 sm:p-4 mx-auto sm:mx-0"
+                alt=""
+                src={props.avatarUrl as string}
+                width={100}
+                height={100}
+            />
+            <div className="flex flex-col items-center justify-center w-full mx-auto overflow-hidden">
+              <div className="flex items-center">
+                <div className="px-2 py-2">{props.serviceIcon}</div>
+                <p>@{props.id}</p>
+              </div>
+              <p className="text-xs py-2">{props.description}</p>            
+              </div>
           </div>
-        </div>
         </a>
     );
 }
@@ -51,9 +51,9 @@ export default function Accounts () {
                         id={account.id}
                         description={account.description}
                         serviceIcon={account.serviceIcon}
-                  avatarUrl={account.avatarUrl ?? ""}
-                  serviceUrl={account.serviceUrl}
-                  />
+                        avatarUrl={account.avatarUrl ?? ""}
+                        serviceUrl={account.serviceUrl}
+                    />
 
           )})}
         </>
