@@ -1,2 +1,2 @@
-import Timeline from "./Timeline";
+import Timeline, { TimelineItem } from "./Timeline";
 
