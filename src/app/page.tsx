@@ -1,6 +1,5 @@
 "use client";
 
-import AboutMe from "@/pages/AboutMe/ui/AboutMe";
 import Accounts from "@/pages/Accounts/ui/Accounts";
 import Home from "@/pages/Home/ui/Home";
 
@@ -26,7 +25,6 @@ export default function Main() {
           <main className="items-center">
             {currentPage === "Home" && <Home />}
             {currentPage === "Accounts" && <Accounts /> }
-            {currentPage === "About" && <AboutMe /> }
           </main>
           <footer className="items-center fixed bottom-0 left-0 right-0 z-40">
             <Dock
