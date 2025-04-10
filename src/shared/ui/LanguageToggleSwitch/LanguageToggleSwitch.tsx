@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 
-const LanguageToggle = ({ onChange }) => {
+type LanguageToggleProps = {
+    onChange: (s: string) => void
+}
+
+const LanguageToggle = ({ onChange }: LanguageToggleProps) => {
     const [language, setLanguage] = useState('ja'); // 'ja' for Japanese, 'en' for English
     
     const handleToggle = () => {
