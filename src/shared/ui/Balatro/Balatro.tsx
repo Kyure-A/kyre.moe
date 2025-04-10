@@ -148,19 +148,6 @@ export default function Balatro({
         const gl = renderer.gl;
         gl.clearColor(0, 0, 0, 1);
 
-        function resize() {
-            renderer.setSize(container.offsetWidth, container.offsetHeight);
-            if (program) {
-                program.uniforms.iResolution.value = [
-                    gl.canvas.width,
-                    gl.canvas.height,
-                    gl.canvas.width / gl.canvas.height,
-                ];
-            }
-        }
-        window.addEventListener("resize", resize);
-        resize();
-
         const geometry = new Triangle(gl);
         const program = new Program(gl, {
             vertex: vertexShader,
@@ -189,6 +176,19 @@ export default function Balatro({
                 uMouse: { value: [0.5, 0.5] },
             },
         });
+
+        function resize() {
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+            if (program) {
+                program.uniforms.iResolution.value = [
+                    gl.canvas.width,
+                    gl.canvas.height,
+                    gl.canvas.width / gl.canvas.height,
+                ];
+            }
+        }
+        window.addEventListener("resize", resize);
+        resize();
 
         const mesh = new Mesh(gl, { geometry, program });
         let animationFrameId: number;
