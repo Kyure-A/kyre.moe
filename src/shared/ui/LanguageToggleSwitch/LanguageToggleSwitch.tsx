@@ -16,7 +16,7 @@ const LanguageToggle = ({ onChange }) => {
           <button
               onClick={handleToggle}
               className={`relative inline-flex h-10 w-20 items-center justify-center rounded-full shadow-md transition-all duration-500 overflow-hidden bg-stone-800`}
-                      aria-pressed={language === 'en'}
+              aria-pressed={language === 'en'}
               aria-labelledby="language-toggle"
           >
             <span className="sr-only" id="language-toggle">
