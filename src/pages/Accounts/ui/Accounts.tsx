@@ -1,3 +1,4 @@
+import { srcPath } from "@/shared/lib/path";
 import Image from "next/image";
 import { ReactNode } from "react";
 import { FaGithub as FaGitHub } from "react-icons/fa";
@@ -37,11 +38,11 @@ function Account (props: AccountProps) {
 
 export default function Accounts () {
     const accounts: AccountProps[] = [
-        { id: "kyremoe", description: "本アカウント 3 つめ", serviceIcon: <FaTwitter />, avatarUrl: "/icon.jpg", serviceUrl: "https://x.com/kyremoe"},
-        { id: "Kyure-A", description: "OSS やったりやらない", serviceIcon: <FaGitHub />, avatarUrl: "/icon.jpg", serviceUrl: "https://github.com/Kyure-A"},
-        { id: "Kyure_A@misskey.io", description: "xyz からやってる", serviceIcon: <SiMisskey />, avatarUrl: "/icon.jpg", serviceUrl: "https://misskey.io/@Kyure_A"},
-        { id: "Kyure_A", description: "「積みゲー」というゲーム", serviceIcon: <FaSteam />, avatarUrl: "/icon.jpg" , serviceUrl: "https://steamcommunity.com/id/kyure_a/"},
-        { id: "Kyure_A", description: "", serviceIcon: <FaLastfm />, avatarUrl: "/icon.jpg", serviceUrl: "https://www.last.fm/user/Kyure_A"}
+        { id: "kyremoe", description: "本アカウント 3 つめ", serviceIcon: <FaTwitter />, avatarUrl: srcPath("/icon.jpg"), serviceUrl: "https://x.com/kyremoe"},
+        { id: "Kyure-A", description: "OSS やったりやらない", serviceIcon: <FaGitHub />, avatarUrl: srcPath("/icon.jpg"), serviceUrl: "https://github.com/Kyure-A"},
+        { id: "Kyure_A@misskey.io", description: "xyz からやってる", serviceIcon: <SiMisskey />, avatarUrl: srcPath("/icon.jpg"), serviceUrl: "https://misskey.io/@Kyure_A"},
+        { id: "Kyure_A", description: "「積みゲー」というゲーム", serviceIcon: <FaSteam />, avatarUrl: srcPath("/icon.jpg") , serviceUrl: "https://steamcommunity.com/id/kyure_a/"},
+        { id: "Kyure_A", description: "", serviceIcon: <FaLastfm />, avatarUrl: srcPath("/icon.jpg"), serviceUrl: "https://www.last.fm/user/Kyure_A"}
     ]
     return (
         <>

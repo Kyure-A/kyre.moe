@@ -1,6 +1,7 @@
 import Balatro from "@/shared/ui/Balatro/Balatro";
 import Image from "next/image";
 import FadeTextRotator from "./FadeTextRotator";
+import { srcPath } from "@/shared/lib/path";
 
 export default function Home() {
     return (
@@ -20,7 +21,7 @@ export default function Home() {
             <div className="flex flex-col items-center center">
               <Image
                   alt="Kyure_A"
-                  src="/kyre.png"
+                  src={srcPath("/kyre.png")}
                   width={1000}
                   height={1000}
               />
