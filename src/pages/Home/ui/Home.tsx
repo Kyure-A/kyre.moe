@@ -1,17 +1,8 @@
-import ASCIIText from "@/shared/ui/ASCIIText/ASCIIText";
 import Balatro from "@/shared/ui/Balatro/Balatro";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import FadeTextRotator from "./FadeTextRotator";
 
 export default function Home() {
-    const [isEnglish, setIsEnglish] = useState(true);
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setIsEnglish(previousState => !previousState);
-        }, 5000)
-        return () => clearInterval(timer);
-    }, [])
-    
     return (
         <div className="relative w-screen h-screen overflow-hidden">
           <div className="absolute inset-0 w-full h-full z-0">
@@ -23,11 +14,8 @@ export default function Home() {
             />
           </div>
           <div className="absolute flex flex-col z-10 pt-16 inset-0 ">
-            <div className="flex flex-col items-center mb-6">
-              <ASCIIText
-                  text={ isEnglish ? "Kyure_A" : "キュレェ"}
-                  asciiFontSize={12}
-                  textFontSize={20}/>
+            <div className="flex flex-col mb-6">
+              <FadeTextRotator />
             </div>
             <div className="flex flex-col items-center center">
               <Image
