@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { ReactNode } from "react";
 import { FaGithub as FaGitHub } from "react-icons/fa";
-import { FaSteam, FaTwitter } from "react-icons/fa6";
+import { FaLastfm, FaSteam, FaTwitter } from "react-icons/fa6";
 import { SiMisskey } from "react-icons/si";
 
 type AccountProps = {
@@ -15,21 +15,21 @@ type AccountProps = {
 function Account (props: AccountProps) {
     return (
         <a href={props.serviceUrl}>
-          <div className="flex flex-col sm:flex-row justify-center border border-gray-600 rounded-lg w-full max-w-md mx-auto my-4 p-2">
+          <div className="flex items-center border border-gray-600 rounded-lg w-full mx-auto my-4 p-3 bg-gray-1000 bg-opacity-50 min-w-md">
             <Image
-                className="rounded-full p-2 sm:p-4 mx-auto sm:mx-0"
+                className="rounded-full"
                 alt=""
                 src={props.avatarUrl as string}
-                width={100}
-                height={100}
+                width={60}
+                height={60}
             />
-            <div className="flex flex-col items-center justify-center w-full mx-auto overflow-hidden">
+            <div className="flex flex-col ml-4">
               <div className="flex items-center">
-                <div className="px-2 py-2">{props.serviceIcon}</div>
-                <p>@{props.id}</p>
+                <div className="mr-2">{props.serviceIcon}</div>
+                <p className="text-white">@{props.id}</p>
               </div>
-              <p className="text-xs py-2">{props.description}</p>            
-              </div>
+              <p className="text-xs text-gray-300 mt-1">{props.description}</p>            
+            </div>
           </div>
         </a>
     );
@@ -40,7 +40,8 @@ export default function Accounts () {
         { id: "kyremoe", description: "本アカウント 3 つめ", serviceIcon: <FaTwitter />, avatarUrl: "/icon.jpg", serviceUrl: "https://x.com/kyremoe"},
         { id: "Kyure-A", description: "OSS やったりやらない", serviceIcon: <FaGitHub />, avatarUrl: "/icon.jpg", serviceUrl: "https://github.com/Kyure-A"},
         { id: "Kyure_A@misskey.io", description: "xyz からやってる", serviceIcon: <SiMisskey />, avatarUrl: "/icon.jpg", serviceUrl: "https://misskey.io/@Kyure_A"},
-        { id: "Kyure_A", description: "「積みゲー」というゲーム", serviceIcon: <FaSteam />, avatarUrl: "/icon.jpg" , serviceUrl: "https://steamcommunity.com/id/kyure_a/"}
+        { id: "Kyure_A", description: "「積みゲー」というゲーム", serviceIcon: <FaSteam />, avatarUrl: "/icon.jpg" , serviceUrl: "https://steamcommunity.com/id/kyure_a/"},
+        { id: "Kyure_A", description: "", serviceIcon: <FaLastfm />, avatarUrl: "/icon.jpg", serviceUrl: "https://www.last.fm/user/Kyure_A"}
     ]
     return (
         <>

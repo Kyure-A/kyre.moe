@@ -233,7 +233,7 @@ class CanvasTxt {
     color: string;
     font: string;
 
-    constructor(txt: string, { fontSize = 200, fontFamily = 'Arial', color = '#fdf9f3' }: CanvasTxtOptions = {}) {
+    constructor(txt: string, { fontSize = 200, fontFamily = 'system-ui', color = '#fdf9f3' }: CanvasTxtOptions = {}) {
         this.canvas = document.createElement('canvas');
         this.context = this.canvas.getContext('2d');
         this.txt = txt;
