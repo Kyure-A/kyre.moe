@@ -1,6 +1,12 @@
 import React from 'react';
 
-const TimelineItem = ({ date, title, description }) => {
+type TimelineItemProps = {
+    date: string,
+    title: string,
+    description: string
+}
+
+const TimelineItem: React.FC<TimelineItemProps> = ({ date, title, description }) => {
     return (
         <div className="flex mb-8 relative z-10">
           {/* 左側の日付部分 */}
