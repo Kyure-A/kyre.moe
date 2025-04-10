@@ -1,4 +1,4 @@
-import { useState, useEffect, Children, isValidElement } from 'react';
+import { useState, useEffect, Children, isValidElement, ReactElement } from 'react';
 
 const FadeTransition = ({
     children,
@@ -11,7 +11,7 @@ const FadeTransition = ({
     const [currentIndex, setCurrentIndex] = useState(activeIndex);
     const [transitioning, setTransitioning] = useState(false);
     const [currentOpacity, setCurrentOpacity] = useState(1);
-    const [nextChild, setNextChild] = useState(null);
+    const [nextChild, setNextChild] = useState<ReactElement | null>(null);
     
     const childrenArray = Children.toArray(children).filter(isValidElement);
     
