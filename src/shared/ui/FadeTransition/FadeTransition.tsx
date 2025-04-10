@@ -1,4 +1,13 @@
-import { useState, useEffect, Children, isValidElement, ReactElement } from 'react';
+import { useState, useEffect, Children, isValidElement, ReactElement, ReactNode } from 'react';
+
+type FadeTransitionProps = {
+    children: ReactNode;
+    activeIndex?: number;
+    duration?: number;
+    easing?: string;
+    blur?: boolean;
+    className?: string;
+}
 
 const FadeTransition = ({
     children,
@@ -7,7 +16,7 @@ const FadeTransition = ({
     easing = 'ease-in-out',
     blur = false,
     className = ''
-}) => {
+}: FadeTransitionProps) => {
     const [currentIndex, setCurrentIndex] = useState(activeIndex);
     const [transitioning, setTransitioning] = useState(false);
     const [currentOpacity, setCurrentOpacity] = useState(1);
