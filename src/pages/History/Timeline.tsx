@@ -1,4 +1,3 @@
-import DecryptedText from '@/shared/ui/DecryptedText/DecryptedText';
 import React from 'react';
 
 const TimelineItem = ({ date, title, description }) => {
