@@ -10,7 +10,7 @@ export default function Home() {
                 pixelFilter={250}
                 color1="#272822"
                 color2="#F92672"
-                color3="#66D9EF"
+                color3="#000000"
             />
           </div>
           <div className="absolute flex flex-col z-10 pt-16 inset-0 ">
