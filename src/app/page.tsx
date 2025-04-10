@@ -18,12 +18,12 @@ export default function Main() {
     ]
     
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col min-h-screen">
           <main className="items-center">
             {currentPage === "Home" && <Home />}
             {currentPage === "Accounts" && <Accounts /> }
           </main>
-          <footer className="items-center">
+          <footer className="items-center fixed bottom-0 left-0 right-0">
             <Dock
                 items={items}
                 panelHeight={70}
