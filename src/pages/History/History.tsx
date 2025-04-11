@@ -10,32 +10,38 @@ export default function History () {
         {
             date: "April, 2021",
             title: "大阪公立大学工業高等専門学校 入学",
-            description: "当時は 大阪府立大学工業高等専門学校"
+            description: "当時は 大阪府立大学工業高等専門学校",
+            url: "https://www.ct.omu.ac.jp"
         },
         {
             date: "September, 2022",
             title: "パソコン甲子園 2022 プログラミング部門 (予選)",
             description: "順位表凍結時 63 位",
+            url: "https://web.archive.org/web/20220910070431/https://radon.u-aizu.ac.jp/pckosien/stats/pck2022pre_standings.html#:~:text=63,%E9%AB%98%E7%AD%89%E5%B0%82%E9%96%80%E5%AD%A6%E6%A0%A1"
         },
         {
             date: "April, 2023",
             title: "大阪公立大学工業高等専門学校 総合工学システム学科 電子情報コース 配属",
-            description: "情報とは名ばかり"
+            description: "情報とは名ばかり",
+            url: "https://www.ct.omu.ac.jp/courses/electronics-and-information-course/"
         },
         {
             date: "August, 2023",
             title: "Kloud Hackathon #3",
-            description: "スライドがかり"
+            description: "スライドがかり",
+            url: "https://kloud-hackathon.connpass.com/event/290649/"
         },
         {
             date: "September, 2023",
             title: "パソコン甲子園 2023 プログラミング部門 (予選)",
-            description: "順位表凍結時 35 位 (大阪 1 位)"
+            description: "順位表凍結時 35 位 (大阪 1 位)",
+            url: "http://web.archive.org/web/20230909072222/https://radon.u-aizu.ac.jp/pckosien/stats/pck2023pre_standings.html#:~:text=35,%E9%AB%98%E7%AD%89%E5%B0%82%E9%96%80%E5%AD%A6%E6%A0%A1"
         },
         {
             date: "October, 2023",
-            title: "C-Style 株式会社に join",
-            description: "Next.js, Nest.js をやっている"
+            title: "C-Style Inc. に join",
+            description: "Next.js, Nest.js をやっている",
+            url: "https://c-style.net"
         },
         {
             date: "October, 2023",
@@ -50,12 +56,14 @@ export default function History () {
         {
             date: "September, 2024",
             title: "Booth ショップ 開設",
-            description: "割と売れてます"
+            description: "割と売れてます",
+            url: "https://kyre.booth.pm"
         },
         {
             date: "March, 2025",
             title: "Kloud Hackathon #6",
-            description: "素晴らしいスピーチ・スライドよりもモックを見せる"
+            description: "素晴らしいスピーチ・スライドよりもモックを見せる",
+            url: "https://kloud-hackathon.connpass.com/event/343422/"
         }
     ];
 
