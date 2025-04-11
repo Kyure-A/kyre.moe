@@ -24,11 +24,11 @@ export default function Timeline({ items = [] }: TimelineProps) {
                 {/* dot */}
                 <div className="absolute w-3 h-3 bg-white rounded-full mt-1.5 -start-1.5 border border-white"></div>
                 
-                <time className="mb-1 text-sm font-normal leading-none text-gray-300">{item.date}</time>
+                <time className="mb-1 text-sm font-normal leading-none text-gray-400">{item.date}</time>
                 
                 <h3 className="text-lg font-semibold text-white">{item.title}</h3>
                 
-                <p className="mb-4 text-base font-normal text-gray-300">{item.description}</p>
+                <p className="mb-4 text-base font-normal text-gray-400">{item.description}</p>
               </li>
           ))}
         </ol>
