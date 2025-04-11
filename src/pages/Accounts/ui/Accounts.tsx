@@ -2,7 +2,7 @@ import { srcPath } from "@/shared/lib/path";
 import Image from "next/image";
 import { ReactNode } from "react";
 import { FaGithub as FaGitHub } from "react-icons/fa";
-import { FaLastfm, FaSteam, FaTwitter } from "react-icons/fa6";
+import { FaLastfm, FaMastodon, FaSteam, FaTwitter } from "react-icons/fa6";
 import { SiMisskey } from "react-icons/si";
 
 type AccountProps = {
@@ -41,6 +41,7 @@ export default function Accounts () {
         { id: "kyremoe", description: "本アカウント 3 つめ", serviceIcon: <FaTwitter />, avatarUrl: srcPath("/icon.jpg"), serviceUrl: "https://x.com/kyremoe"},
         { id: "Kyure-A", description: "OSS やったりやらない", serviceIcon: <FaGitHub />, avatarUrl: srcPath("/icon.jpg"), serviceUrl: "https://github.com/Kyure-A"},
         { id: "Kyure_A@misskey.io", description: "xyz からやってる", serviceIcon: <SiMisskey />, avatarUrl: srcPath("/icon.jpg"), serviceUrl: "https://misskey.io/@Kyure_A"},
+        { id: "Kyure_A@mstdn.maud.io", description: "中学からやってる", serviceIcon: <FaMastodon />, avatarUrl: srcPath("/icon.jpg"), serviceUrl: "https://mstdn.maud.io/@Kyure_A"},
         { id: "Kyure_A", description: "「積みゲー」というゲーム", serviceIcon: <FaSteam />, avatarUrl: srcPath("/icon.jpg") , serviceUrl: "https://steamcommunity.com/id/kyure_a/"},
         { id: "Kyure_A", description: "", serviceIcon: <FaLastfm />, avatarUrl: srcPath("/icon.jpg"), serviceUrl: "https://www.last.fm/user/Kyure_A"}
     ]
