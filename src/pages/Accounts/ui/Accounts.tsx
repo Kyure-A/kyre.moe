@@ -15,21 +15,21 @@ type AccountProps = {
 
 function Account (props: AccountProps) {
     return (
-        <a href={props.serviceUrl}>
-          <div className="flex items-center border border-gray-600 rounded-lg w-full mx-auto my-4 p-3 bg-gray-1000 bg-opacity-50 min-w-md">
+        <a href={props.serviceUrl} className="block w-full px-2">
+          <div className="flex items-center border border-gray-600 rounded-lg w-full max-w-lg mx-auto my-4 p-3 bg-gray-1000 bg-opacity-50">
             <Image
-                className="rounded-full"
+                className="rounded-full flex-shrink-0"
                 alt=""
                 src={props.avatarUrl as string}
                 width={60}
                 height={60}
             />
-            <div className="flex flex-col ml-4">
+            <div className="flex flex-col ml-4 overflow-hidden">
               <div className="flex items-center">
-                <div className="mr-2">{props.serviceIcon}</div>
-                <p className="text-white">@{props.id}</p>
+                <div className="mr-2 flex-shrink-0">{props.serviceIcon}</div>
+                <p className="text-white truncate">@{props.id}</p>
               </div>
-              <p className="text-xs text-gray-300 mt-1">{props.description}</p>            
+              <p className="text-xs text-gray-300 mt-1 truncate">{props.description}</p>            
             </div>
           </div>
         </a>
