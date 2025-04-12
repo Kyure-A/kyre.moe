@@ -60,7 +60,7 @@ export default function Accounts () {
     return (
         <>
           <AnimatedContent>
-            <div className="pt-20">
+            <div className="py-20">
               {accounts.map((account, index) => {
                   return (
                       <Account
