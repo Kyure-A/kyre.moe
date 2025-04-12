@@ -1,12 +1,6 @@
 import AnimatedContent from '@/shared/ui/AnimatedContent/AnimatedContent';
 import React from 'react';
 
-type TimelineItemProps = {
-    date: string,
-    title: string,
-    description: string
-}
-
 export type TimelineItem = {
     date: string,
     title: string,
@@ -32,7 +26,7 @@ export default function Timeline({ items = [] }: TimelineProps) {
                     
                     <h3 className="text-lg font-semibold text-white">{item.title}</h3>
                     
-                    <p className="mb-4 text-base font-normal text-gray-400">{item.description}</p>
+                    <p className="mb-4 text-sm font-normal text-gray-400">{item.description}</p>
                   </li>
                 </a>
               </AnimatedContent>
