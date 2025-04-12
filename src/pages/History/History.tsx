@@ -3,7 +3,7 @@ import Timeline, { TimelineItem } from "./Timeline";
 export default function History () {
     const timelineData: TimelineItem[] = [
         {
-            date: "July, 2005",
+            date: "July 10, 2005",
             title: "生まれる",
             description: "納豆の日、2700 g くらいの baby"
         },
@@ -68,7 +68,7 @@ export default function History () {
     ];
 
     return (
-        <div className="max-w-2xl mx-auto p-6 py-2 rounded-lg shadow-sm">
+        <div className="max-w-2xl mx-auto p-6 pt-20 rounded-lg shadow-sm">
           {/* {<h2 className="text-2xl font-bold mb-6 text-gray-800">プロジェクト タイムライン</h2>}*/}
           <Timeline items={timelineData} />
         </div>
