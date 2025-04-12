@@ -1,4 +1,5 @@
 import { srcPath } from "@/shared/lib/path";
+import AnimatedContent from "@/shared/ui/AnimatedContent/AnimatedContent";
 import Image from "next/image";
 import { ReactNode } from "react";
 import { FaGithub as FaGitHub } from "react-icons/fa";
@@ -47,8 +48,9 @@ export default function Accounts () {
     ]
     return (
         <>
-          {accounts.map((account, i) => {
-              return (
+          <AnimatedContent>
+            {accounts.map((account, i) => {
+                return (
                     <Account
                         key={i}
                         id={account.id}
@@ -58,7 +60,8 @@ export default function Accounts () {
                         serviceUrl={account.serviceUrl}
                     />
 
-          )})}
+            )})}
+          </AnimatedContent>
         </>
     );
 }
