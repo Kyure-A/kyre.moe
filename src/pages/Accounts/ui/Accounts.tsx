@@ -1,5 +1,6 @@
 import { srcPath } from "@/shared/lib/path";
 import AnimatedContent from "@/shared/ui/AnimatedContent/AnimatedContent";
+import { Omit } from "@react-spring/web";
 import Image from "next/image";
 import { ReactNode } from "react";
 import { FaGithub as FaGitHub } from "react-icons/fa";
@@ -12,33 +13,36 @@ type AccountProps = {
     avatarUrl?: string;
     serviceUrl: string;
     serviceIcon: ReactNode;
+    delay: number;
 }
 
 function Account (props: AccountProps) {
     return (
         <a href={props.serviceUrl} className="block w-full px-2">
-          <div className="flex items-center border border-gray-600 rounded-lg w-full max-w-lg mx-auto my-4 p-3 bg-gray-1000 bg-opacity-50">
-            <Image
-                className="rounded-full flex-shrink-0"
-                alt=""
-                src={props.avatarUrl as string}
-                width={60}
-                height={60}
-            />
-            <div className="flex flex-col ml-4 overflow-hidden">
-              <div className="flex items-center">
-                <div className="mr-2 flex-shrink-0">{props.serviceIcon}</div>
-                <p className="text-white truncate">@{props.id}</p>
+          <AnimatedContent delay={props.delay}>
+            <div className="flex items-center border border-gray-600 rounded-lg w-full max-w-lg mx-auto my-4 p-3 bg-gray-1000 bg-opacity-50">
+              <Image
+                  className="rounded-full flex-shrink-0"
+                  alt=""
+                  src={props.avatarUrl as string}
+                  width={60}
+                  height={60}
+              />
+              <div className="flex flex-col ml-4 overflow-hidden">
+                <div className="flex items-center">
+                  <div className="mr-2 flex-shrink-0">{props.serviceIcon}</div>
+                  <p className="text-white truncate">@{props.id}</p>
+                </div>
+                <p className="text-xs text-gray-300 mt-1 truncate">{props.description}</p>            
               </div>
-              <p className="text-xs text-gray-300 mt-1 truncate">{props.description}</p>            
             </div>
-          </div>
+          </AnimatedContent>
         </a>
     );
 }
 
 export default function Accounts () {
-    const accounts: AccountProps[] = [
+    const accounts: Omit<AccountProps, "delay">[] = [
         { id: "kyremoe", description: "本アカウント 3 つめ", serviceIcon: <FaTwitter />, avatarUrl: srcPath("/icon.jpg"), serviceUrl: "https://x.com/kyremoe"},
         { id: "Kyure-A", description: "OSS やったりやらない", serviceIcon: <FaGitHub />, avatarUrl: srcPath("/icon.jpg"), serviceUrl: "https://github.com/Kyure-A"},
         { id: "Kyure_A@misskey.io", description: "xyz からやってる", serviceIcon: <SiMisskey />, avatarUrl: srcPath("/icon.jpg"), serviceUrl: "https://misskey.io/@Kyure_A"},
@@ -49,15 +53,16 @@ export default function Accounts () {
     return (
         <>
           <AnimatedContent>
-            {accounts.map((account, i) => {
+            {accounts.map((account, index) => {
                 return (
                     <Account
-                        key={i}
+                        key={index}
                         id={account.id}
                         description={account.description}
                         serviceIcon={account.serviceIcon}
                         avatarUrl={account.avatarUrl ?? ""}
                         serviceUrl={account.serviceUrl}
+                        delay={index * 100}
                     />
 
             )})}
