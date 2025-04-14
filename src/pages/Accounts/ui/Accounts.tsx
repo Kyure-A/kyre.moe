@@ -23,16 +23,16 @@ function Account (props: AccountProps) {
         <a href={props.serviceUrl} className="block w-full px-2">
           <AnimatedContent delay={props.delay}>
             <div className="flex items-center border border-gray-600 rounded-lg w-full max-w-lg mx-auto my-4 p-3 bg-gray-1000 bg-opacity-50">
-              <Image
+              {/* <Image
                   className="rounded-full flex-shrink-0"
                   alt=""
                   src={props.avatarUrl as string}
                   width={60}
                   height={60}
-              />
+                  /> */}
+              <div className="ml-2 flex-shrink-0">{props.serviceIcon}</div>
               <div className="flex flex-col ml-4 overflow-hidden">
                 <div className="flex items-center">
-                  <div className="mr-2 flex-shrink-0">{props.serviceIcon}</div>
                   <p className="text-white truncate">@{props.id}</p>
                 </div>
                 <p className="text-xs text-gray-300 mt-1 truncate">{props.description}</p>            
