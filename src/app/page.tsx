@@ -2,6 +2,7 @@
 
 import Accounts from "@/pages/Accounts/ui/Accounts";
 import Home from "@/pages/Home/ui/Home";
+import AboutMe from "@/pages/AboutMe/ui/AboutMe";
 
 import Dock, { DockItemData } from "@/shared/ui/Dock/Dock";
 import { FaHome } from "react-icons/fa";
@@ -30,6 +31,7 @@ export default function Main() {
             {currentPage === "Home" && <Home />}
             {currentPage === "Accounts" && <Accounts /> }
             {currentPage === "Timeline" && <History />}
+            {currentPage === "About" && <AboutMe />}
           </main>
           <footer className="items-center fixed bottom-0 left-0 right-0 z-40">
             <Dock
