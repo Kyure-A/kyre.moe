@@ -35,7 +35,7 @@ function Account (props: AccountProps) {
     return (
         <a href={props.serviceUrl} className="block w-full px-2">
           <AnimatedContent delay={props.delay}>
-            <div className="flex items-center border border-gray-600 rounded-lg w-full my-4 p-3 bg-gray-1000 bg-opacity-50 min-h-20">
+            <div className="flex items-center border border-gray-600 rounded-lg w-full my-2 p-3 bg-gray-1000 bg-opacity-50 min-h-20">
               {/* <Image
                   className="rounded-full flex-shrink-0"
                   alt=""
