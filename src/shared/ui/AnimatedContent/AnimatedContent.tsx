@@ -2,10 +2,10 @@
 	Installed from https://reactbits.dev/ts/tailwind/
 */
 
-import { useRef, useEffect, useState, ReactNode } from "react";
+import { useRef, useEffect, useState, ReactNode, HTMLAttributes } from "react";
 import { useSpring, animated, SpringConfig } from "@react-spring/web";
 
-interface AnimatedContentProps {
+interface AnimatedContentProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
   distance?: number;
   direction?: "vertical" | "horizontal";
@@ -16,6 +16,7 @@ interface AnimatedContentProps {
   scale?: number;
   threshold?: number;
   delay?: number;
+  as?: keyof JSX.IntrinsicElements;
 }
 
 const AnimatedContent: React.FC<AnimatedContentProps> = ({
@@ -29,6 +30,8 @@ const AnimatedContent: React.FC<AnimatedContentProps> = ({
   scale = 1,
   threshold = 0.1,
   delay = 0,
+  as: Tag = "div",
+  className,
 }) => {
   const [inView, setInView] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
@@ -76,7 +79,7 @@ const AnimatedContent: React.FC<AnimatedContentProps> = ({
   });
 
   return (
-    <animated.div ref={ref} style={springProps}>
+    <animated.div as={Tag} ref={ref} style={springProps} className={className}>
       {children}
     </animated.div>
   );
