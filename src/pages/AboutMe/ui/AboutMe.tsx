@@ -35,7 +35,6 @@ function Section({ section, index }: SectionProps) {
       {/* 見出し側（3カラム） */}
       <AnimatedContent
         delay={index * 100}
-        as="div"
         className="md:col-span-3 font-mono text-gray-400 text-right md:text-left"
       >
         <h3>{section.label}</h3>
@@ -44,7 +43,6 @@ function Section({ section, index }: SectionProps) {
       {/* 本文側（9カラム） */}
       <AnimatedContent
         delay={index * 100}
-        as="div"
         className="md:col-span-9 prose prose-invert max-w-none"
       >
         {"bullets" in section ? (

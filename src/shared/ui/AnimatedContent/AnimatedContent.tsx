@@ -17,7 +17,6 @@ interface AnimatedContentProps extends HTMLAttributes<HTMLDivElement> {
   scale?: number;
   threshold?: number;
   delay?: number;
-  as?: keyof JSX.IntrinsicElements;
 }
 
 const AnimatedContent: React.FC<AnimatedContentProps> = ({
@@ -31,7 +30,6 @@ const AnimatedContent: React.FC<AnimatedContentProps> = ({
   scale = 1,
   threshold = 0.1,
   delay = 0,
-  as: Tag = "div",
   className,
 }) => {
   const [inView, setInView] = useState(false);
@@ -80,8 +78,8 @@ const AnimatedContent: React.FC<AnimatedContentProps> = ({
   });
 
   return (
-    <animated.div as={Tag} ref={ref} style={springProps} className={className}>
-      {children}
+    <animated.div ref={ref} style={springProps} className={className}>
+    {children}
     </animated.div>
   );
 };
