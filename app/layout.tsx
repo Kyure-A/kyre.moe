@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import App from "@/app/main";
 
 export const metadata: Metadata = {
   title: "Kyure_A / キュレェ",
@@ -14,6 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body suppressHydrationWarning={true}>{children}</body>
+      <App>{children}</App>
     </html>
   );
 }
