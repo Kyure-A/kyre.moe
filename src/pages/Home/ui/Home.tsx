@@ -1,3 +1,5 @@
+"use client";
+
 import Balatro from "@/shared/ui/Balatro/Balatro";
 import Image from "next/image";
 import FadeTextRotator from "./FadeTextRotator";
