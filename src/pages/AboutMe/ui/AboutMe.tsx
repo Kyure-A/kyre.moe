@@ -8,7 +8,7 @@ type Section =
 
 type SectionProps = {
   section: Section;
-  delay: number;
+  index: number;
 };
 
 const data: Section[] = [
@@ -29,39 +29,42 @@ const data: Section[] = [
   },
 ] as const;
 
-function Section(props: SectionProps) {
+function Section({ section, index }: SectionProps) {
   return (
-    <AnimatedContent delay={props.delay}>
-      <React.Fragment key={props.section.label}>
-        <h3 className="md:col-span-3 font-mono text-gray-400 text-right md:text-left">
-          {props.section.label}
-        </h3>
-        <article className="md:col-span-9 prose prose-invert max-w-none">
-          {"bullets" in props.section ? (
-            <List items={props.section.bullets} />
-          ) : (
-            <p>{props.section.text}</p>
-          )}
-        </article>
-      </React.Fragment>
-    </AnimatedContent>
+    <>
+      {/* 見出し側（3カラム） */}
+      <AnimatedContent
+        delay={index * 100}
+        as="div"
+        className="md:col-span-3 font-mono text-gray-400 text-right md:text-left"
+      >
+        <h3>{section.label}</h3>
+      </AnimatedContent>
+
+      {/* 本文側（9カラム） */}
+      <AnimatedContent
+        delay={index * 100}
+        as="div"
+        className="md:col-span-9 prose prose-invert max-w-none"
+      >
+        {"bullets" in section ? (
+          <List items={section.bullets} />
+        ) : (
+          <p>{section.text}</p>
+        )}
+      </AnimatedContent>
+    </>
   );
 }
 
 export default function AboutMe() {
   return (
-    <>
-      <section className="py-24 px-6 max-w-6xl mx-auto">
-        <div className="grid md:grid-cols-12 gap-y-12">
-          {data.map((section, index) => (
-            <Section
-              section={section}
-              delay={index * 100}
-              key={section.label}
-            />
-          ))}
-        </div>
-      </section>
-    </>
+    <section className="py-24 px-6 max-w-6xl mx-auto">
+      <div className="grid md:grid-cols-12 gap-y-12">
+        {data.map((section, idx) => (
+          <Section section={section} index={idx} key={section.label} />
+        ))}
+      </div>
+    </section>
   );
 }
