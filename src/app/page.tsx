@@ -9,7 +9,7 @@ import { FaHome } from "react-icons/fa";
 import { FaClock, FaUser } from "react-icons/fa6";
 import { MdDescription } from "react-icons/md";
 import LanguageToggle from "../shared/ui/LanguageToggleSwitch/LanguageToggleSwitch";
-import History from "@/pages/History/History";
+import History from "@/pages/History/ui/History";
 import { useState } from "react";
 
 export default function Main() {
