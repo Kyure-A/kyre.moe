@@ -26,7 +26,7 @@ export default function App({ children }: Props) {
         <LanguageToggle onChange={() => {}} />
       </header>
 
-      <main className="flex-1 flex flex-col justify-center items-center pt-20 pb-20">
+      <main className="flex-1 flex flex-col justify-center items-center">
         {children}
       </main>
 
