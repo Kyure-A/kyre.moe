@@ -10,7 +10,7 @@ import GlitchImage from "../../../shared/ui/GlitchImage/GlitchImage";
 export default function Home() {
   return (
     <div className="relative w-screen h-screen overflow-hidden">
-      <div className="absolute inset-0 w-full h-full z-0">
+      <div className="absolute w-screen h-screen z-0">
         <MysteriousShader
           pixelFilter={250}
           fogDensity={0.3}
