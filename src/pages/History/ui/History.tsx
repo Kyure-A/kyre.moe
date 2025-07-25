@@ -66,6 +66,12 @@ export default function History() {
       description: "素晴らしいスピーチ・スライドよりもモックを見せる",
       url: "https://kloud-hackathon.connpass.com/event/343422/",
     },
+    {
+      date: "July, 2025",
+      title: "筑波大学 情報学群 知識情報・図書館学類 合格",
+      description: "なぜ受かったかわからない",
+      url: "https://www.klis.tsukuba.ac.jp",
+    }
   ];
 
   return (
