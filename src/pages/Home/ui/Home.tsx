@@ -29,7 +29,7 @@ export default function Home() {
           <GlitchImage interval={1} probability={10} intensity={5}>
             <Image
               alt="Kyure_A"
-              src={srcPath("/kyre.png")}
+              src={srcPath("/kyure_a.png")}
               width={1000}
               height={1000}
             />
