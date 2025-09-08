@@ -10,7 +10,7 @@ export default function History() {
     {
       date: "April, 2021",
       title: "大阪公立大学工業高等専門学校 入学",
-      description: "当時は 大阪府立大学工業高等専門学校",
+      description: "ex-大阪府立大学工業高等専門学校",
       url: "https://www.ct.omu.ac.jp",
     },
     {
@@ -23,14 +23,8 @@ export default function History() {
       date: "April, 2023",
       title:
         "大阪公立大学工業高等専門学校 総合工学システム学科 電子情報コース 配属",
-      description: "情報とは名ばかり",
+      description: "電子:情報 = 7:3 くらい",
       url: "https://www.ct.omu.ac.jp/courses/electronics-and-information-course/",
-    },
-    {
-      date: "August, 2023",
-      title: "Kloud Hackathon #3",
-      description: "スライドがかり",
-      url: "https://kloud-hackathon.connpass.com/event/290649/",
     },
     {
       date: "September, 2023",
@@ -47,30 +41,24 @@ export default function History() {
     {
       date: "October, 2023",
       title: "第34回 高専プロコン 競技部門",
-      description: "かばん持ち",
+      description: "ファイナルステージまで進出",
     },
     {
       date: "November, 2023",
       title: "パソコン甲子園 2023 プログラミング部門 (本選)",
-      description: "置物",
+      description: "何もできなかった",
     },
     {
       date: "September, 2024",
       title: "Booth ショップ 開設",
-      description: "割と売れてます",
+      description: "VRChat アバター向けアクセサリーを販売",
       url: "https://kyre.booth.pm",
     },
     {
-      date: "March, 2025",
-      title: "Kloud Hackathon #6",
-      description: "素晴らしいスピーチ・スライドよりもモックを見せる",
-      url: "https://kloud-hackathon.connpass.com/event/343422/",
-    },
-    {
-      date: "July, 2025",
-      title: "筑波大学 情報学群 知識情報・図書館学類 合格",
-      description: "なぜ受かったかわからない",
-      url: "https://klis.tsukuba.ac.jp",
+      date: "August, 2025",
+      title: "第 1 回 さくらの AI ハッカソン with Kloud",
+      description: "最優秀賞",
+      url: "https://kloud-hackathon.connpass.com/event/361937/",
     }
   ];
 
