@@ -22,7 +22,6 @@ type AccountProps = {
   avatarUrl?: string;
   serviceUrl: string;
   serviceIcon: ReactNode;
-  delay: number;
 };
 
 function NostrIcon() {
@@ -41,26 +40,24 @@ function NostrIcon() {
 function Account(props: AccountProps) {
   return (
     <a href={props.serviceUrl} className="block w-full px-2">
-      <AnimatedContent delay={props.delay}>
-        <div className="flex items-center border border-gray-600 rounded-lg w-full my-2 p-3 bg-gray-1000 bg-opacity-50 min-h-20">
-          {/* <Image
-                  className="rounded-full flex-shrink-0"
-                  alt=""
-                  src={props.avatarUrl as string}
-                  width={60}
-                  height={60}
-                  /> */}
-          <div className="ml-2 flex-shrink-0">{props.serviceIcon}</div>
-          <div className="flex flex-col ml-4 overflow-hidden">
-            <div className="flex items-center">
-              <p className="text-white truncate">@{props.id}</p>
-            </div>
-            <p className="text-xs text-gray-300 mt-1 truncate">
-              {props.description}
-            </p>
+      <div className="flex items-center border border-gray-600 rounded-lg w-full my-2 p-3 bg-gray-1000 bg-opacity-50 min-h-20">
+        {/* <Image
+            className="rounded-full flex-shrink-0"
+            alt=""
+            src={props.avatarUrl as string}
+            width={60}
+            height={60}
+            /> */}
+        <div className="ml-2 flex-shrink-0">{props.serviceIcon}</div>
+        <div className="flex flex-col ml-4 overflow-hidden">
+          <div className="flex items-center">
+            <p className="text-white truncate">@{props.id}</p>
           </div>
+          <p className="text-xs text-gray-300 mt-1 truncate">
+            {props.description}
+          </p>
         </div>
-      </AnimatedContent>
+      </div>
     </a>
   );
 }
@@ -148,23 +145,20 @@ export default function Accounts() {
   ];
   return (
     <>
-      <AnimatedContent>
-        <div className="py-20 grid grid-cols-1 md:grid-cols-2 gap-4">
-          {accounts.map((account, index) => {
-            return (
-              <Account
-                key={index}
-                id={account.id}
-                description={account.description}
-                serviceIcon={account.serviceIcon}
-                avatarUrl={account.avatarUrl ?? ""}
-                serviceUrl={account.serviceUrl}
-                delay={index * 100}
-              />
-            );
-          })}
-        </div>
-      </AnimatedContent>
+      <div className="py-20 grid grid-cols-1 md:grid-cols-2 gap-4">
+        {accounts.map((account, index) => {
+          return (
+            <Account
+              key={index}
+              id={account.id}
+              description={account.description}
+              serviceIcon={account.serviceIcon}
+              avatarUrl={account.avatarUrl ?? ""}
+              serviceUrl={account.serviceUrl}
+            />
+          );
+        })}
+      </div>
     </>
   );
 }
