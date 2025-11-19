@@ -26,7 +26,7 @@ export default function History() {
     },
     {
       date: "November, 2023",
-      title: "パソコン甲子園 2023 プログラミング部門 (予選)",
+      title: "パソコン甲子園 2023 プログラミング部門 (本選)",
       description: "24 位 / 29 チーム",
       url: "https://web.archive.org/web/20231111083450/https://radon.u-aizu.ac.jp/pckosien/stats/pck2023final_standings.html",
     },
