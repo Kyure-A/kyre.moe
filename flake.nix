@@ -15,8 +15,7 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        treefmt = treefmt-nix.lib.${system}.evalModule {
-          pkgs = pkgs;
+        treefmt = treefmt-nix.lib.evalModule pkgs {
           projectRootFile = "flake.nix";
           programs.biome.enable = true;
         };

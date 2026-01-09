@@ -1,2 +1,2 @@
-import Timeline, { TimelineItem } from "./Timeline";
+import Timeline, { type TimelineItem } from "./Timeline";
 
