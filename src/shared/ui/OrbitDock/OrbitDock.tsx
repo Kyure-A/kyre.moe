@@ -64,7 +64,7 @@ export default function OrbitDock({
 		"--orbit-tilt-z": `${tiltZ}deg`,
 		"--orbit-tilt-x-inv": `${-tiltX}deg`,
 		"--orbit-tilt-z-inv": `${-tiltZ}deg`,
-		"--orbit-user-rotation": `${rotationValue}deg`,
+		"--orbit-phase": `${(-rotationValue / 360) * duration}s`,
 	} as CSSProperties;
 
 	const getAngle = (clientX: number, clientY: number) => {
