@@ -28,7 +28,7 @@ body {
   --orbit-radius: calc(var(--orbit-size) / 2 - 56px);
   --orbit-speed: 34s;
   --orbit-start: -90deg;
-  --orbit-user-rotation: 0deg;
+  --orbit-phase: 0s;
   --orbit-tilt-x: 64deg;
   --orbit-tilt-z: -20deg;
   --orbit-tilt-x-inv: -64deg;
@@ -36,7 +36,7 @@ body {
   position: relative;
   width: var(--orbit-size);
   height: var(--orbit-size);
-  perspective: 1400px;
+  perspective: none;
   user-select: none;
 }
 
@@ -44,8 +44,7 @@ body {
   position: absolute;
   inset: 0;
   transform-style: preserve-3d;
-  transform: rotateX(var(--orbit-tilt-x))
-    rotateZ(calc(var(--orbit-tilt-z) + var(--orbit-user-rotation)));
+  transform: rotateX(var(--orbit-tilt-x)) rotateZ(var(--orbit-tilt-z));
 }
 
 .orbit-dock__ring {
@@ -107,7 +106,7 @@ body {
   left: 50%;
   transform-style: preserve-3d;
   animation: orbit-spin var(--orbit-speed) linear infinite;
-  animation-delay: var(--orbit-delay, 0s);
+  animation-delay: calc(var(--orbit-delay, 0s) + var(--orbit-phase, 0s));
 }
 
 @keyframes orbit-spin {
@@ -130,21 +129,18 @@ body {
 }
 
 .orbit-dock__billboard {
-  transform: translateZ(12px)
-    rotateZ(calc(var(--orbit-tilt-z-inv) - var(--orbit-user-rotation)))
-    rotateX(var(--orbit-tilt-x-inv));
-  will-change: transform, opacity, filter;
+  transform: rotateZ(var(--orbit-tilt-z-inv)) rotateX(var(--orbit-tilt-x-inv));
+  will-change: transform;
 }
 
 .orbit-dock[data-layer="front"] .orbit-dock__billboard {
   animation: orbit-depth-front var(--orbit-speed) linear infinite;
-  animation-delay: var(--orbit-delay, 0s);
+  animation-delay: calc(var(--orbit-delay, 0s) + var(--orbit-phase, 0s));
 }
 
 .orbit-dock[data-layer="back"] .orbit-dock__billboard {
   animation: orbit-depth-back var(--orbit-speed) linear infinite;
-  animation-delay: var(--orbit-delay, 0s);
-  filter: saturate(0.7);
+  animation-delay: calc(var(--orbit-delay, 0s) + var(--orbit-phase, 0s));
 }
 
 .orbit-dock[data-layer="back"] .orbit-dock__item {
@@ -176,67 +172,51 @@ body {
 
 @keyframes orbit-depth-front {
   0%,
-  34% {
+  24% {
     visibility: hidden;
-    filter: blur(1.4px) saturate(0.7);
-    transform: translateZ(6px)
-      rotateZ(calc(var(--orbit-tilt-z-inv) - var(--orbit-user-rotation)))
-      rotateX(var(--orbit-tilt-x-inv)) scale(0.72);
+    transform: rotateZ(var(--orbit-tilt-z-inv)) rotateX(var(--orbit-tilt-x-inv))
+      scale(0.78);
   }
-  40%,
-  60% {
+  25%,
+  75% {
     visibility: visible;
-    filter: blur(0px) saturate(1.1);
-    transform: translateZ(26px)
-      rotateZ(calc(var(--orbit-tilt-z-inv) - var(--orbit-user-rotation)))
-      rotateX(var(--orbit-tilt-x-inv)) scale(1.08);
+    transform: rotateZ(var(--orbit-tilt-z-inv)) rotateX(var(--orbit-tilt-x-inv))
+      scale(1);
   }
-  66%,
+  76%,
   100% {
     visibility: hidden;
-    filter: blur(1.4px) saturate(0.7);
-    transform: translateZ(6px)
-      rotateZ(calc(var(--orbit-tilt-z-inv) - var(--orbit-user-rotation)))
-      rotateX(var(--orbit-tilt-x-inv)) scale(0.72);
+    transform: rotateZ(var(--orbit-tilt-z-inv)) rotateX(var(--orbit-tilt-x-inv))
+      scale(0.78);
   }
 }
 
 @keyframes orbit-depth-back {
   0% {
     visibility: visible;
-    filter: blur(0.9px) saturate(0.6);
-    transform: translateZ(2px)
-      rotateZ(calc(var(--orbit-tilt-z-inv) - var(--orbit-user-rotation)))
-      rotateX(var(--orbit-tilt-x-inv)) scale(0.78);
+    transform: rotateZ(var(--orbit-tilt-z-inv)) rotateX(var(--orbit-tilt-x-inv))
+      scale(0.7);
   }
   25% {
     visibility: visible;
-    filter: blur(1.2px) saturate(0.55);
-    transform: translateZ(0px)
-      rotateZ(calc(var(--orbit-tilt-z-inv) - var(--orbit-user-rotation)))
-      rotateX(var(--orbit-tilt-x-inv)) scale(0.72);
+    transform: rotateZ(var(--orbit-tilt-z-inv)) rotateX(var(--orbit-tilt-x-inv))
+      scale(0.65);
   }
-  40%,
-  60% {
+  26%,
+  74% {
     visibility: hidden;
-    filter: blur(1.4px) saturate(0.5);
-    transform: translateZ(0px)
-      rotateZ(calc(var(--orbit-tilt-z-inv) - var(--orbit-user-rotation)))
-      rotateX(var(--orbit-tilt-x-inv)) scale(0.68);
+    transform: rotateZ(var(--orbit-tilt-z-inv)) rotateX(var(--orbit-tilt-x-inv))
+      scale(0.65);
   }
   75% {
     visibility: visible;
-    filter: blur(1.2px) saturate(0.55);
-    transform: translateZ(0px)
-      rotateZ(calc(var(--orbit-tilt-z-inv) - var(--orbit-user-rotation)))
-      rotateX(var(--orbit-tilt-x-inv)) scale(0.72);
+    transform: rotateZ(var(--orbit-tilt-z-inv)) rotateX(var(--orbit-tilt-x-inv))
+      scale(0.65);
   }
   100% {
     visibility: visible;
-    filter: blur(0.9px) saturate(0.6);
-    transform: translateZ(2px)
-      rotateZ(calc(var(--orbit-tilt-z-inv) - var(--orbit-user-rotation)))
-      rotateX(var(--orbit-tilt-x-inv)) scale(0.78);
+    transform: rotateZ(var(--orbit-tilt-z-inv)) rotateX(var(--orbit-tilt-x-inv))
+      scale(0.7);
   }
 }
 
