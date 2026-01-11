@@ -22,3 +22,244 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.orbit-dock {
+  --orbit-size: min(76vmin, 760px);
+  --orbit-radius: calc(var(--orbit-size) / 2 - 56px);
+  --orbit-speed: 34s;
+  --orbit-start: -90deg;
+  --orbit-user-rotation: 0deg;
+  --orbit-tilt-x: 64deg;
+  --orbit-tilt-z: -20deg;
+  --orbit-tilt-x-inv: -64deg;
+  --orbit-tilt-z-inv: 20deg;
+  position: relative;
+  width: var(--orbit-size);
+  height: var(--orbit-size);
+  perspective: 1400px;
+  user-select: none;
+}
+
+.orbit-dock__plane {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--orbit-tilt-x))
+    rotateZ(calc(var(--orbit-tilt-z) + var(--orbit-user-rotation)));
+}
+
+.orbit-dock__ring {
+  position: absolute;
+  inset: 4%;
+  border-radius: 999px;
+  background:
+    radial-gradient(
+      circle,
+      transparent 55%,
+      rgba(237, 237, 237, 0.1) 57%,
+      rgba(249, 38, 114, 0.18) 60%,
+      rgba(237, 237, 237, 0.05) 63%,
+      transparent 66%
+    );
+  box-shadow:
+    0 0 30px rgba(249, 38, 114, 0.18),
+    inset 0 0 18px rgba(249, 38, 114, 0.12);
+  opacity: 0.85;
+  transform: translateZ(-12px);
+}
+
+.orbit-dock__ring::after {
+  content: "";
+  position: absolute;
+  inset: 7%;
+  border-radius: 999px;
+  border: 1px dashed rgba(237, 237, 237, 0.18);
+  opacity: 0.55;
+}
+
+.orbit-dock__scan {
+  position: absolute;
+  inset: 8%;
+  border-radius: 999px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(249, 38, 114, 0.35) 70deg,
+    transparent 120deg,
+    transparent 360deg
+  );
+  filter: blur(1px);
+  mix-blend-mode: screen;
+  animation: orbit-rotate 12s linear infinite;
+  opacity: 0.7;
+  transform: translateZ(-4px);
+}
+
+.orbit-dock__items {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.orbit-dock__item {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-style: preserve-3d;
+  animation: orbit-spin var(--orbit-speed) linear infinite;
+  animation-delay: var(--orbit-delay, 0s);
+}
+
+@keyframes orbit-spin {
+  from {
+    transform: translate(-50%, -50%) rotate(var(--orbit-start))
+      translateX(var(--orbit-radius)) rotate(calc(-1 * var(--orbit-start)));
+  }
+  to {
+    transform: translate(-50%, -50%)
+      rotate(calc(360deg + var(--orbit-start)))
+      translateX(var(--orbit-radius))
+      rotate(calc(-360deg - var(--orbit-start)));
+  }
+}
+
+@keyframes orbit-rotate {
+  to {
+    transform: translateZ(-4px) rotate(360deg);
+  }
+}
+
+.orbit-dock__billboard {
+  transform: translateZ(12px)
+    rotateZ(calc(var(--orbit-tilt-z-inv) - var(--orbit-user-rotation)))
+    rotateX(var(--orbit-tilt-x-inv));
+  will-change: transform, opacity, filter;
+}
+
+.orbit-dock[data-layer="front"] .orbit-dock__billboard {
+  animation: orbit-depth-front var(--orbit-speed) linear infinite;
+  animation-delay: var(--orbit-delay, 0s);
+}
+
+.orbit-dock[data-layer="back"] .orbit-dock__billboard {
+  animation: orbit-depth-back var(--orbit-speed) linear infinite;
+  animation-delay: var(--orbit-delay, 0s);
+  filter: saturate(0.7);
+}
+
+.orbit-dock[data-layer="back"] .orbit-dock__item {
+  pointer-events: none;
+}
+
+.orbit-dock[data-layer="back"] {
+  pointer-events: none;
+}
+
+.orbit-dock[data-draggable="true"] {
+  touch-action: none;
+  cursor: grab;
+}
+
+.orbit-dock[data-dragging="true"] {
+  cursor: grabbing;
+}
+
+.orbit-dock[data-dragging="true"] .orbit-dock__item,
+.orbit-dock[data-dragging="true"] .orbit-dock__billboard,
+.orbit-dock[data-dragging="true"] .orbit-dock__scan {
+  animation-play-state: paused;
+}
+
+.orbit-dock[data-layer="back"] .orbit-dock__label {
+  display: none;
+}
+
+@keyframes orbit-depth-front {
+  0%,
+  34% {
+    visibility: hidden;
+    filter: blur(1.4px) saturate(0.7);
+    transform: translateZ(6px)
+      rotateZ(calc(var(--orbit-tilt-z-inv) - var(--orbit-user-rotation)))
+      rotateX(var(--orbit-tilt-x-inv)) scale(0.72);
+  }
+  40%,
+  60% {
+    visibility: visible;
+    filter: blur(0px) saturate(1.1);
+    transform: translateZ(26px)
+      rotateZ(calc(var(--orbit-tilt-z-inv) - var(--orbit-user-rotation)))
+      rotateX(var(--orbit-tilt-x-inv)) scale(1.08);
+  }
+  66%,
+  100% {
+    visibility: hidden;
+    filter: blur(1.4px) saturate(0.7);
+    transform: translateZ(6px)
+      rotateZ(calc(var(--orbit-tilt-z-inv) - var(--orbit-user-rotation)))
+      rotateX(var(--orbit-tilt-x-inv)) scale(0.72);
+  }
+}
+
+@keyframes orbit-depth-back {
+  0% {
+    visibility: visible;
+    filter: blur(0.9px) saturate(0.6);
+    transform: translateZ(2px)
+      rotateZ(calc(var(--orbit-tilt-z-inv) - var(--orbit-user-rotation)))
+      rotateX(var(--orbit-tilt-x-inv)) scale(0.78);
+  }
+  25% {
+    visibility: visible;
+    filter: blur(1.2px) saturate(0.55);
+    transform: translateZ(0px)
+      rotateZ(calc(var(--orbit-tilt-z-inv) - var(--orbit-user-rotation)))
+      rotateX(var(--orbit-tilt-x-inv)) scale(0.72);
+  }
+  40%,
+  60% {
+    visibility: hidden;
+    filter: blur(1.4px) saturate(0.5);
+    transform: translateZ(0px)
+      rotateZ(calc(var(--orbit-tilt-z-inv) - var(--orbit-user-rotation)))
+      rotateX(var(--orbit-tilt-x-inv)) scale(0.68);
+  }
+  75% {
+    visibility: visible;
+    filter: blur(1.2px) saturate(0.55);
+    transform: translateZ(0px)
+      rotateZ(calc(var(--orbit-tilt-z-inv) - var(--orbit-user-rotation)))
+      rotateX(var(--orbit-tilt-x-inv)) scale(0.72);
+  }
+  100% {
+    visibility: visible;
+    filter: blur(0.9px) saturate(0.6);
+    transform: translateZ(2px)
+      rotateZ(calc(var(--orbit-tilt-z-inv) - var(--orbit-user-rotation)))
+      rotateX(var(--orbit-tilt-x-inv)) scale(0.78);
+  }
+}
+
+@media (hover: hover) {
+  .orbit-dock__item:hover,
+  .orbit-dock__item:focus-visible {
+    animation-play-state: paused;
+  }
+  .orbit-dock__item:hover .orbit-dock__billboard,
+  .orbit-dock__item:focus-visible .orbit-dock__billboard {
+    animation-play-state: paused;
+  }
+  .orbit-dock:has(.orbit-dock__item:hover) .orbit-dock__item,
+  .orbit-dock:has(.orbit-dock__item:hover) .orbit-dock__billboard,
+  .orbit-dock:has(.orbit-dock__item:hover) .orbit-dock__scan {
+    animation-play-state: paused;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbit-dock__item,
+  .orbit-dock__billboard,
+  .orbit-dock__scan {
+    animation: none;
+  }
+}
