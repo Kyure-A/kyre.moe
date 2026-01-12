@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { srcPath } from "@/shared/lib/path";
 import Balatro from "@/shared/ui/Balatro/Balatro";
 import MysteriousShader from "@/shared/ui/Mys/Mys";
@@ -12,6 +12,13 @@ import useDockItems from "@/shared/hooks/useDockItems";
 
 export default function Home() {
 	const items = useDockItems();
+	const orbitItems = useMemo(
+		() =>
+			items.filter((item) =>
+				typeof item.label === "string" ? item.label !== "Home" : true,
+			),
+		[items],
+	);
 	const [orbitRotation, setOrbitRotation] = useState(0);
 
 	return (
@@ -29,7 +36,7 @@ export default function Home() {
 			</div>
 			<div className="absolute left-1/2 top-1/2 z-[1] -translate-x-1/2 -translate-y-1/2">
 				<OrbitDock
-					items={items}
+					items={orbitItems}
 					layer="back"
 					showDecorations
 					speed={9}
@@ -53,7 +60,7 @@ export default function Home() {
 			</div>
 			<div className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2">
 				<OrbitDock
-					items={items}
+					items={orbitItems}
 					layer="front"
 					showDecorations={false}
 					speed={9}

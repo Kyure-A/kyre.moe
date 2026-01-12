@@ -31,7 +31,6 @@ body {
   --orbit-phase: 0s;
   --orbit-tilt-x: 64deg;
   --orbit-tilt-z: -20deg;
-  --orbit-tilt-x-inv: -64deg;
   --orbit-tilt-z-inv: 20deg;
   position: relative;
   width: var(--orbit-size);
@@ -97,7 +96,8 @@ body {
 .orbit-dock__items {
   position: absolute;
   inset: 0;
-  transform-style: preserve-3d;
+  transform-origin: center;
+  transform: rotateZ(var(--orbit-tilt-z)) scaleY(var(--orbit-ellipse-y));
 }
 
 .orbit-dock__item {
@@ -129,17 +129,9 @@ body {
 }
 
 .orbit-dock__billboard {
-  transform: rotateZ(var(--orbit-tilt-z-inv)) rotateX(var(--orbit-tilt-x-inv));
+  transform: scaleY(var(--orbit-ellipse-inv)) rotateZ(var(--orbit-tilt-z-inv));
   will-change: transform;
-}
-
-.orbit-dock[data-layer="front"] .orbit-dock__billboard {
-  animation: orbit-depth-front var(--orbit-speed) linear infinite;
-  animation-delay: calc(var(--orbit-delay, 0s) + var(--orbit-phase, 0s));
-}
-
-.orbit-dock[data-layer="back"] .orbit-dock__billboard {
-  animation: orbit-depth-back var(--orbit-speed) linear infinite;
+  animation: orbit-scale var(--orbit-speed) linear infinite;
   animation-delay: calc(var(--orbit-delay, 0s) + var(--orbit-phase, 0s));
 }
 
@@ -166,56 +158,43 @@ body {
   animation-play-state: paused;
 }
 
+.orbit-dock[data-pressing="true"] .orbit-dock__item,
+.orbit-dock[data-pressing="true"] .orbit-dock__billboard,
+.orbit-dock[data-pressing="true"] .orbit-dock__scan {
+  animation-play-state: paused;
+}
+
 .orbit-dock[data-layer="back"] .orbit-dock__label {
   display: none;
 }
 
-@keyframes orbit-depth-front {
-  0%,
-  24% {
-    visibility: hidden;
-    transform: rotateZ(var(--orbit-tilt-z-inv)) rotateX(var(--orbit-tilt-x-inv))
-      scale(0.78);
-  }
-  25%,
-  75% {
-    visibility: visible;
-    transform: rotateZ(var(--orbit-tilt-z-inv)) rotateX(var(--orbit-tilt-x-inv))
-      scale(1);
-  }
-  76%,
-  100% {
-    visibility: hidden;
-    transform: rotateZ(var(--orbit-tilt-z-inv)) rotateX(var(--orbit-tilt-x-inv))
-      scale(0.78);
-  }
+.orbit-dock[data-layer="front"] .orbit-dock__items {
+  clip-path: inset(50% 0 0 0);
 }
 
-@keyframes orbit-depth-back {
+.orbit-dock[data-layer="back"] .orbit-dock__items {
+  clip-path: inset(0 0 50% 0);
+}
+
+@keyframes orbit-scale {
   0% {
-    visibility: visible;
-    transform: rotateZ(var(--orbit-tilt-z-inv)) rotateX(var(--orbit-tilt-x-inv))
+    transform: scaleY(var(--orbit-ellipse-inv)) rotateZ(var(--orbit-tilt-z-inv))
       scale(0.7);
   }
   25% {
-    visibility: visible;
-    transform: rotateZ(var(--orbit-tilt-z-inv)) rotateX(var(--orbit-tilt-x-inv))
-      scale(0.65);
+    transform: scaleY(var(--orbit-ellipse-inv)) rotateZ(var(--orbit-tilt-z-inv))
+      scale(0.85);
   }
-  26%,
-  74% {
-    visibility: hidden;
-    transform: rotateZ(var(--orbit-tilt-z-inv)) rotateX(var(--orbit-tilt-x-inv))
-      scale(0.65);
+  50% {
+    transform: scaleY(var(--orbit-ellipse-inv)) rotateZ(var(--orbit-tilt-z-inv))
+      scale(1);
   }
   75% {
-    visibility: visible;
-    transform: rotateZ(var(--orbit-tilt-z-inv)) rotateX(var(--orbit-tilt-x-inv))
-      scale(0.65);
+    transform: scaleY(var(--orbit-ellipse-inv)) rotateZ(var(--orbit-tilt-z-inv))
+      scale(0.85);
   }
   100% {
-    visibility: visible;
-    transform: rotateZ(var(--orbit-tilt-z-inv)) rotateX(var(--orbit-tilt-x-inv))
+    transform: scaleY(var(--orbit-ellipse-inv)) rotateZ(var(--orbit-tilt-z-inv))
       scale(0.7);
   }
 }
