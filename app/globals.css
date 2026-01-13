@@ -32,6 +32,7 @@ body {
   --orbit-tilt-x: 64deg;
   --orbit-tilt-z: -20deg;
   --orbit-tilt-z-inv: 20deg;
+  --orbit-clip-overscan: 16%;
   position: relative;
   width: var(--orbit-size);
   height: var(--orbit-size);
@@ -152,14 +153,7 @@ body {
   cursor: grabbing;
 }
 
-.orbit-dock[data-dragging="true"] .orbit-dock__item,
-.orbit-dock[data-dragging="true"] .orbit-dock__billboard,
-.orbit-dock[data-dragging="true"] .orbit-dock__scan {
-  animation-play-state: paused;
-}
-
-.orbit-dock[data-pressing="true"] .orbit-dock__item,
-.orbit-dock[data-pressing="true"] .orbit-dock__billboard,
+.orbit-dock[data-dragging="true"] .orbit-dock__scan,
 .orbit-dock[data-pressing="true"] .orbit-dock__scan {
   animation-play-state: paused;
 }
@@ -169,11 +163,21 @@ body {
 }
 
 .orbit-dock[data-layer="front"] .orbit-dock__items {
-  clip-path: inset(50% 0 0 0);
+  clip-path: inset(
+    50%
+    calc(-1 * var(--orbit-clip-overscan))
+    calc(-1 * var(--orbit-clip-overscan))
+    calc(-1 * var(--orbit-clip-overscan))
+  );
 }
 
 .orbit-dock[data-layer="back"] .orbit-dock__items {
-  clip-path: inset(0 0 50% 0);
+  clip-path: inset(
+    calc(-1 * var(--orbit-clip-overscan))
+    calc(-1 * var(--orbit-clip-overscan))
+    50%
+    calc(-1 * var(--orbit-clip-overscan))
+  );
 }
 
 @keyframes orbit-scale {
@@ -200,18 +204,10 @@ body {
 }
 
 @media (hover: hover) {
-  .orbit-dock__item:hover,
-  .orbit-dock__item:focus-visible {
-    animation-play-state: paused;
-  }
   .orbit-dock__item:hover .orbit-dock__billboard,
   .orbit-dock__item:focus-visible .orbit-dock__billboard {
-    animation-play-state: paused;
-  }
-  .orbit-dock:has(.orbit-dock__item:hover) .orbit-dock__item,
-  .orbit-dock:has(.orbit-dock__item:hover) .orbit-dock__billboard,
-  .orbit-dock:has(.orbit-dock__item:hover) .orbit-dock__scan {
-    animation-play-state: paused;
+    transform: scaleY(var(--orbit-ellipse-inv))
+      rotateZ(var(--orbit-tilt-z-inv)) scale(1.1);
   }
 }
 
