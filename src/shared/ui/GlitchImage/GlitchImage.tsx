@@ -207,6 +207,19 @@ const GlitchImage = ({
 				maskSize,
 			}
 		: undefined;
+	const maskedStyle: CSSProperties = maskStyle ?? {};
+	const ambientMaskStyle: CSSProperties = {
+		WebkitMaskImage:
+			"radial-gradient(circle at center, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.9) 55%, rgba(0, 0, 0, 0) 85%)",
+		WebkitMaskPosition: "center",
+		WebkitMaskRepeat: "no-repeat",
+		WebkitMaskSize: "cover",
+		maskImage:
+			"radial-gradient(circle at center, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.9) 55%, rgba(0, 0, 0, 0) 85%)",
+		maskPosition: "center",
+		maskRepeat: "no-repeat",
+		maskSize: "cover",
+	};
 
 	// Determine visibility of original image - flicker effect
 	const originalOpacity =
@@ -230,6 +243,7 @@ const GlitchImage = ({
 						<div
 							className="absolute inset-0 pointer-events-none"
 							style={{
+								...ambientMaskStyle,
 								opacity: ambientNoiseStrength * normalizedIntensity,
 								mixBlendMode: "multiply",
 								backgroundImage:
@@ -242,6 +256,7 @@ const GlitchImage = ({
 					<div
 						className="absolute inset-0 mix-blend-screen"
 						style={{
+							...maskedStyle,
 							opacity: 0.7, // Higher opacity
 							filter:
 								"brightness(1.5) contrast(1.3) hue-rotate(0deg) saturate(1.5)",
@@ -255,6 +270,7 @@ const GlitchImage = ({
 					<div
 						className="absolute inset-0 mix-blend-screen"
 						style={{
+							...maskedStyle,
 							opacity: 0.7, // Higher opacity
 							filter:
 								"brightness(1.5) contrast(1.3) hue-rotate(240deg) saturate(1.5)",
@@ -270,6 +286,7 @@ const GlitchImage = ({
 						<div
 							className="absolute inset-0"
 							style={{
+								...maskedStyle,
 								opacity: 0.3 * normalizedIntensity * 10,
 								filter: "invert(1) hue-rotate(180deg) contrast(1.2)",
 								clipPath: `inset(${Math.random() * 70}% 0 ${Math.random() * 70}% 0)`,
@@ -286,6 +303,7 @@ const GlitchImage = ({
 								key={index}
 								className="absolute left-0 w-full overflow-hidden"
 								style={{
+									...maskedStyle,
 									top: block.top,
 									height: block.height,
 									transform: `translate(${block.offsetX}, ${block.offsetY})`,
