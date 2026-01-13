@@ -263,9 +263,6 @@ export default function OrbitDock({
 								item.onClick();
 							}}
 						>
-							<span className="orbit-dock__label pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-full border border-white/20 bg-black/80 px-3 py-0.5 text-[10px] uppercase tracking-[0.32em] text-white/80 opacity-0 translate-y-2 transition duration-200 group-hover:opacity-100 group-hover:-translate-y-1 group-focus-visible:opacity-100">
-								{item.label}
-							</span>
 							<span className="orbit-dock__billboard flex items-center justify-center rounded-full border border-white/20 bg-black/70 text-white/90 shadow-[0_0_18px_rgba(249,38,114,0.22)] transition duration-200 group-hover:border-white/40 group-hover:text-white group-focus-visible:border-white/40 group-focus-visible:text-white">
 								{item.icon}
 							</span>
