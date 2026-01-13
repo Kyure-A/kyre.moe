@@ -20,12 +20,14 @@ export default function Home() {
 		[items],
 	);
 	const [orbitRotation, setOrbitRotation] = useState(0);
-	const [orbitPaused, setOrbitPaused] = useState(false);
+	const [orbitHovered, setOrbitHovered] = useState(false);
+	const [orbitDragging, setOrbitDragging] = useState(false);
 	const orbitVars = {
 		"--home-orbit-size": "clamp(300px, 86vmin, 760px)",
 		"--home-orbit-icon": "clamp(56px, 12vmin, 96px)",
 		"--home-orbit-gap": "clamp(8px, 2.4vmin, 16px)",
 	} as CSSProperties;
+	const orbitPaused = orbitHovered && !orbitDragging;
 
 	return (
 		<div className="relative w-screen h-screen overflow-hidden" style={orbitVars}>
@@ -77,7 +79,8 @@ export default function Home() {
 					dragEnabled
 					size="var(--home-orbit-size)"
 					paused={orbitPaused}
-					onHoverChange={setOrbitPaused}
+					onHoverChange={setOrbitHovered}
+					onDragChange={setOrbitDragging}
 				/>
 			</div>
 		</div>

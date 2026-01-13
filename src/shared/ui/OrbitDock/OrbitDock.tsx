@@ -20,6 +20,7 @@ export type OrbitDockProps = {
 	dragEnabled?: boolean;
 	paused?: boolean;
 	onHoverChange?: (hovered: boolean) => void;
+	onDragChange?: (dragging: boolean) => void;
 };
 
 export default function OrbitDock({
@@ -38,6 +39,7 @@ export default function OrbitDock({
 	dragEnabled = false,
 	paused = false,
 	onHoverChange,
+	onDragChange,
 }: OrbitDockProps) {
 	const [internalRotation, setInternalRotation] = useState(0);
 	const [isDragging, setIsDragging] = useState(false);
@@ -64,6 +66,8 @@ export default function OrbitDock({
 	const speedValue = `${duration}s`;
 	const tiltXRad = (tiltX * Math.PI) / 180;
 	const ellipseScale = Math.max(0.2, Math.cos(tiltXRad));
+	const normalizedRotation =
+		((rotationValue % 360) + 360) % 360;
 
 	const rootStyle = {
 		"--orbit-size": sizeValue ?? "min(76vmin, 760px)",
@@ -71,11 +75,11 @@ export default function OrbitDock({
 			radiusValue ??
 			"calc(var(--orbit-size) / 2 - (var(--orbit-icon-size) / 2) - var(--orbit-icon-gap))",
 		"--orbit-speed": speedValue,
-		"--orbit-start": `${startAngle}deg`,
+		"--orbit-start": `calc(${startAngle}deg + ${normalizedRotation}deg)`,
 		"--orbit-tilt-x": `${tiltX}deg`,
 		"--orbit-tilt-z": `${tiltZ}deg`,
 		"--orbit-tilt-z-inv": `${-tiltZ}deg`,
-		"--orbit-phase": `${(-rotationValue / 360) * duration}s`,
+		"--orbit-phase": "0s",
 		"--orbit-ellipse-y": `${ellipseScale}`,
 		"--orbit-ellipse-inv": `${1 / ellipseScale}`,
 	} as CSSProperties;
@@ -144,6 +148,7 @@ export default function OrbitDock({
 		}
 		if (!isDragging) {
 			setIsDragging(true);
+			onDragChange?.(true);
 		}
 		setRotation(dragState.current.baseRotation + delta);
 		event.preventDefault();
@@ -177,6 +182,9 @@ export default function OrbitDock({
 			}, 0);
 		} else {
 			dragState.current.dragged = false;
+		}
+		if (isDragging) {
+			onDragChange?.(false);
 		}
 	};
 
