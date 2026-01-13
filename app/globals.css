@@ -25,7 +25,10 @@ body {
 
 .orbit-dock {
   --orbit-size: min(76vmin, 760px);
-  --orbit-radius: calc(var(--orbit-size) / 2 - 56px);
+  --orbit-radius: calc(
+    var(--orbit-size) / 2 - (var(--orbit-icon-size) / 2) -
+      var(--orbit-icon-gap)
+  );
   --orbit-speed: 34s;
   --orbit-start: -90deg;
   --orbit-phase: 0s;
@@ -33,6 +36,9 @@ body {
   --orbit-tilt-z: -20deg;
   --orbit-tilt-z-inv: 20deg;
   --orbit-clip-overscan: 16%;
+  --orbit-icon-size: var(--home-orbit-icon, 96px);
+  --orbit-icon-gap: var(--home-orbit-gap, 12px);
+  --orbit-icon-font-size: calc(var(--orbit-icon-size) * 0.42);
   position: relative;
   width: var(--orbit-size);
   height: var(--orbit-size);
@@ -130,6 +136,10 @@ body {
 }
 
 .orbit-dock__billboard {
+  --orbit-hover-scale: 1;
+  width: var(--orbit-icon-size);
+  height: var(--orbit-icon-size);
+  font-size: var(--orbit-icon-font-size);
   transform: scaleY(var(--orbit-ellipse-inv)) rotateZ(var(--orbit-tilt-z-inv));
   will-change: transform;
   animation: orbit-scale var(--orbit-speed) linear infinite;
@@ -158,8 +168,18 @@ body {
   animation-play-state: paused;
 }
 
+.orbit-dock[data-paused="true"] .orbit-dock__item,
+.orbit-dock[data-paused="true"] .orbit-dock__billboard,
+.orbit-dock[data-paused="true"] .orbit-dock__scan {
+  animation-play-state: paused;
+}
+
 .orbit-dock[data-layer="back"] .orbit-dock__label {
   display: none;
+}
+
+.orbit-dock__label {
+  top: calc(-0.65 * var(--orbit-icon-size));
 }
 
 .orbit-dock[data-layer="front"] .orbit-dock__items {
@@ -183,31 +203,33 @@ body {
 @keyframes orbit-scale {
   0% {
     transform: scaleY(var(--orbit-ellipse-inv)) rotateZ(var(--orbit-tilt-z-inv))
-      scale(0.7);
+      scale(calc(0.7 * var(--orbit-hover-scale)));
   }
   25% {
     transform: scaleY(var(--orbit-ellipse-inv)) rotateZ(var(--orbit-tilt-z-inv))
-      scale(0.85);
+      scale(calc(0.85 * var(--orbit-hover-scale)));
   }
   50% {
     transform: scaleY(var(--orbit-ellipse-inv)) rotateZ(var(--orbit-tilt-z-inv))
-      scale(1);
+      scale(calc(1 * var(--orbit-hover-scale)));
   }
   75% {
     transform: scaleY(var(--orbit-ellipse-inv)) rotateZ(var(--orbit-tilt-z-inv))
-      scale(0.85);
+      scale(calc(0.85 * var(--orbit-hover-scale)));
   }
   100% {
     transform: scaleY(var(--orbit-ellipse-inv)) rotateZ(var(--orbit-tilt-z-inv))
-      scale(0.7);
+      scale(calc(0.7 * var(--orbit-hover-scale)));
   }
 }
 
 @media (hover: hover) {
   .orbit-dock__item:hover .orbit-dock__billboard,
   .orbit-dock__item:focus-visible .orbit-dock__billboard {
-    transform: scaleY(var(--orbit-ellipse-inv))
-      rotateZ(var(--orbit-tilt-z-inv)) scale(1.1);
+    --orbit-hover-scale: 1.12;
+    box-shadow:
+      0 0 28px rgba(249, 38, 114, 0.35),
+      0 0 0 1px rgba(255, 255, 255, 0.25);
   }
 }
 

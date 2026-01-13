@@ -18,6 +18,8 @@ export type OrbitDockProps = {
 	rotation?: number;
 	onRotate?: (rotation: number) => void;
 	dragEnabled?: boolean;
+	paused?: boolean;
+	onHoverChange?: (hovered: boolean) => void;
 };
 
 export default function OrbitDock({
@@ -34,11 +36,14 @@ export default function OrbitDock({
 	rotation,
 	onRotate,
 	dragEnabled = false,
+	paused = false,
+	onHoverChange,
 }: OrbitDockProps) {
 	const [internalRotation, setInternalRotation] = useState(0);
 	const [isDragging, setIsDragging] = useState(false);
 	const [isPressing, setIsPressing] = useState(false);
 	const suppressClickRef = useRef(false);
+	const hoverStateRef = useRef(false);
 	const rotationValue = rotation ?? internalRotation;
 	const setRotation = onRotate ?? setInternalRotation;
 	const rootRef = useRef<HTMLDivElement>(null);
@@ -63,7 +68,8 @@ export default function OrbitDock({
 	const rootStyle = {
 		"--orbit-size": sizeValue ?? "min(76vmin, 760px)",
 		"--orbit-radius":
-			radiusValue ?? "calc(var(--orbit-size) / 2 - 56px)",
+			radiusValue ??
+			"calc(var(--orbit-size) / 2 - (var(--orbit-icon-size) / 2) - var(--orbit-icon-gap))",
 		"--orbit-speed": speedValue,
 		"--orbit-start": `${startAngle}deg`,
 		"--orbit-tilt-x": `${tiltX}deg`,
@@ -174,6 +180,31 @@ export default function OrbitDock({
 		}
 	};
 
+	const handlePointerOver = (event: ReactPointerEvent<HTMLDivElement>) => {
+		if (!onHoverChange || layer !== "front") return;
+		const target = event.target as HTMLElement | null;
+		const isItem = target?.closest<HTMLButtonElement>("[data-orbit-index]");
+		if (!isItem) return;
+		if (!hoverStateRef.current) {
+			hoverStateRef.current = true;
+			onHoverChange(true);
+		}
+	};
+
+	const handlePointerOut = (event: ReactPointerEvent<HTMLDivElement>) => {
+		if (!onHoverChange || layer !== "front") return;
+		const target = event.target as HTMLElement | null;
+		const leftItem = target?.closest<HTMLButtonElement>("[data-orbit-index]");
+		if (!leftItem) return;
+		const related = event.relatedTarget as HTMLElement | null;
+		const stillOnItem =
+			related?.closest<HTMLButtonElement>("[data-orbit-index]");
+		if (!stillOnItem && hoverStateRef.current) {
+			hoverStateRef.current = false;
+			onHoverChange(false);
+		}
+	};
+
 	return (
 		<div
 			ref={rootRef}
@@ -183,11 +214,14 @@ export default function OrbitDock({
 			data-draggable={dragEnabled ? "true" : "false"}
 			data-dragging={isDragging ? "true" : "false"}
 			data-pressing={isPressing ? "true" : "false"}
+			data-paused={paused && !isDragging ? "true" : "false"}
 			aria-hidden={layer === "back"}
 			onPointerDown={handlePointerDown}
 			onPointerMove={handlePointerMove}
 			onPointerUp={handlePointerUp}
 			onPointerCancel={handlePointerUp}
+			onPointerOver={handlePointerOver}
+			onPointerOut={handlePointerOut}
 		>
 			{showDecorations && (
 				<div className="orbit-dock__plane" aria-hidden="true">
@@ -229,10 +263,10 @@ export default function OrbitDock({
 								item.onClick();
 							}}
 						>
-							<span className="orbit-dock__label pointer-events-none absolute -top-12 left-1/2 -translate-x-1/2 rounded-full border border-white/20 bg-black/80 px-3 py-0.5 text-[10px] uppercase tracking-[0.32em] text-white/80 opacity-0 translate-y-2 transition duration-200 group-hover:opacity-100 group-hover:-translate-y-1 group-focus-visible:opacity-100">
+							<span className="orbit-dock__label pointer-events-none absolute left-1/2 -translate-x-1/2 rounded-full border border-white/20 bg-black/80 px-3 py-0.5 text-[10px] uppercase tracking-[0.32em] text-white/80 opacity-0 translate-y-2 transition duration-200 group-hover:opacity-100 group-hover:-translate-y-1 group-focus-visible:opacity-100">
 								{item.label}
 							</span>
-							<span className="orbit-dock__billboard flex h-24 w-24 items-center justify-center rounded-full border border-white/20 bg-black/70 text-[2.5rem] text-white/90 shadow-[0_0_18px_rgba(249,38,114,0.22)] transition duration-200 group-hover:scale-110 group-hover:border-white/40 group-hover:text-white group-focus-visible:scale-110">
+							<span className="orbit-dock__billboard flex items-center justify-center rounded-full border border-white/20 bg-black/70 text-white/90 shadow-[0_0_18px_rgba(249,38,114,0.22)] transition duration-200 group-hover:border-white/40 group-hover:text-white group-focus-visible:border-white/40 group-focus-visible:text-white">
 								{item.icon}
 							</span>
 						</button>
