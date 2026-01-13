@@ -1,4 +1,5 @@
 import {
+	type CSSProperties,
 	type ReactNode,
 	useCallback,
 	useEffect,
@@ -9,6 +10,14 @@ import {
 interface GlitchImageProps {
 	/** The image element to apply the glitch effect to */
 	children: ReactNode;
+	/** Optional mask image to clip non-image glitch layers */
+	maskSrc?: string;
+	/** Mask scale (1 = original size, >1 expands) */
+	maskScale?: number;
+	/** Ambient noise intensity (0-1). Applies to full area without whitening */
+	ambientNoiseStrength?: number;
+	/** Prismatic noise intensity (0-1). Applied within masked area */
+	coolNoiseStrength?: number;
 	/** Interval in seconds to check for applying the glitch effect (default: 5) */
 	interval?: number;
 	/** Probability (0-100) percentage chance of glitch occurring at each interval (default: 20) */
@@ -44,6 +53,10 @@ interface RgbShift {
  */
 const GlitchImage = ({
 	children,
+	maskSrc,
+	maskScale = 1,
+	ambientNoiseStrength = 0,
+	coolNoiseStrength = 0,
 	interval = 5,
 	probability = 20,
 	glitchDuration = 500,
@@ -52,11 +65,23 @@ const GlitchImage = ({
 }: GlitchImageProps): JSX.Element => {
 	const [isGlitching, setIsGlitching] = useState<boolean>(false);
 	const [glitchType, setGlitchType] = useState<number>(3);
+	const [glitchTick, setGlitchTick] = useState<number>(0);
 	const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
 	// Normalize intensity to a scale (higher than before for horror effect)
 	const normalizedIntensity = Math.max(1, Math.min(10, intensity)) / 10;
+
+	useEffect(() => {
+		if (!isGlitching) return;
+		const jitterInterval = Math.max(40, 120 - normalizedIntensity * 60);
+		const jitterId = window.setInterval(() => {
+			setGlitchTick((tick) => (tick + 1) % 1000);
+		}, jitterInterval);
+		return () => {
+			window.clearInterval(jitterId);
+		};
+	}, [isGlitching, normalizedIntensity]);
 
 	// Function to apply glitch effect
 	const triggerGlitch = useCallback(() => {
@@ -166,6 +191,22 @@ const GlitchImage = ({
 	const rgbShift = getRgbShift();
 	const clipPath = getRandomClipPath();
 	const glitchBlocks = generateGlitchBlocks();
+	const prismaticStrength = Math.max(0, Math.min(1, coolNoiseStrength));
+	const maskSize =
+		maskScale === 1 ? "contain" : `${maskScale * 100}% auto`;
+	const maskStyle: CSSProperties | undefined = maskSrc
+		? {
+				WebkitMaskImage: `url(${maskSrc})`,
+				WebkitMaskPosition: "center",
+				WebkitMaskRepeat: "no-repeat",
+				WebkitMaskSize: maskSize,
+				maskImage: `url(${maskSrc})`,
+				maskMode: "alpha",
+				maskPosition: "center",
+				maskRepeat: "no-repeat",
+				maskSize,
+			}
+		: undefined;
 
 	// Determine visibility of original image - flicker effect
 	const originalOpacity =
@@ -184,6 +225,19 @@ const GlitchImage = ({
 			{/* Horror glitch effect layers */}
 			{isGlitching && (
 				<div className="absolute inset-0 pointer-events-none">
+					{/* Ambient dark noise to keep mystery without white-out */}
+					{ambientNoiseStrength > 0 && (
+						<div
+							className="absolute inset-0 pointer-events-none"
+							style={{
+								opacity: ambientNoiseStrength * normalizedIntensity,
+								mixBlendMode: "multiply",
+								backgroundImage:
+									"url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E\")",
+								backgroundSize: "cover",
+							}}
+						/>
+					)}
 					{/* Color channel separation - more pronounced */}
 					<div
 						className="absolute inset-0 mix-blend-screen"
@@ -241,64 +295,123 @@ const GlitchImage = ({
 							</div>
 						))}
 
-					{/* Sharp horizontal glitch lines - brighter for horror */}
-					{Array.from({ length: Math.floor(3 + normalizedIntensity * 7) }).map(
-						(_, index) => {
+					{/* Noise + scanline layers (masked to character) */}
+					<div
+						className="absolute inset-0 pointer-events-none"
+						style={maskStyle}
+					>
+						{/* Sharp horizontal glitch lines - brighter for horror */}
+						{Array.from({
+							length: Math.floor(
+								6 + normalizedIntensity * 18 + (glitchTick % 3),
+							),
+						}).map((_, index) => {
 							const top = Math.random() * 100;
-							const height = Math.random() * normalizedIntensity * 4 + 1;
-							const offsetX = (Math.random() - 0.5) * normalizedIntensity * 30;
+							const height = Math.random() * (normalizedIntensity * 6 + 1) + 1;
+							const offsetX =
+								(Math.random() - 0.5) * normalizedIntensity * 90;
+							const offsetY =
+								(Math.random() - 0.5) * normalizedIntensity * 8;
+							const skew =
+								(Math.random() - 0.5) * normalizedIntensity * 8;
+							const scaleX = 0.6 + Math.random() * 0.8;
+							const opacity =
+								(0.25 + Math.random() * 0.65) *
+								(glitchTick % 2 === 0 ? 0.85 : 1);
+							const blur = Math.random() * 0.8;
+							const glow = Math.random() * 10 * normalizedIntensity;
+							const colorLine = Math.random() < 0.5;
+							const blendMode = colorLine
+								? "screen"
+								: Math.random() > 0.5
+									? "difference"
+									: "lighten";
+							const backgroundImage = colorLine
+								? "linear-gradient(90deg, rgba(0, 0, 0, 0), rgba(0, 255, 255, 0.85), rgba(255, 0, 255, 0.85), rgba(255, 255, 255, 0.5), rgba(0, 0, 0, 0))"
+								: "linear-gradient(90deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.2))";
 
 							return (
 								<div
 									key={`line-${index}`}
-									className="absolute left-0 right-0 bg-white mix-blend-lighten"
+									className="absolute left-0 right-0"
 									style={{
 										top: `${top}%`,
 										height: `${height}px`,
-										transform: `translateX(${offsetX}px)`,
-										opacity: 0.8,
+										transform: `translate(${offsetX}px, ${offsetY}px) skewX(${skew}deg) scaleX(${scaleX})`,
+										opacity,
+										mixBlendMode: blendMode,
+										backgroundImage,
+										backgroundSize: "200% 100%",
+										backgroundPosition: `${(glitchTick * 37 + index * 19) % 100}% 50%`,
+										filter: `blur(${blur}px)`,
+										boxShadow: colorLine
+											? `0 0 ${glow}px rgba(0, 255, 255, 0.7)`
+											: `0 0 ${glow}px rgba(255, 255, 255, 0.4)`,
 									}}
 								/>
 							);
-						},
-					)}
+						})}
 
-					{/* Noise overlay - stronger for horror effect */}
-					<div
-						className="absolute inset-0 mix-blend-overlay"
-						style={{
-							opacity: 0.3 * normalizedIntensity,
-							backgroundImage:
-								"url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E\")",
-							backgroundSize: "cover",
-						}}
-					/>
+						{/* Noise overlay - stronger for horror effect */}
+						<div
+							className="absolute inset-0 mix-blend-overlay"
+							style={{
+								opacity: 0.4 * normalizedIntensity,
+								backgroundImage:
+									"url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E\")",
+								backgroundSize: "cover",
+							}}
+						/>
 
-					{/* VHS-like scan lines */}
-					<div
-						className="absolute inset-0 pointer-events-none"
-						style={{
-							backgroundImage: `repeating-linear-gradient(
+						{/* Prismatic noise - adds punchy color grain */}
+						{prismaticStrength > 0 && (
+							<div
+								className="absolute inset-0 pointer-events-none"
+								style={{
+									opacity: prismaticStrength * normalizedIntensity,
+									mixBlendMode: "screen",
+									filter: "contrast(1.5) saturate(2.1) hue-rotate(12deg)",
+									backgroundImage:
+										"linear-gradient(120deg, rgba(0, 255, 255, 0.5), rgba(255, 0, 255, 0.5), rgba(255, 210, 0, 0.18)), url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E\")",
+									backgroundBlendMode: "soft-light",
+									backgroundSize: "200% 200%, cover",
+								}}
+							/>
+						)}
+
+						{/* VHS-like scan lines */}
+						<div
+							className="absolute inset-0 pointer-events-none"
+							style={{
+								backgroundImage: `repeating-linear-gradient(
                 0deg,
-                rgba(0, 0, 0, ${0.15 * normalizedIntensity}),
-                rgba(0, 0, 0, ${0.15 * normalizedIntensity}) 1px,
+                rgba(0, 0, 0, ${0.22 * normalizedIntensity}),
+                rgba(0, 0, 0, ${0.22 * normalizedIntensity}) 1px,
                 transparent 1px,
-                transparent 2px
+                transparent 3px
               )`,
-						}}
-					/>
+								backgroundPosition: `0 ${((glitchTick * 3) % 6) - 3}px`,
+								mixBlendMode: "soft-light",
+								opacity:
+									0.35 +
+									0.2 * normalizedIntensity +
+									(glitchTick % 2 === 0 ? 0.1 : 0),
+								filter: `contrast(${1.1 + normalizedIntensity * 0.6})`,
+							}}
+						/>
 
-					{/* Vignette effect for horror mood */}
-					<div
-						className="absolute inset-0 pointer-events-none"
-						style={{
-							background: `radial-gradient(
+						{/* Vignette effect for horror mood */}
+						<div
+							className="absolute inset-0 pointer-events-none"
+							style={{
+								background: `radial-gradient(
                 ellipse at center,
                 transparent 50%,
                 rgba(0, 0, 0, ${0.4 * normalizedIntensity}) 100%
               )`,
-						}}
-					/>
+							}}
+						/>
+					</div>
 				</div>
 			)}
 		</div>
