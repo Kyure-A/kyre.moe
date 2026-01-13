@@ -114,12 +114,11 @@ export default function Accounts() {
 			serviceUrl: "https://bsky.app/profile/kyure-a.bsky.social",
 		},
 		{
-			id: "npub1u66qnxs",
+			id: "npub1kyrem0e",
 			description: "",
 			serviceIcon: <NostrIcon />,
 			avatarUrl: srcPath("/icon.jpg"),
-			serviceUrl:
-				"https://snort.social/p/npub1u66qnxs3gth2tx944u66xh8x7qp5sjj3xmh25dqa846jpk74229swuetxg",
+			serviceUrl: "https://iris.to/npub1kyrem0eejds8cwr2732ygtpksxnlehlg4wu92dkvyxxgz48fl5cqn6fay4",
 		},
 		{
 			id: "Kyure_A",
