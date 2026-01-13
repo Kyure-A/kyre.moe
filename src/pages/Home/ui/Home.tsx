@@ -58,7 +58,15 @@ export default function Home() {
 					<FadeTextRotator />
 				</div>
 				<div className="flex flex-col items-center center">
-					<GlitchImage interval={1} probability={10} intensity={5}>
+					<GlitchImage
+						maskSrc={srcPath("/kyure_a.png")}
+						maskScale={1}
+						ambientNoiseStrength={0.12}
+						coolNoiseStrength={0.5}
+						interval={1}
+						probability={30}
+						intensity={5}
+					>
 						<Image
 							alt="Kyure_A"
 							src={srcPath("/kyure_a.png")}
