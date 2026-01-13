@@ -309,6 +309,7 @@ interface CanvAsciiOptions {
 	textColor: string;
 	planeBaseHeight: number;
 	enableWaves: boolean;
+	maxFps: number;
 }
 
 class CanvAscii {
@@ -321,6 +322,7 @@ class CanvAscii {
 	width: number;
 	height: number;
 	enableWaves: boolean;
+	maxFps: number;
 	camera: THREE.PerspectiveCamera;
 	scene: THREE.Scene;
 	mouse: { x: number; y: number };
@@ -333,6 +335,8 @@ class CanvAscii {
 	filter!: AsciiFilter;
 	center!: { x: number; y: number };
 	animationFrameId: number = 0;
+	frameInterval: number = 0;
+	lastFrameTime: number = 0;
 
 	constructor(
 		{
@@ -342,6 +346,7 @@ class CanvAscii {
 			textColor,
 			planeBaseHeight,
 			enableWaves,
+			maxFps,
 		}: CanvAsciiOptions,
 		containerElem: HTMLElement,
 		width: number,
@@ -356,6 +361,9 @@ class CanvAscii {
 		this.width = width;
 		this.height = height;
 		this.enableWaves = enableWaves;
+		this.maxFps = maxFps;
+		this.frameInterval = this.maxFps > 0 ? 1000 / this.maxFps : 0;
+		this.lastFrameTime = 0;
 
 		this.camera = new THREE.PerspectiveCamera(
 			45,
@@ -385,6 +393,7 @@ class CanvAscii {
 
 		this.texture = new THREE.CanvasTexture(this.textCanvas.texture);
 		this.texture.minFilter = THREE.NearestFilter;
+		this.texture.needsUpdate = true;
 
 		const textAspect = this.textCanvas.width / this.textCanvas.height;
 		const baseH = this.planeBaseHeight;
@@ -453,19 +462,19 @@ class CanvAscii {
 	}
 
 	animate() {
-		const animateFrame = () => {
+		const animateFrame = (time: number) => {
 			this.animationFrameId = requestAnimationFrame(animateFrame);
-			this.render();
+			if (this.frameInterval && time - this.lastFrameTime < this.frameInterval) {
+				return;
+			}
+			this.lastFrameTime = time;
+			this.render(time);
 		};
-		animateFrame();
+		this.animationFrameId = requestAnimationFrame(animateFrame);
 	}
 
-	render() {
-		const time = new Date().getTime() * 0.001;
-
-		this.textCanvas.render();
-		this.texture.needsUpdate = true;
-
+	render(timeMs?: number) {
+		const time = (timeMs ?? performance.now()) * 0.001;
 		(this.mesh.material as THREE.ShaderMaterial).uniforms.uTime.value =
 			Math.sin(time);
 
@@ -522,6 +531,9 @@ interface ASCIITextProps {
 	textColor?: string;
 	planeBaseHeight?: number;
 	enableWaves?: boolean;
+	maxFps?: number;
+	startDelayMs?: number;
+	startOnIdle?: boolean;
 }
 
 export default function ASCIIText({
@@ -531,42 +543,83 @@ export default function ASCIIText({
 	textColor = "#fdf9f3",
 	planeBaseHeight = 8,
 	enableWaves = true,
+	maxFps = 60,
+	startDelayMs = 0,
+	startOnIdle = false,
 }: ASCIITextProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const asciiRef = useRef<CanvAscii | null>(null);
 
 	useEffect(() => {
 		if (!containerRef.current) return;
+		let cleanup: (() => void) | null = null;
+		let startTimer: number | null = null;
+		let idleId: number | null = null;
+		const idle =
+			typeof window !== "undefined" && "requestIdleCallback" in window
+				? (window as Window & {
+						requestIdleCallback?: (cb: IdleRequestCallback) => number;
+						cancelIdleCallback?: (id: number) => void;
+					})
+				: null;
 
-		const { width, height } = containerRef.current.getBoundingClientRect();
+		const setup = () => {
+			if (!containerRef.current) return;
+			const { width, height } = containerRef.current.getBoundingClientRect();
 
-		asciiRef.current = new CanvAscii(
-			{
-				text,
-				asciiFontSize,
-				textFontSize,
-				textColor,
-				planeBaseHeight,
-				enableWaves,
-			},
-			containerRef.current,
-			width,
-			height,
-		);
-		asciiRef.current.load();
+			asciiRef.current = new CanvAscii(
+				{
+					text,
+					asciiFontSize,
+					textFontSize,
+					textColor,
+					planeBaseHeight,
+					enableWaves,
+					maxFps,
+				},
+				containerRef.current,
+				width,
+				height,
+			);
+			asciiRef.current.load();
 
-		const ro = new ResizeObserver((entries) => {
-			if (!entries[0]) return;
-			const { width: w, height: h } = entries[0].contentRect;
-			asciiRef.current?.setSize(w, h);
-		});
-		ro.observe(containerRef.current);
+			const ro = new ResizeObserver((entries) => {
+				if (!entries[0]) return;
+				const { width: w, height: h } = entries[0].contentRect;
+				asciiRef.current?.setSize(w, h);
+			});
+			ro.observe(containerRef.current);
+
+			cleanup = () => {
+				ro.disconnect();
+				if (asciiRef.current) {
+					asciiRef.current.dispose();
+				}
+			};
+		};
+
+		const scheduleStart = () => {
+			if (startDelayMs > 0) {
+				startTimer = window.setTimeout(setup, startDelayMs);
+			} else {
+				setup();
+			}
+		};
+
+		if (startOnIdle && idle?.requestIdleCallback) {
+			idleId = idle.requestIdleCallback(() => scheduleStart());
+		} else {
+			scheduleStart();
+		}
 
 		return () => {
-			ro.disconnect();
-			if (asciiRef.current) {
-				asciiRef.current.dispose();
+			if (idleId && idle?.cancelIdleCallback) {
+				idle.cancelIdleCallback(idleId);
 			}
+			if (startTimer) {
+				window.clearTimeout(startTimer);
+			}
+			if (cleanup) cleanup();
 		};
 	}, [
 		text,
@@ -575,6 +628,9 @@ export default function ASCIIText({
 		textColor,
 		planeBaseHeight,
 		enableWaves,
+		maxFps,
+		startDelayMs,
+		startOnIdle,
 	]);
 
 	return (
