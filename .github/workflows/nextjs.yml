@@ -59,6 +59,12 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
+      - name: Convert hero image to WebP
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y webp
+          cwebp -q 95 -alpha_q 100 public/kyure_a.png -o public/kyure_a.webp
+          cwebp -q 95 -alpha_q 100 -resize 0 640 public/kyure_a.png -o public/kyure_a-640.webp
       - name: Build with Next.js
         env:
           CI: false
