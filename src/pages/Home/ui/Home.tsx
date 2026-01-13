@@ -1,9 +1,7 @@
 "use client";
 
-import Image from "next/image";
-import { type CSSProperties, useMemo, useState } from "react";
+import { type CSSProperties, useEffect, useMemo, useState } from "react";
 import { srcPath } from "@/shared/lib/path";
-import Balatro from "@/shared/ui/Balatro/Balatro";
 import MysteriousShader from "@/shared/ui/Mys/Mys";
 import GlitchImage from "../../../shared/ui/GlitchImage/GlitchImage";
 import FadeTextRotator from "./FadeTextRotator";
@@ -22,12 +20,33 @@ export default function Home() {
 	const [orbitRotation, setOrbitRotation] = useState(0);
 	const [orbitHovered, setOrbitHovered] = useState(false);
 	const [orbitDragging, setOrbitDragging] = useState(false);
+	const [isMobile, setIsMobile] = useState(false);
 	const orbitVars = {
 		"--home-orbit-size": "clamp(300px, 86vmin, 760px)",
 		"--home-orbit-icon": "clamp(56px, 12vmin, 96px)",
 		"--home-orbit-gap": "clamp(8px, 2.4vmin, 16px)",
 	} as CSSProperties;
 	const orbitPaused = orbitHovered && !orbitDragging;
+	const shaderMaxFps = isMobile ? 30 : 60;
+	const shaderResolution = isMobile ? 0.65 : 1;
+	const asciiMaxFps = isMobile ? 20 : 60;
+	const startDelayMs = isMobile ? 450 : 200;
+
+	useEffect(() => {
+		const mq =
+			typeof window !== "undefined"
+				? window.matchMedia("(max-width: 768px)")
+				: null;
+		if (!mq) return;
+		const handleChange = () => setIsMobile(mq.matches);
+		handleChange();
+		if (mq.addEventListener) {
+			mq.addEventListener("change", handleChange);
+			return () => mq.removeEventListener("change", handleChange);
+		}
+		mq.addListener(handleChange);
+		return () => mq.removeListener(handleChange);
+	}, []);
 
 	return (
 		<div className="relative w-screen h-screen overflow-hidden" style={orbitVars}>
@@ -40,6 +59,10 @@ export default function Home() {
 					color1="#272822"
 					color2="#F92672"
 					color3="#000000"
+					maxFps={shaderMaxFps}
+					resolutionScale={shaderResolution}
+					startDelayMs={startDelayMs}
+					startOnIdle
 				/>
 			</div>
 			<div className="absolute left-1/2 top-1/2 z-[1] -translate-x-1/2 -translate-y-1/2">
@@ -55,11 +78,15 @@ export default function Home() {
 			</div>
 			<div className="absolute flex flex-col z-10 pt-16 inset-0 ">
 				<div className="flex flex-col mb-6 z-20">
-					<FadeTextRotator />
+					<FadeTextRotator
+						asciiMaxFps={asciiMaxFps}
+						asciiStartDelayMs={startDelayMs}
+						asciiStartOnIdle
+					/>
 				</div>
 				<div className="flex flex-col items-center center">
 					<GlitchImage
-						maskSrc={srcPath("/kyure_a.png")}
+						maskSrc={srcPath(isMobile ? "/kyure_a-640.webp" : "/kyure_a.webp")}
 						maskScale={1}
 						ambientNoiseStrength={0.12}
 						coolNoiseStrength={0.5}
@@ -67,12 +94,22 @@ export default function Home() {
 						probability={30}
 						intensity={5}
 					>
-						<Image
-							alt="Kyure_A"
-							src={srcPath("/kyure_a.png")}
-							width={1000}
-							height={1000}
-						/>
+						<picture>
+							<source
+								type="image/webp"
+								srcSet={`${srcPath("/kyure_a-640.webp")} 640w, ${srcPath("/kyure_a.webp")} 2305w`}
+								sizes="(max-width: 768px) 60vw, 420px"
+							/>
+							<img
+								alt="Kyure_A"
+								src={srcPath("/kyure_a.png")}
+								width={1000}
+								height={1000}
+								loading="eager"
+								decoding="async"
+								fetchPriority="high"
+							/>
+						</picture>
 					</GlitchImage>
 				</div>
 			</div>
