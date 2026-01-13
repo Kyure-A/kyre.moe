@@ -257,7 +257,7 @@ class CanvasTxt {
 		this.fontFamily = fontFamily;
 		this.color = color;
 
-		this.font = `600 ${this.fontSize}px ${this.fontFamily}`;
+		this.font = `500 ${this.fontSize}px ${this.fontFamily}`;
 	}
 
 	resize() {
@@ -309,6 +309,7 @@ interface CanvAsciiOptions {
 	textColor: string;
 	planeBaseHeight: number;
 	enableWaves: boolean;
+	fontFamily: string;
 	maxFps: number;
 }
 
@@ -322,6 +323,7 @@ class CanvAscii {
 	width: number;
 	height: number;
 	enableWaves: boolean;
+	fontFamily: string;
 	maxFps: number;
 	camera: THREE.PerspectiveCamera;
 	scene: THREE.Scene;
@@ -346,6 +348,7 @@ class CanvAscii {
 			textColor,
 			planeBaseHeight,
 			enableWaves,
+			fontFamily,
 			maxFps,
 		}: CanvAsciiOptions,
 		containerElem: HTMLElement,
@@ -361,6 +364,7 @@ class CanvAscii {
 		this.width = width;
 		this.height = height;
 		this.enableWaves = enableWaves;
+		this.fontFamily = fontFamily;
 		this.maxFps = maxFps;
 		this.frameInterval = this.maxFps > 0 ? 1000 / this.maxFps : 0;
 		this.lastFrameTime = 0;
@@ -385,7 +389,7 @@ class CanvAscii {
 	setMesh() {
 		this.textCanvas = new CanvasTxt(this.textString, {
 			fontSize: this.textFontSize,
-			fontFamily: "IBM Plex Mono",
+			fontFamily: this.fontFamily,
 			color: this.textColor,
 		});
 		this.textCanvas.resize();
@@ -423,7 +427,7 @@ class CanvAscii {
 		this.renderer.setClearColor(0x000000, 0);
 
 		this.filter = new AsciiFilter(this.renderer, {
-			fontFamily: "IBM Plex Mono",
+			fontFamily: this.fontFamily,
 			fontSize: this.asciiFontSize,
 			invert: true,
 		});
@@ -531,6 +535,7 @@ interface ASCIITextProps {
 	textColor?: string;
 	planeBaseHeight?: number;
 	enableWaves?: boolean;
+	fontFamily?: string;
 	maxFps?: number;
 	startDelayMs?: number;
 	startOnIdle?: boolean;
@@ -543,6 +548,7 @@ export default function ASCIIText({
 	textColor = "#fdf9f3",
 	planeBaseHeight = 8,
 	enableWaves = true,
+	fontFamily,
 	maxFps = 60,
 	startDelayMs = 0,
 	startOnIdle = false,
@@ -565,6 +571,16 @@ export default function ASCIIText({
 
 		const setup = () => {
 			if (!containerRef.current) return;
+			const cssFontFamily = fontFamily
+				? fontFamily
+				: typeof window !== "undefined"
+					? getComputedStyle(document.documentElement)
+							.getPropertyValue("--font-ibm-plex-mono")
+							.trim()
+					: "";
+			const resolvedFontFamily = cssFontFamily
+				? `${cssFontFamily}, "IBM Plex Mono", monospace`
+				: "\"IBM Plex Mono\", monospace";
 			const { width, height } = containerRef.current.getBoundingClientRect();
 
 			asciiRef.current = new CanvAscii(
@@ -575,6 +591,7 @@ export default function ASCIIText({
 					textColor,
 					planeBaseHeight,
 					enableWaves,
+					fontFamily: resolvedFontFamily,
 					maxFps,
 				},
 				containerRef.current,
@@ -628,6 +645,7 @@ export default function ASCIIText({
 		textColor,
 		planeBaseHeight,
 		enableWaves,
+		fontFamily,
 		maxFps,
 		startDelayMs,
 		startOnIdle,
@@ -643,8 +661,6 @@ export default function ASCIIText({
 			}}
 		>
 			<style>{`
-        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&display=swap');
-
         body {
           margin: 0;
           padding: 0;

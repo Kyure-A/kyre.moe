@@ -1,12 +1,21 @@
 "use client";
 
 import { type CSSProperties, useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import { srcPath } from "@/shared/lib/path";
-import MysteriousShader from "@/shared/ui/Mys/Mys";
 import GlitchImage from "../../../shared/ui/GlitchImage/GlitchImage";
-import FadeTextRotator from "./FadeTextRotator";
 import OrbitDock from "@/shared/ui/OrbitDock/OrbitDock";
 import useDockItems from "@/shared/hooks/useDockItems";
+
+const MysteriousShader = dynamic(() => import("@/shared/ui/Mys/Mys"), {
+	ssr: false,
+	loading: () => <div className="w-full h-full" />,
+});
+
+const FadeTextRotator = dynamic(() => import("./FadeTextRotator"), {
+	ssr: false,
+	loading: () => <div className="h-24 w-full" />,
+});
 
 export default function Home() {
 	const items = useDockItems();
