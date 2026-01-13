@@ -8,6 +8,9 @@ export const FadeTextRotator = ({
 	fadeDuration = 300,
 	asciiFontSize = 12,
 	textFontSize = 20,
+	asciiMaxFps = 60,
+	asciiStartDelayMs = 0,
+	asciiStartOnIdle = false,
 }) => {
 	const [activeIndex, setActiveIndex] = useState(0);
 
@@ -31,6 +34,9 @@ export const FadeTextRotator = ({
 					text={text}
 					asciiFontSize={asciiFontSize}
 					textFontSize={textFontSize}
+					maxFps={asciiMaxFps}
+					startDelayMs={asciiStartDelayMs}
+					startOnIdle={asciiStartOnIdle}
 				/>
 			))}
 		</FadeTransition>

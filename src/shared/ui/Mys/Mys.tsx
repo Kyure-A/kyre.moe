@@ -18,6 +18,10 @@ interface MysteriousShaderProps {
 	fogDensity?: number;
 	noiseStrength?: number;
 	pulseFrequency?: number;
+	maxFps?: number;
+	resolutionScale?: number;
+	startDelayMs?: number;
+	startOnIdle?: boolean;
 }
 
 function hexToVec4(hex: string): [number, number, number, number] {
@@ -216,87 +220,141 @@ export default function MysteriousShader({
 	fogDensity = 0.15,
 	noiseStrength = 0.03,
 	pulseFrequency = 0.4,
+	maxFps = 60,
+	resolutionScale = 1,
+	startDelayMs = 0,
+	startOnIdle = false,
 }: MysteriousShaderProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		if (!containerRef.current) return;
-		const container = containerRef.current;
-		const renderer = new Renderer();
-		const gl = renderer.gl;
-		gl.clearColor(0, 0, 0, 1);
+		let cleanup: (() => void) | null = null;
+		let startTimer: number | null = null;
+		let idleId: number | null = null;
+		const idle =
+			typeof window !== "undefined" && "requestIdleCallback" in window
+				? (window as Window & {
+						requestIdleCallback?: (cb: IdleRequestCallback) => number;
+						cancelIdleCallback?: (id: number) => void;
+					})
+				: null;
 
-		const geometry = new Triangle(gl);
-		const program = new Program(gl, {
-			vertex: vertexShader,
-			fragment: fragmentShader,
-			uniforms: {
-				iTime: { value: 0 },
-				iResolution: {
-					value: [
-						gl.canvas.width,
-						gl.canvas.height,
-						gl.canvas.width / gl.canvas.height,
-					],
+		const setup = () => {
+			if (!containerRef.current) return;
+			const container = containerRef.current;
+			const baseDpr = typeof window !== "undefined" ? window.devicePixelRatio : 1;
+			const clampDpr = Math.max(0.5, Math.min(2, baseDpr * resolutionScale));
+			const renderer = new Renderer({ dpr: clampDpr });
+			const gl = renderer.gl;
+			gl.clearColor(0, 0, 0, 1);
+
+			const geometry = new Triangle(gl);
+			const program = new Program(gl, {
+				vertex: vertexShader,
+				fragment: fragmentShader,
+				uniforms: {
+					iTime: { value: 0 },
+					iResolution: {
+						value: [
+							gl.canvas.width,
+							gl.canvas.height,
+							gl.canvas.width / gl.canvas.height,
+						],
+					},
+					uSpinRotation: { value: spinRotation },
+					uSpinSpeed: { value: spinSpeed },
+					uOffset: { value: offset },
+					uColor1: { value: hexToVec4(color1) },
+					uColor2: { value: hexToVec4(color2) },
+					uColor3: { value: hexToVec4(color3) },
+					uContrast: { value: contrast },
+					uLighting: { value: lighting },
+					uSpinAmount: { value: spinAmount },
+					uPixelFilter: { value: pixelFilter },
+					uSpinEase: { value: spinEase },
+					uIsRotate: { value: isRotate },
+					uMouse: { value: [0.5, 0.5] },
+					uFogDensity: { value: fogDensity },
+					uNoiseStrength: { value: noiseStrength },
+					uPulseFrequency: { value: pulseFrequency },
 				},
-				uSpinRotation: { value: spinRotation },
-				uSpinSpeed: { value: spinSpeed },
-				uOffset: { value: offset },
-				uColor1: { value: hexToVec4(color1) },
-				uColor2: { value: hexToVec4(color2) },
-				uColor3: { value: hexToVec4(color3) },
-				uContrast: { value: contrast },
-				uLighting: { value: lighting },
-				uSpinAmount: { value: spinAmount },
-				uPixelFilter: { value: pixelFilter },
-				uSpinEase: { value: spinEase },
-				uIsRotate: { value: isRotate },
-				uMouse: { value: [0.5, 0.5] },
-				uFogDensity: { value: fogDensity },
-				uNoiseStrength: { value: noiseStrength },
-				uPulseFrequency: { value: pulseFrequency },
-			},
-		});
+			});
 
-		function resize() {
-			renderer.setSize(container.offsetWidth, container.offsetHeight);
-			if (program) {
+			function resize() {
+				const nextDpr =
+					typeof window !== "undefined" ? window.devicePixelRatio : 1;
+				renderer.dpr = Math.max(
+					0.5,
+					Math.min(2, nextDpr * resolutionScale),
+				);
+				renderer.setSize(container.offsetWidth, container.offsetHeight);
 				program.uniforms.iResolution.value = [
 					gl.canvas.width,
 					gl.canvas.height,
 					gl.canvas.width / gl.canvas.height,
 				];
 			}
-		}
-		window.addEventListener("resize", resize);
-		resize();
+			window.addEventListener("resize", resize);
+			resize();
 
-		const mesh = new Mesh(gl, { geometry, program });
-		let animationFrameId: number;
+			const mesh = new Mesh(gl, { geometry, program });
+			let animationFrameId: number;
+			let lastFrameTime = 0;
+			const frameInterval = maxFps > 0 ? 1000 / maxFps : 0;
 
-		function update(time: number) {
+			function update(time: number) {
+				animationFrameId = requestAnimationFrame(update);
+				if (frameInterval && time - lastFrameTime < frameInterval) return;
+				lastFrameTime = time;
+				program.uniforms.iTime.value = time * 0.001;
+				renderer.render({ scene: mesh });
+			}
 			animationFrameId = requestAnimationFrame(update);
-			program.uniforms.iTime.value = time * 0.001;
-			renderer.render({ scene: mesh });
-		}
-		animationFrameId = requestAnimationFrame(update);
-		container.appendChild(gl.canvas);
+			container.appendChild(gl.canvas);
 
-		function handleMouseMove(e: MouseEvent) {
-			if (!mouseInteraction) return;
-			const rect = container.getBoundingClientRect();
-			const x = (e.clientX - rect.left) / rect.width;
-			const y = 1.0 - (e.clientY - rect.top) / rect.height;
-			program.uniforms.uMouse.value = [x, y];
+			function handleMouseMove(e: MouseEvent) {
+				if (!mouseInteraction) return;
+				const rect = container.getBoundingClientRect();
+				const x = (e.clientX - rect.left) / rect.width;
+				const y = 1.0 - (e.clientY - rect.top) / rect.height;
+				program.uniforms.uMouse.value = [x, y];
+			}
+			container.addEventListener("mousemove", handleMouseMove);
+
+			cleanup = () => {
+				cancelAnimationFrame(animationFrameId);
+				window.removeEventListener("resize", resize);
+				container.removeEventListener("mousemove", handleMouseMove);
+				if (gl.canvas.parentElement === container) {
+					container.removeChild(gl.canvas);
+				}
+				gl.getExtension("WEBGL_lose_context")?.loseContext();
+			};
+		};
+
+		const scheduleStart = () => {
+			if (startDelayMs > 0) {
+				startTimer = window.setTimeout(setup, startDelayMs);
+			} else {
+				setup();
+			}
+		};
+
+		if (startOnIdle && idle?.requestIdleCallback) {
+			idleId = idle.requestIdleCallback(() => scheduleStart());
+		} else {
+			scheduleStart();
 		}
-		container.addEventListener("mousemove", handleMouseMove);
 
 		return () => {
-			cancelAnimationFrame(animationFrameId);
-			window.removeEventListener("resize", resize);
-			container.removeEventListener("mousemove", handleMouseMove);
-			container.removeChild(gl.canvas);
-			gl.getExtension("WEBGL_lose_context")?.loseContext();
+			if (idleId && idle?.cancelIdleCallback) {
+				idle.cancelIdleCallback(idleId);
+			}
+			if (startTimer) {
+				window.clearTimeout(startTimer);
+			}
+			if (cleanup) cleanup();
 		};
 	}, [
 		spinRotation,
@@ -315,6 +373,10 @@ export default function MysteriousShader({
 		fogDensity,
 		noiseStrength,
 		pulseFrequency,
+		maxFps,
+		resolutionScale,
+		startDelayMs,
+		startOnIdle,
 	]);
 
 	return <div ref={containerRef} className="w-full h-full" />;
