@@ -27,9 +27,9 @@ export default function Home() {
 		"--home-orbit-gap": "clamp(8px, 2.4vmin, 16px)",
 	} as CSSProperties;
 	const orbitPaused = orbitHovered && !orbitDragging;
-	const shaderMaxFps = isMobile ? 30 : 60;
+	const shaderMaxFps = 24;
 	const shaderResolution = isMobile ? 0.65 : 1;
-	const asciiMaxFps = isMobile ? 20 : 60;
+	const asciiMaxFps = 24;
 	const startDelayMs = isMobile ? 450 : 200;
 
 	useEffect(() => {
