@@ -36,6 +36,7 @@ body {
   --orbit-tilt-z: -20deg;
   --orbit-tilt-z-inv: 20deg;
   --orbit-clip-overscan: 16%;
+  --orbit-clip-seam: 1px;
   --orbit-icon-size: var(--home-orbit-icon, 96px);
   --orbit-icon-gap: var(--home-orbit-gap, 12px);
   --orbit-icon-font-size: calc(var(--orbit-icon-size) * 0.42);
@@ -184,7 +185,7 @@ body {
 
 .orbit-dock[data-layer="front"] .orbit-dock__items {
   clip-path: inset(
-    50%
+    calc(50% - var(--orbit-clip-seam))
     calc(-1 * var(--orbit-clip-overscan))
     calc(-1 * var(--orbit-clip-overscan))
     calc(-1 * var(--orbit-clip-overscan))
@@ -195,7 +196,7 @@ body {
   clip-path: inset(
     calc(-1 * var(--orbit-clip-overscan))
     calc(-1 * var(--orbit-clip-overscan))
-    50%
+    calc(50% - var(--orbit-clip-seam))
     calc(-1 * var(--orbit-clip-overscan))
   );
 }
