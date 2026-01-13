@@ -25,8 +25,6 @@ export default function Home() {
 		"--home-orbit-size": "clamp(300px, 86vmin, 760px)",
 		"--home-orbit-icon": "clamp(56px, 12vmin, 96px)",
 		"--home-orbit-gap": "clamp(8px, 2.4vmin, 16px)",
-		"--home-character-size":
-			"calc(var(--home-orbit-size) - (var(--home-orbit-icon) * 2) - (var(--home-orbit-gap) * 2))",
 	} as CSSProperties;
 
 	return (
@@ -58,17 +56,14 @@ export default function Home() {
 					<FadeTextRotator />
 				</div>
 				<div className="flex flex-col items-center center">
-					<div className="w-[var(--home-character-size)]">
-						<GlitchImage interval={1} probability={10} intensity={5}>
-							<Image
-								alt="Kyure_A"
-								src={srcPath("/kyure_a.png")}
-								width={1000}
-								height={1000}
-								className="w-full h-auto"
-							/>
-						</GlitchImage>
-					</div>
+					<GlitchImage interval={1} probability={10} intensity={5}>
+						<Image
+							alt="Kyure_A"
+							src={srcPath("/kyure_a.png")}
+							width={1000}
+							height={1000}
+						/>
+					</GlitchImage>
 				</div>
 			</div>
 			<div className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2">
