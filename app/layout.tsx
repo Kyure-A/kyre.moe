@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
+import { IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import App from "@/app/main";
+
+const ibmPlexMono = IBM_Plex_Mono({
+	subsets: ["latin"],
+	weight: ["500"],
+	variable: "--font-ibm-plex-mono",
+	display: "swap",
+});
 
 export const metadata: Metadata = {
 	title: "Kyure_A / キュレェ",
@@ -13,7 +21,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
+		<html lang="en" className={ibmPlexMono.variable}>
 			<body suppressHydrationWarning={true}>
 				<App>{children}</App>
 			</body>
