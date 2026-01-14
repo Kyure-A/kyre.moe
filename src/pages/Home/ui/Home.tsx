@@ -5,14 +5,14 @@ import { type CSSProperties, useEffect, useMemo, useState } from "react";
 import useDockItems from "@/shared/hooks/useDockItems";
 import { srcPath } from "@/shared/lib/path";
 import OrbitDock from "@/shared/ui/OrbitDock/OrbitDock";
-import GlitchImage from "../../../shared/ui/GlitchImage/GlitchImage";
+import GlitchImage from "@/shared/ui/GlitchImage/GlitchImage";
 
 const BackgroundShader = dynamic(() => import("@/shared/ui/Background/Background"), {
 	ssr: false,
 	loading: () => <div className="w-full h-full" />,
 });
 
-const FadeTextRotator = dynamic(() => import("./FadeTextRotator"), {
+const FadeTextRotator = dynamic(() => import("@/pages/Home/ui/FadeTextRotator"), {
 	ssr: false,
 	loading: () => <div className="w-full" />,
 });
