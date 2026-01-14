@@ -87,7 +87,7 @@ float random(vec2 st) {
 float noise(vec2 st) {
     vec2 i = floor(st);
     vec2 f = fract(st);
-    
+
     // 4つの角のランダム値
     float a = random(i);
     float b = random(i + vec2(1.0, 0.0));
@@ -117,36 +117,36 @@ vec4 effect(vec2 screenSize, vec2 screen_coords) {
     float pixel_size = length(screenSize.xy) / uPixelFilter;
     vec2 uv = (floor(screen_coords.xy * (1.0 / pixel_size)) * pixel_size - 0.5 * screenSize.xy) / length(screenSize.xy) - uOffset;
     float uv_len = length(uv);
-    
+
     // 時間に基づく回転速度
     float speed = (uSpinRotation * uSpinEase * 0.2);
     if(uIsRotate){
        speed = iTime * speed;
     }
     speed += 302.2;
-    
+
     // マウスの影響を強化
     float mouseInfluence = (uMouse.x * 2.0 - 1.0) * 0.25;
     float mouseYInfluence = (uMouse.y * 2.0 - 1.0) * 0.15;
     speed += mouseInfluence * 0.5;
-    
+
     // 回転角度の計算
     float pulseEffect = sin(iTime * uPulseFrequency) * 0.1;
-    float new_pixel_angle = atan(uv.y, uv.x) + speed - uSpinEase * 20.0 * 
+    float new_pixel_angle = atan(uv.y, uv.x) + speed - uSpinEase * 20.0 *
         (uSpinAmount * (uv_len + pulseEffect) + (1.0 - uSpinAmount));
-    
+
     vec2 mid = (screenSize.xy / length(screenSize.xy)) / 2.0;
     uv = (vec2(uv_len * cos(new_pixel_angle) + mid.x, uv_len * sin(new_pixel_angle) + mid.y) - mid);
-    
+
     // スケーリングを調整
     uv *= 25.0 + 10.0 * sin(iTime * 0.2);
-    
+
     // 基本速度
     float baseSpeed = iTime * uSpinSpeed;
     float modSpeed = baseSpeed + mouseInfluence * 3.0 + mouseYInfluence * 2.0;
-    
+
     vec2 uv2 = vec2(uv.x + uv.y);
-    
+
     // 複雑なパターン生成
     for(int i = 0; i < 5; i++) {
         float noiseVal = fbm(uv * 0.1 + iTime * 0.05);
@@ -156,42 +156,42 @@ vec4 effect(vec2 screenSize, vec2 screen_coords) {
             sin(uv2.x - 0.113 * modSpeed + noiseVal * 2.0)
         );
         uv -= cos(uv.x + uv.y + iTime * 0.1) - sin(uv.x * 0.711 - uv.y);
-        
+
         // より複雑なねじれを追加
         uv = vec2(
             uv.x * cos(noiseVal * 0.2) - uv.y * sin(noiseVal * 0.2),
             uv.x * sin(noiseVal * 0.2) + uv.y * cos(noiseVal * 0.2)
         );
     }
-    
+
     // コントラスト調整
     float contrast_mod = (0.25 * uContrast + 0.5 * uSpinAmount + 1.2);
     float paint_res = min(2.0, max(0.0, length(uv) * 0.035 * contrast_mod));
-    
+
     // フォグエフェクト
     float fogFactor = 1.0 - exp(-uv_len * uFogDensity);
-    
+
     // カラーミックス
     float c1p = max(0.0, 1.0 - contrast_mod * abs(1.0 - paint_res));
     float c2p = max(0.0, 1.0 - contrast_mod * abs(paint_res));
     float c3p = 1.0 - min(1.0, c1p + c2p);
-    
+
     // 照明効果
-    float light = (uLighting - 0.2) * max(c1p * 5.0 - 4.0, 0.0) + 
+    float light = (uLighting - 0.2) * max(c1p * 5.0 - 4.0, 0.0) +
                  uLighting * max(c2p * 5.0 - 4.0, 0.0);
-    
+
     // 時間ベースの色の揺らぎ
     vec4 color1Mod = uColor1 + vec4(sin(iTime * 0.3) * 0.1, sin(iTime * 0.4) * 0.1, sin(iTime * 0.5) * 0.1, 0.0);
     vec4 color2Mod = uColor2 + vec4(sin(iTime * 0.4) * 0.1, sin(iTime * 0.5) * 0.1, sin(iTime * 0.6) * 0.1, 0.0);
-    
+
     // ノイズの追加
     float noiseEffect = (random(uv + iTime) - 0.5) * uNoiseStrength;
-    
+
     // 最終的な色の計算
-    vec4 baseColor = (0.3 / uContrast) * color1Mod + 
-                    (1.0 - 0.3 / uContrast) * (color1Mod * c1p + color2Mod * c2p + 
+    vec4 baseColor = (0.3 / uContrast) * color1Mod +
+                    (1.0 - 0.3 / uContrast) * (color1Mod * c1p + color2Mod * c2p +
                     vec4(c3p * uColor3.rgb, c3p * uColor1.a)) + light;
-    
+
     // フォグとノイズを適用
     vec4 fogColor = mix(baseColor, uColor3, fogFactor * 0.7);
     return fogColor + vec4(noiseEffect, noiseEffect, noiseEffect, 0.0);
@@ -203,7 +203,7 @@ void main() {
 }
 `;
 
-export default function MysteriousShader({
+export default function BackgroundShader({
 	spinRotation = -1.5,
 	spinSpeed = 5.0,
 	offset = [0.0, 0.0],
