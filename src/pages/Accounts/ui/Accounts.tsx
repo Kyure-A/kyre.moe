@@ -53,14 +53,14 @@ function Account(props: AccountProps) {
 					<span className="flex h-5 w-5 items-center justify-center text-[18px] text-gray-200 transition-colors duration-[400ms] ease-out group-hover:text-white sm:h-6 sm:w-6 sm:text-[22px]">
 						{props.serviceIcon}
 					</span>
-					<div className="flex min-w-0 flex-1 items-start">
-						<span className="platform mr-3 w-16 shrink-0 self-center truncate text-[12px] font-semibold text-gray-200 transition-[margin,color] duration-[400ms] ease-out group-hover:mr-1 group-hover:text-white sm:mr-5 sm:w-24 sm:text-[15px] md:w-28 md:text-[16px]">
+					<div className="flex min-w-0 flex-1 items-center">
+						<span className="platform mr-3 w-16 shrink-0 truncate text-[12px] font-semibold leading-none text-gray-200 transition-[margin,color] duration-[400ms] ease-out group-hover:mr-1 group-hover:text-white sm:mr-5 sm:w-24 sm:text-[14px] md:w-28 md:text-[15px]">
 							{props.platform}
 						</span>
 						<div
 							className={`min-w-0 flex flex-col min-h-[40px] ${hasDescription ? "" : "justify-center"}`}
 						>
-							<p className="text-[12.5px] text-gray-100 whitespace-nowrap transition-colors duration-[400ms] ease-out group-hover:text-white sm:text-[14px] md:text-[15px]">
+							<p className="text-[12px] leading-none text-gray-100 whitespace-nowrap transition-colors duration-[400ms] ease-out group-hover:text-white sm:text-[14px] md:text-[15px]">
 								{displayId}
 							</p>
 							{hasDescription ? (
