@@ -5,7 +5,13 @@ import { useMemo } from "react";
 import { FaHome } from "react-icons/fa";
 import { FaClock, FaUser } from "react-icons/fa6";
 import { MdDescription } from "react-icons/md";
-import type { DockItemData } from "@/shared/ui/Dock/Dock";
+
+export type DockItemData = {
+	icon: React.ReactNode;
+	label: React.ReactNode;
+	onClick: () => void;
+	className?: string;
+};
 
 export default function useDockItems(): DockItemData[] {
 	const router = useRouter();
