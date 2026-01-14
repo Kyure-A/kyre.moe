@@ -52,7 +52,7 @@ function Account(props: AccountProps) {
 							className={`min-w-0 flex flex-col min-h-[40px] ${hasDescription ? "" : "justify-center"}`}
 						>
 							<p className="text-[12px] leading-none text-gray-100 whitespace-nowrap transition-colors duration-[400ms] ease-out group-hover:text-white sm:text-[14px] md:text-[15px]">
-								{displayId}
+								{props.id}
 							</p>
 							{hasDescription ? (
 								<p className="mt-0.5 text-[12px] leading-snug text-gray-400 truncate transition-colors duration-[400ms] ease-out group-hover:text-white/90 sm:mt-1 sm:text-[13px]">
@@ -70,7 +70,7 @@ function Account(props: AccountProps) {
 export default function Accounts() {
 	const accounts: Omit<AccountProps, "delay">[] = [
 		{
-			id: "kyremoe",
+			id: "@kyremoe",
 			description: "3 代目",
 			platform: "Twitter",
 			accentColor: "#1DA1F2",
@@ -78,7 +78,7 @@ export default function Accounts() {
 			serviceUrl: "https://x.com/kyremoe",
 		},
 		{
-			id: "3kyu4",
+			id: "@3kyu4",
 			description: "女装アカウント",
 			platform: "Twitter",
 			accentColor: "#1DA1F2",
@@ -86,7 +86,7 @@ export default function Accounts() {
 			serviceUrl: "https://x.com/3kyu4",
 		},
 		{
-			id: "_______kyu",
+			id: "@_______kyu",
 			description: "VRChat 用アカウント",
 			platform: "Twitter",
 			accentColor: "#1DA1F2",
@@ -118,7 +118,7 @@ export default function Accounts() {
 			serviceUrl: "https://mstdn.maud.io/@Kyure_A",
 		},
 		{
-			id: "kyure_a",
+			id: "@kyure_a",
 			description: "",
 			platform: "Threads",
 			accentColor: "#1A1A1A",
@@ -169,7 +169,7 @@ export default function Accounts() {
 			id: "Kyure_A",
 			platform: "VRChat",
 			accentColor: "#000000",
-			serviceIcon: <VRChatLogo />,
+			serviceIcon: <VRChatIcon />,
 			serviceUrl:
 				"https://vrchat.com/home/user/usr_daa6a1ac-65c2-49a3-a9a7-074434c05a4d",
 		},
