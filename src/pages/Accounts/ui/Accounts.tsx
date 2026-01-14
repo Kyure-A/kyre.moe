@@ -1,5 +1,4 @@
 import type { Omit } from "@react-spring/web";
-import Image from "next/image";
 import type { CSSProperties, ReactNode } from "react";
 import { FaGithub as FaGitHub } from "react-icons/fa";
 import {
@@ -13,13 +12,11 @@ import {
 import { SiMisskey } from "react-icons/si";
 import { TbBrandMinecraft } from "react-icons/tb";
 import { WiNightSnowThunderstorm } from "react-icons/wi";
-import { srcPath } from "@/shared/lib/path";
 import AnimatedContent from "@/shared/ui/AnimatedContent/AnimatedContent";
 
 type AccountProps = {
 	id: string;
 	description?: string;
-	avatarUrl?: string;
 	serviceUrl: string;
 	serviceIcon: ReactNode;
 	platform: string;
@@ -87,7 +84,6 @@ export default function Accounts() {
 			platform: "Twitter",
 			accentColor: "#1DA1F2",
 			serviceIcon: <FaTwitter />,
-			avatarUrl: srcPath("/icon.jpg"),
 			serviceUrl: "https://x.com/kyremoe",
 		},
 		{
@@ -96,7 +92,6 @@ export default function Accounts() {
 			platform: "Twitter",
 			accentColor: "#1DA1F2",
 			serviceIcon: <FaTwitter />,
-			avatarUrl: srcPath("/icon.jpg"),
 			serviceUrl: "https://x.com/3kyu4",
 		},
 		{
@@ -105,7 +100,6 @@ export default function Accounts() {
 			platform: "GitHub",
 			accentColor: "#171515",
 			serviceIcon: <FaGitHub />,
-			avatarUrl: srcPath("/icon.jpg"),
 			serviceUrl: "https://github.com/Kyure-A",
 		},
 		{
@@ -114,7 +108,6 @@ export default function Accounts() {
 			platform: "Misskey",
 			accentColor: "#55C500",
 			serviceIcon: <SiMisskey />,
-			avatarUrl: srcPath("/icon.jpg"),
 			serviceUrl: "https://misskey.io/@Kyure_A",
 		},
 		{
@@ -123,7 +116,6 @@ export default function Accounts() {
 			platform: "Mastodon",
 			accentColor: "#6364FF",
 			serviceIcon: <FaMastodon />,
-			avatarUrl: srcPath("/icon.jpg"),
 			serviceUrl: "https://mstdn.maud.io/@Kyure_A",
 		},
 		{
@@ -132,7 +124,6 @@ export default function Accounts() {
 			platform: "Threads",
 			accentColor: "#1A1A1A",
 			serviceIcon: <FaThreads />,
-			avatarUrl: srcPath("/icon.jpg"),
 			serviceUrl: "https://threads.net/@kyure_a",
 		},
 		{
@@ -141,7 +132,6 @@ export default function Accounts() {
 			platform: "Bluesky",
 			accentColor: "#0085FF",
 			serviceIcon: <FaBluesky />,
-			avatarUrl: srcPath("/icon.jpg"),
 			serviceUrl: "https://bsky.app/profile/kyure-a.bsky.social",
 		},
 		{
@@ -150,7 +140,6 @@ export default function Accounts() {
 			platform: "Nostr",
 			accentColor: "#8E4BFF",
 			serviceIcon: <NostrIcon />,
-			avatarUrl: srcPath("/icon.jpg"),
 			serviceUrl: "https://iris.to/npub1kyrem0eejds8cwr2732ygtpksxnlehlg4wu92dkvyxxgz48fl5cqn6fay4",
 		},
 		{
@@ -159,7 +148,6 @@ export default function Accounts() {
 			platform: "Steam",
 			accentColor: "#171A21",
 			serviceIcon: <FaSteam />,
-			avatarUrl: srcPath("/icon.jpg"),
 			serviceUrl: "https://steamcommunity.com/id/kyure_a/",
 		},
 		{
@@ -168,7 +156,6 @@ export default function Accounts() {
 			platform: "Minecraft",
 			accentColor: "#4CAF50",
 			serviceIcon: <TbBrandMinecraft />,
-			avatarUrl: srcPath("/icon.jpg"),
 			serviceUrl: "https://ja.namemc.com/profile/Kyure_A",
 		},
 		{
@@ -176,7 +163,6 @@ export default function Accounts() {
 			platform: "Last.fm",
 			accentColor: "#D51007",
 			serviceIcon: <FaLastfm />,
-			avatarUrl: srcPath("/icon.jpg"),
 			serviceUrl: "https://www.last.fm/user/Kyure_A",
 		},
     {
@@ -184,7 +170,6 @@ export default function Accounts() {
       platform: "VRChat",
       accentColor: "#FF6F61",
       serviceIcon: <WiNightSnowThunderstorm />,
-      avatarUrl: srcPath("/icon.jpg"),
       serviceUrl: "https://vrchat.com/home/user/usr_daa6a1ac-65c2-49a3-a9a7-074434c05a4d",
     }
 	];
@@ -200,7 +185,6 @@ export default function Accounts() {
 							platform={account.platform}
 							accentColor={account.accentColor}
 							serviceIcon={account.serviceIcon}
-							avatarUrl={account.avatarUrl ?? ""}
 							serviceUrl={account.serviceUrl}
 						/>
 					);
