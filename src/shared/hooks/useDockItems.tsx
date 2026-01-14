@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { FaHome } from "react-icons/fa";
-import { FaClock, FaUser } from "react-icons/fa6";
+import { FaClock, FaPenNib, FaUser } from "react-icons/fa6";
 import { MdDescription } from "react-icons/md";
 
 export type DockItemData = {
@@ -19,6 +19,11 @@ export default function useDockItems(): DockItemData[] {
 	return useMemo(
 		() => [
 			{ icon: <FaHome />, label: "Home", onClick: () => router.push("/") },
+			{
+				icon: <FaPenNib />,
+				label: "Blog",
+				onClick: () => router.push("/blog"),
+			},
 			{
 				icon: <FaUser />,
 				label: "Accounts",
