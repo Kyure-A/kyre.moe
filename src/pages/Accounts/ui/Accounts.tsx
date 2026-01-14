@@ -94,6 +94,14 @@ export default function Accounts() {
 			serviceIcon: <FaTwitter />,
 			serviceUrl: "https://x.com/3kyu4",
 		},
+    {
+			id: "_______kyu",
+			description: "VRChat 用アカウント",
+			platform: "Twitter",
+			accentColor: "#1DA1F2",
+			serviceIcon: <FaTwitter />,
+			serviceUrl: "https://x.com/_______kyu",
+		},
 		{
 			id: "Kyure-A",
 			description: "",
@@ -127,12 +135,12 @@ export default function Accounts() {
 			serviceUrl: "https://threads.net/@kyure_a",
 		},
 		{
-			id: "kyure-a.bsky.social",
+			id: "kyre.moe",
 			description: "",
 			platform: "Bluesky",
 			accentColor: "#0085FF",
 			serviceIcon: <FaBluesky />,
-			serviceUrl: "https://bsky.app/profile/kyure-a.bsky.social",
+			serviceUrl: "https://bsky.app/profile/kyre.moe",
 		},
 		{
 			id: "npub1kyrem0e",
