@@ -1,8 +1,8 @@
 "use client";
 
+import { DockItemData } from "@/shared/hooks/useDockItems";
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
 import { useRef, useState } from "react";
-import type { DockItemData } from "@/shared/ui/Dock/Dock";
 
 export type OrbitDockProps = {
 	items: DockItemData[];

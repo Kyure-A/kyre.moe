@@ -1,5 +1,4 @@
 import type { Omit } from "@react-spring/web";
-import type { CSSProperties, ReactNode } from "react";
 import { FaGithub as FaGitHub } from "react-icons/fa";
 import {
 	FaBluesky,
@@ -11,94 +10,14 @@ import {
 } from "react-icons/fa6";
 import { SiMisskey } from "react-icons/si";
 import { TbBrandMinecraft } from "react-icons/tb";
-import AnimatedContent from "@/shared/ui/AnimatedContent/AnimatedContent";
-
-type AccountProps = {
-	id: string;
-	description?: string;
-	serviceUrl: string;
-	serviceIcon: ReactNode;
-	platform: string;
-	accentColor: string;
-	iconClassName?: string;
-};
-
-function NostrIcon() {
-	return (
-		<svg
-			className="w-6 h-6 inline-block"
-			xmlns="http://www.w3.org/2000/svg"
-			viewBox="0 0 256 256"
-			fill="currentColor"
-		>
-			<path d="M210.8 199.4c0 3.1-2.5 5.7-5.7 5.7h-68c-3.1 0-5.7-2.5-5.7-5.7v-15.5c.3-19 2.3-37.2 6.5-45.5 2.5-5 6.7-7.7 11.5-9.1 9.1-2.7 24.9-.9 31.7-1.2 0 0 20.4.8 20.4-10.7s-9.1-8.6-9.1-8.6c-10 .3-17.7-.4-22.6-2.4-8.3-3.3-8.6-9.2-8.6-11.2-.4-23.1-34.5-25.9-64.5-20.1-32.8 6.2.4 53.3.4 116.1v8.4c0 3.1-2.6 5.6-5.7 5.6H57.7c-3.1 0-5.7-2.5-5.7-5.7v-144c0-3.1 2.5-5.7 5.7-5.7h31.7c3.1 0 5.7 2.5 5.7 5.7 0 4.7 5.2 7.2 9 4.5 11.4-8.2 26-12.5 42.4-12.5 36.6 0 64.4 21.4 64.4 68.7v83.2ZM150 99.3c0-6.7-5.4-12.1-12.1-12.1s-12.1 5.4-12.1 12.1 5.4 12.1 12.1 12.1S150 106 150 99.3Z" />
-		</svg>
-	);
-}
-
-function VRChatLogo() {
-	return (
-		<img
-			src="https://images.squarespace-cdn.com/content/v1/5f0770791aaf57311515b23d/ceb65abe-afdd-480b-a285-bb066bc44239/favicon.ico"
-			alt=""
-			aria-hidden="true"
-			className="h-5 w-5 sm:h-6 sm:w-6"
-		/>
-	);
-}
-
-function Account(props: AccountProps) {
-	const accentStyle = {
-		"--accent": props.accentColor,
-	} as CSSProperties;
-	const displayId =
-		props.id.includes("@") ||
-		props.id.startsWith("npub") ||
-		props.platform === "VRChat"
-			? props.id
-			: `@${props.id}`;
-	const descriptionText = props.description ?? "";
-	const hasDescription = descriptionText.trim().length > 0;
-	return (
-		<li>
-			<a
-				href={props.serviceUrl}
-				className="group block w-full px-2"
-				style={accentStyle}
-			>
-				<div className="flex w-full items-center gap-3 px-0 py-2 text-gray-100 transition-[padding,background-color,border-radius,color] duration-[400ms] ease-out group-hover:px-4 group-hover:rounded-[10px] group-hover:bg-[var(--accent)] group-hover:text-white group-hover:[text-shadow:0_1px_4px_rgba(0,0,0,0.2)] sm:gap-5 sm:py-3 sm:group-hover:px-5">
-					<span
-						className={`flex items-center justify-center text-[18px] text-gray-200 transition-colors duration-[400ms] ease-out group-hover:text-white sm:text-[22px] ${props.iconClassName ?? "h-5 w-5 sm:h-6 sm:w-6"}`}
-					>
-						{props.serviceIcon}
-					</span>
-					<div className="flex min-w-0 flex-1 items-center">
-						<span className="platform mr-3 w-16 shrink-0 truncate text-[12px] font-semibold leading-none text-gray-200 transition-[margin,color] duration-[400ms] ease-out group-hover:mr-1 group-hover:text-white sm:mr-5 sm:w-24 sm:text-[14px] md:w-28 md:text-[15px]">
-							{props.platform}
-						</span>
-						<div
-							className={`min-w-0 flex flex-col min-h-[40px] ${hasDescription ? "" : "justify-center"}`}
-						>
-							<p className="text-[12px] leading-none text-gray-100 whitespace-nowrap transition-colors duration-[400ms] ease-out group-hover:text-white sm:text-[14px] md:text-[15px]">
-								{displayId}
-							</p>
-							{hasDescription ? (
-								<p className="mt-0.5 text-[12px] leading-snug text-gray-400 truncate transition-colors duration-[400ms] ease-out group-hover:text-white/90 sm:mt-1 sm:text-[13px]">
-									{descriptionText}
-								</p>
-							) : null}
-						</div>
-					</div>
-				</div>
-			</a>
-		</li>
-	);
-}
+import { NostrIcon } from "@/shared/icons/nostr";
+import { VRChatIcon } from "@/shared/icons/vrchat";
+import { Account, AccountProps } from "./Account";
 
 export default function Accounts() {
 	const accounts: Omit<AccountProps, "delay">[] = [
 		{
-			id: "kyremoe",
+			id: "@kyremoe",
 			description: "3 代目",
 			platform: "Twitter",
 			accentColor: "#1DA1F2",
@@ -106,7 +25,7 @@ export default function Accounts() {
 			serviceUrl: "https://x.com/kyremoe",
 		},
 		{
-			id: "3kyu4",
+			id: "@3kyu4",
 			description: "女装アカウント",
 			platform: "Twitter",
 			accentColor: "#1DA1F2",
@@ -114,7 +33,7 @@ export default function Accounts() {
 			serviceUrl: "https://x.com/3kyu4",
 		},
 		{
-			id: "_______kyu",
+			id: "@_______kyu",
 			description: "VRChat 用アカウント",
 			platform: "Twitter",
 			accentColor: "#1DA1F2",
@@ -146,7 +65,7 @@ export default function Accounts() {
 			serviceUrl: "https://mstdn.maud.io/@Kyure_A",
 		},
 		{
-			id: "kyure_a",
+			id: "@kyure_a",
 			description: "",
 			platform: "Threads",
 			accentColor: "#1A1A1A",
@@ -197,7 +116,7 @@ export default function Accounts() {
 			id: "Kyure_A",
 			platform: "VRChat",
 			accentColor: "#000000",
-			serviceIcon: <VRChatLogo />,
+			serviceIcon: <VRChatIcon />,
 			serviceUrl:
 				"https://vrchat.com/home/user/usr_daa6a1ac-65c2-49a3-a9a7-074434c05a4d",
 		},
