@@ -10,7 +10,7 @@ export type AccountProps = {
 	iconClassName?: string;
 };
 
-export function Account(props: AccountProps) {
+default export function Account(props: AccountProps) {
 	const accentStyle = {
 		"--accent": props.accentColor,
 	} as CSSProperties;
