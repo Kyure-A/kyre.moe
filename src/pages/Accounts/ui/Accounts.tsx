@@ -49,22 +49,22 @@ function Account(props: AccountProps) {
 	return (
 		<li>
 			<a href={props.serviceUrl} className="group block w-full px-2" style={accentStyle}>
-				<div className="flex w-full items-center gap-5 px-0 py-3 text-gray-100 transition-[padding,background-color,border-radius,color] duration-[400ms] ease-out group-hover:px-5 group-hover:rounded-[10px] group-hover:bg-[var(--accent)] group-hover:text-white group-hover:[text-shadow:0_1px_4px_rgba(0,0,0,0.2)]">
-					<span className="flex h-6 w-6 items-center justify-center text-[22px] text-gray-200 transition-colors duration-[400ms] ease-out group-hover:text-white">
+				<div className="flex w-full items-center gap-3 px-0 py-2 text-gray-100 transition-[padding,background-color,border-radius,color] duration-[400ms] ease-out group-hover:px-4 group-hover:rounded-[10px] group-hover:bg-[var(--accent)] group-hover:text-white group-hover:[text-shadow:0_1px_4px_rgba(0,0,0,0.2)] sm:gap-5 sm:py-3 sm:group-hover:px-5">
+					<span className="flex h-5 w-5 items-center justify-center text-[18px] text-gray-200 transition-colors duration-[400ms] ease-out group-hover:text-white sm:h-6 sm:w-6 sm:text-[22px]">
 						{props.serviceIcon}
 					</span>
 					<div className="flex min-w-0 flex-1 items-start">
-						<span className="platform mr-5 w-28 shrink-0 self-center truncate text-[16px] font-semibold text-gray-200 transition-[margin,color] duration-[400ms] ease-out group-hover:mr-1 group-hover:text-white">
+						<span className="platform mr-3 w-16 shrink-0 self-center truncate text-[12px] font-semibold text-gray-200 transition-[margin,color] duration-[400ms] ease-out group-hover:mr-1 group-hover:text-white sm:mr-5 sm:w-24 sm:text-[15px] md:w-28 md:text-[16px]">
 							{props.platform}
 						</span>
 						<div
 							className={`min-w-0 flex flex-col min-h-[40px] ${hasDescription ? "" : "justify-center"}`}
 						>
-							<p className="text-[15px] text-gray-100 truncate transition-colors duration-[400ms] ease-out group-hover:text-white">
+							<p className="text-[12.5px] text-gray-100 whitespace-nowrap transition-colors duration-[400ms] ease-out group-hover:text-white sm:text-[14px] md:text-[15px]">
 								{displayId}
 							</p>
 							{hasDescription ? (
-								<p className="text-[13px] text-gray-400 truncate transition-colors duration-[400ms] ease-out group-hover:text-white/90">
+								<p className="text-[12px] text-gray-400 truncate transition-colors duration-[400ms] ease-out group-hover:text-white/90 sm:text-[13px]">
 									{descriptionText}
 								</p>
 							) : null}
