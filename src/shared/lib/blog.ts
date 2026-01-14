@@ -159,34 +159,33 @@ function parseFrontmatter(
 
 function getPostFilePath(slug: string, lang: BlogLang): string | null {
 	const dirPath = path.join(BLOG_DIR, slug);
-	for (const ext of MARKDOWN_EXTENSIONS) {
-		const candidate = path.join(dirPath, `${lang}${ext}`);
-		if (fs.existsSync(candidate)) return candidate;
-	}
-	return null;
+	const ext = MARKDOWN_EXTENSIONS.find((item) =>
+		fs.existsSync(path.join(dirPath, `${lang}${item}`)),
+	);
+	return ext ? path.join(dirPath, `${lang}${ext}`) : null;
 }
 
 export function getAllPosts(lang?: BlogLang): BlogPostMeta[] {
 	const entries = safeReadDir(BLOG_DIR).filter((entry) => entry.isDirectory());
-	const posts: BlogPostMeta[] = [];
-
-	for (const entry of entries) {
+	const posts = entries.flatMap((entry) => {
 		const slug = entry.name;
 		const dirPath = path.join(BLOG_DIR, slug);
 		const files = safeReadDir(dirPath).filter((file) => file.isFile());
 
-		for (const file of files) {
-			const ext = path.extname(file.name);
-			if (!MARKDOWN_EXTENSIONS.includes(ext)) continue;
-			const fileLang = resolveLangFromFile(file.name);
-			if (!fileLang) continue;
-			if (lang && fileLang !== lang) continue;
-			const filePath = path.join(dirPath, file.name);
-			const { meta } = parseFrontmatter(slug, fileLang, filePath);
-			if (meta.draft) continue;
-			posts.push(meta);
-		}
-	}
+		return files
+			.map((file) => {
+				const ext = path.extname(file.name);
+				if (!MARKDOWN_EXTENSIONS.includes(ext)) return null;
+				const fileLang = resolveLangFromFile(file.name);
+				if (!fileLang) return null;
+				if (lang && fileLang !== lang) return null;
+				const filePath = path.join(dirPath, file.name);
+				const { meta } = parseFrontmatter(slug, fileLang, filePath);
+				if (meta.draft) return null;
+				return meta;
+			})
+			.filter((meta): meta is BlogPostMeta => Boolean(meta));
+	});
 
 	return posts.sort((a, b) => {
 		const aTime = a.date ? new Date(a.date).getTime() : 0;
@@ -207,13 +206,15 @@ export function getPost(slug: string, lang: BlogLang): BlogPost | null {
 export function getPostLanguages(slug: string): BlogLang[] {
 	const dirPath = path.join(BLOG_DIR, slug);
 	const files = safeReadDir(dirPath).filter((file) => file.isFile());
-	const langs = new Set<BlogLang>();
-	for (const file of files) {
-		const ext = path.extname(file.name);
-		if (!MARKDOWN_EXTENSIONS.includes(ext)) continue;
-		const fileLang = resolveLangFromFile(file.name);
-		if (fileLang) langs.add(fileLang);
-	}
+	const langs = new Set(
+		files
+			.map((file) => {
+				const ext = path.extname(file.name);
+				if (!MARKDOWN_EXTENSIONS.includes(ext)) return null;
+				return resolveLangFromFile(file.name);
+			})
+			.filter((fileLang): fileLang is BlogLang => Boolean(fileLang)),
+	);
 	return Array.from(langs);
 }
 
