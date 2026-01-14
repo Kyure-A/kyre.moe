@@ -20,10 +20,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 		title: "Blog",
 		description: "Kyure_A's blog index.",
 		alternates: {
-			canonical: `/blog/${lang}`,
+			canonical: `/${lang}/blog`,
 			languages: {
-				ja: "/blog/ja",
-				en: "/blog/en",
+				ja: "/ja/blog",
+				en: "/en/blog",
 			},
 		},
 		robots: {

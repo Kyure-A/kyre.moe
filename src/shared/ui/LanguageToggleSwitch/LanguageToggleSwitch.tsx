@@ -1,5 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import {
+	DEFAULT_LANG,
+	getLangFromPath,
+	replacePathLang,
+	type SiteLang,
+} from "@/shared/lib/i18n";
 
 type LanguageToggleProps = {
 	onChange: (s: string) => void;
@@ -11,11 +17,11 @@ const LanguageToggle = ({ onChange }: LanguageToggleProps) => {
 	const router = useRouter();
 	const pathname = usePathname();
 	const pathLang = useMemo(() => {
-		if (!pathname) return null;
-		const match = pathname.match(/^\/blog\/(ja|en)(?:\/|$)/);
-		return match ? match[1] : null;
+		return getLangFromPath(pathname);
 	}, [pathname]);
-	const [language, setLanguage] = useState(pathLang ?? "ja"); // 'ja' for Japanese, 'en' for English
+	const [language, setLanguage] = useState<SiteLang>(
+		pathLang ?? DEFAULT_LANG,
+	);
 
 	useEffect(() => {
 		if (pathLang) {
@@ -29,13 +35,9 @@ const LanguageToggle = ({ onChange }: LanguageToggleProps) => {
 		}
 	}, [pathLang]);
 
-	const getNextPath = (lang: string) => {
-		if (!pathname) return "/blog";
-		if (!pathname.startsWith("/blog")) return pathname;
-		if (pathname === "/blog") return `/blog/${lang}`;
-		const match = pathname.match(/^\/blog\/(ja|en)(.*)$/);
-		if (match) return `/blog/${lang}${match[2] ?? ""}`;
-		return pathname;
+	const getNextPath = (lang: SiteLang) => {
+		if (!pathname) return `/${lang}`;
+		return replacePathLang(pathname, lang);
 	};
 
 	const handleToggle = () => {
@@ -44,9 +46,7 @@ const LanguageToggle = ({ onChange }: LanguageToggleProps) => {
 		if (typeof window !== "undefined") {
 			window.localStorage.setItem(STORAGE_KEY, newLanguage);
 		}
-		if (pathname?.startsWith("/blog")) {
-			router.push(getNextPath(newLanguage));
-		}
+		router.push(getNextPath(newLanguage));
 		if (onChange) {
 			onChange(newLanguage);
 		}

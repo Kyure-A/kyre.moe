@@ -31,10 +31,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const alternates: Record<string, string> = {};
 	for (const lang of BLOG_LANGS) {
 		if (availableLangs.includes(lang)) {
-			alternates[lang] = `/blog/${lang}/${post.slug}`;
+			alternates[lang] = `/${lang}/blog/${post.slug}`;
 		}
 	}
-	const canonical = post.canonical ?? `/blog/${post.lang}/${post.slug}`;
+	const canonical = post.canonical ?? `/${post.lang}/blog/${post.slug}`;
 	const images = post.cover ? [post.cover] : undefined;
 
 	return {
@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			type: "article",
 			publishedTime: post.date || undefined,
 			images,
-			url: `/blog/${post.lang}/${post.slug}`,
+			url: `/${post.lang}/blog/${post.slug}`,
 		},
 		twitter: {
 			card: post.cover ? "summary_large_image" : "summary",

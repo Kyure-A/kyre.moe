@@ -4,20 +4,23 @@ import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { FaArrowLeft } from "react-icons/fa6";
 import LanguageToggle from "@/shared/ui/LanguageToggleSwitch/LanguageToggleSwitch";
+import { DEFAULT_LANG, getLangFromPath } from "@/shared/lib/i18n";
 
 type Props = { children: ReactNode };
 
 export default function App({ children }: Props) {
 	const router = useRouter();
 	const pathname = usePathname();
-	const showBack = pathname !== "/";
+	const lang = getLangFromPath(pathname) ?? DEFAULT_LANG;
+	const homePath = `/${lang}`;
+	const showBack = pathname !== "/" && pathname !== homePath;
 
 	const handleBack = () => {
 		if (typeof window !== "undefined" && window.history.length > 1) {
 			router.back();
 			return;
 		}
-		router.push("/");
+		router.push(homePath);
 	};
 
 	return (

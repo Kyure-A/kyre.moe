@@ -1,6 +1,7 @@
 import React from "react";
 import AnimatedContent from "@/shared/ui/AnimatedContent/AnimatedContent";
 import List from "@/shared/ui/List/List";
+import type { SiteLang } from "@/shared/lib/i18n";
 
 type Section =
 	| { label: string; bullets: string[] }
@@ -11,23 +12,42 @@ type SectionProps = {
 	index: number;
 };
 
-const data: Section[] = [
-	{
-		label: "who",
-		bullets: ["Kyure_A / キュレェ", "INTP-T"],
-	},
-	{
-		label: "where",
-		bullets: ["Osaka, Japan"],
-	},
-	{
-		label: "what",
-		bullets: [
-			"Emacs が好きです。7 年くらい使っています",
-			"ローグライクをよくやります",
-		],
-	},
-] as const;
+const DATA: Record<SiteLang, Section[]> = {
+	ja: [
+		{
+			label: "who",
+			bullets: ["Kyure_A / キュレェ", "INTP-T"],
+		},
+		{
+			label: "where",
+			bullets: ["Osaka, Japan"],
+		},
+		{
+			label: "what",
+			bullets: [
+				"Emacs が好きです。7 年くらい使っています",
+				"ローグライクをよくやります",
+			],
+		},
+	],
+	en: [
+		{
+			label: "who",
+			bullets: ["Kyure_A / キュレェ", "INTP-T"],
+		},
+		{
+			label: "where",
+			bullets: ["Osaka, Japan"],
+		},
+		{
+			label: "what",
+			bullets: [
+				"I love Emacs. I've been using it for about 7 years.",
+				"I often play roguelikes.",
+			],
+		},
+	],
+};
 
 function Section({ section, index }: SectionProps) {
 	return (
@@ -55,7 +75,8 @@ function Section({ section, index }: SectionProps) {
 	);
 }
 
-export default function AboutMe() {
+export default function AboutMe({ lang }: { lang: SiteLang }) {
+	const data = DATA[lang];
 	return (
 		<section className="py-24 px-6 max-w-6xl mx-auto">
 			<div className="grid md:grid-cols-12 gap-y-12">

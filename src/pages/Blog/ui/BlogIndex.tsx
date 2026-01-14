@@ -32,7 +32,7 @@ export default function BlogIndex({ lang, posts }: Props) {
 					posts.map((post) => (
 						<li key={`${post.slug}-${post.lang}`}>
 							<Link
-								href={`/blog/${post.lang}/${post.slug}`}
+								href={`/${post.lang}/blog/${post.slug}`}
 								className="group block w-full px-2"
 								style={accentStyle}
 							>
