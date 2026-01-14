@@ -12,7 +12,7 @@ import { SiMisskey } from "react-icons/si";
 import { TbBrandMinecraft } from "react-icons/tb";
 import { NostrIcon } from "@/shared/icons/nostr";
 import { VRChatIcon } from "@/shared/icons/vrchat";
-import { Account, AccountProps } from "./Account";
+import { Account, type AccountProps } from "./Account";
 
 export default function Accounts() {
 	const accounts: Omit<AccountProps, "delay">[] = [
