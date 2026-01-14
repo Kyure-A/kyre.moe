@@ -7,6 +7,8 @@ import GlitchImage from "../../../shared/ui/GlitchImage/GlitchImage";
 import OrbitDock from "@/shared/ui/OrbitDock/OrbitDock";
 import useDockItems from "@/shared/hooks/useDockItems";
 
+const heroTitleHeightClass = "h-24";
+
 const MysteriousShader = dynamic(() => import("@/shared/ui/Mys/Mys"), {
 	ssr: false,
 	loading: () => <div className="w-full h-full" />,
@@ -14,7 +16,7 @@ const MysteriousShader = dynamic(() => import("@/shared/ui/Mys/Mys"), {
 
 const FadeTextRotator = dynamic(() => import("./FadeTextRotator"), {
 	ssr: false,
-	loading: () => <div className="h-24 w-full" />,
+	loading: () => <div className={`${heroTitleHeightClass} w-full`} />,
 });
 
 export default function Home() {
@@ -95,11 +97,13 @@ export default function Home() {
 			</div>
 			<div className="absolute flex flex-col z-10 pt-16 inset-0 ">
 				<div className="flex flex-col mb-6 z-20">
-					<FadeTextRotator
-						asciiMaxFps={asciiMaxFps}
-						asciiStartDelayMs={startDelayMs}
-						asciiStartOnIdle
-					/>
+					<div className={`relative w-full ${heroTitleHeightClass}`}>
+						<FadeTextRotator
+							asciiMaxFps={asciiMaxFps}
+							asciiStartDelayMs={startDelayMs}
+							asciiStartOnIdle
+						/>
+					</div>
 				</div>
 				<div className="flex flex-col items-center center">
 					<GlitchImage
