@@ -52,14 +52,20 @@ function Account(props: AccountProps) {
 		"--accent": props.accentColor,
 	} as CSSProperties;
 	const displayId =
-		props.id.includes("@") || props.id.startsWith("npub") || props.platform === "VRChat"
-		? props.id
-		: `@${props.id}`;
+		props.id.includes("@") ||
+		props.id.startsWith("npub") ||
+		props.platform === "VRChat"
+			? props.id
+			: `@${props.id}`;
 	const descriptionText = props.description ?? "";
 	const hasDescription = descriptionText.trim().length > 0;
 	return (
 		<li>
-			<a href={props.serviceUrl} className="group block w-full px-2" style={accentStyle}>
+			<a
+				href={props.serviceUrl}
+				className="group block w-full px-2"
+				style={accentStyle}
+			>
 				<div className="flex w-full items-center gap-3 px-0 py-2 text-gray-100 transition-[padding,background-color,border-radius,color] duration-[400ms] ease-out group-hover:px-4 group-hover:rounded-[10px] group-hover:bg-[var(--accent)] group-hover:text-white group-hover:[text-shadow:0_1px_4px_rgba(0,0,0,0.2)] sm:gap-5 sm:py-3 sm:group-hover:px-5">
 					<span
 						className={`flex items-center justify-center text-[18px] text-gray-200 transition-colors duration-[400ms] ease-out group-hover:text-white sm:text-[22px] ${props.iconClassName ?? "h-5 w-5 sm:h-6 sm:w-6"}`}
@@ -107,7 +113,7 @@ export default function Accounts() {
 			serviceIcon: <FaTwitter />,
 			serviceUrl: "https://x.com/3kyu4",
 		},
-    {
+		{
 			id: "_______kyu",
 			description: "VRChat 用アカウント",
 			platform: "Twitter",
@@ -161,7 +167,8 @@ export default function Accounts() {
 			platform: "Nostr",
 			accentColor: "#8E4BFF",
 			serviceIcon: <NostrIcon />,
-			serviceUrl: "https://iris.to/npub1kyrem0eejds8cwr2732ygtpksxnlehlg4wu92dkvyxxgz48fl5cqn6fay4",
+			serviceUrl:
+				"https://iris.to/npub1kyrem0eejds8cwr2732ygtpksxnlehlg4wu92dkvyxxgz48fl5cqn6fay4",
 		},
 		{
 			id: "Kyure_A",
@@ -186,13 +193,14 @@ export default function Accounts() {
 			serviceIcon: <FaLastfm />,
 			serviceUrl: "https://www.last.fm/user/Kyure_A",
 		},
-    {
-      id: "Kyure_A",
-      platform: "VRChat",
-      accentColor: "#000000",
-      serviceIcon: <VRChatLogo />,
-      serviceUrl: "https://vrchat.com/home/user/usr_daa6a1ac-65c2-49a3-a9a7-074434c05a4d",
-    }
+		{
+			id: "Kyure_A",
+			platform: "VRChat",
+			accentColor: "#000000",
+			serviceIcon: <VRChatLogo />,
+			serviceUrl:
+				"https://vrchat.com/home/user/usr_daa6a1ac-65c2-49a3-a9a7-074434c05a4d",
+		},
 	];
 	return (
 		<>

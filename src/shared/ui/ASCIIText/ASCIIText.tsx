@@ -468,7 +468,10 @@ class CanvAscii {
 	animate() {
 		const animateFrame = (time: number) => {
 			this.animationFrameId = requestAnimationFrame(animateFrame);
-			if (this.frameInterval && time - this.lastFrameTime < this.frameInterval) {
+			if (
+				this.frameInterval &&
+				time - this.lastFrameTime < this.frameInterval
+			) {
 				return;
 			}
 			this.lastFrameTime = time;
@@ -580,7 +583,7 @@ export default function ASCIIText({
 					: "";
 			const resolvedFontFamily = cssFontFamily
 				? `${cssFontFamily}, "IBM Plex Mono", monospace`
-				: "\"IBM Plex Mono\", monospace";
+				: '"IBM Plex Mono", monospace';
 			const { width, height } = containerRef.current.getBoundingClientRect();
 
 			asciiRef.current = new CanvAscii(

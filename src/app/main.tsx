@@ -1,7 +1,7 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import type { ReactNode } from "react";
 import { FaArrowLeft } from "react-icons/fa6";
 import LanguageToggle from "@/shared/ui/LanguageToggleSwitch/LanguageToggleSwitch";
 
@@ -40,7 +40,6 @@ export default function App({ children }: Props) {
 			<main className="flex-1 flex flex-col justify-center items-center">
 				{children}
 			</main>
-
 		</>
 	);
 }
