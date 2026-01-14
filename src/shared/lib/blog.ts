@@ -7,11 +7,9 @@ import footnote from "markdown-it-footnote";
 import taskLists from "markdown-it-task-lists";
 import githubAlerts from "markdown-it-github-alerts";
 import magicLink, { handlerGitHubAt, handlerLink } from "markdown-it-magic-link";
-import { DEFAULT_LANG, isSiteLang, SITE_LANGS, type SiteLang } from "./i18n";
+import { DEFAULT_LANG, isSiteLang, type SiteLang } from "./i18n";
 
-export const BLOG_LANGS = SITE_LANGS;
 export type BlogLang = SiteLang;
-export const DEFAULT_BLOG_LANG: BlogLang = DEFAULT_LANG;
 
 export type BlogPostMeta = {
 	slug: string;
@@ -113,7 +111,7 @@ function createExcerpt(source: string, maxLength = 180) {
 function resolveLangFromFile(fileName: string): BlogLang | null {
 	const base = path.parse(fileName).name;
 	if (isBlogLang(base)) return base;
-	if (base === "index") return DEFAULT_BLOG_LANG;
+	if (base === "index") return DEFAULT_LANG;
 	return null;
 }
 

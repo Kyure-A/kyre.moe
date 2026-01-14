@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BlogIndex from "@/pages/Blog/ui/BlogIndex";
-import { BLOG_LANGS, getAllPosts, isBlogLang } from "@/shared/lib/blog";
+import { getAllPosts, isBlogLang } from "@/shared/lib/blog";
+import { SITE_LANGS } from "@/shared/lib/i18n";
 
 type Params = { lang: string };
 
@@ -10,7 +11,7 @@ type Props = {
 };
 
 export function generateStaticParams() {
-	return BLOG_LANGS.map((lang) => ({ lang }));
+	return SITE_LANGS.map((lang) => ({ lang }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
