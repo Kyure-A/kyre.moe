@@ -245,7 +245,8 @@ export default function MysteriousShader({
 		const setup = () => {
 			if (!containerRef.current) return;
 			const container = containerRef.current;
-			const baseDpr = typeof window !== "undefined" ? window.devicePixelRatio : 1;
+			const baseDpr =
+				typeof window !== "undefined" ? window.devicePixelRatio : 1;
 			const clampDpr = Math.max(0.5, Math.min(2, baseDpr * resolutionScale));
 			const renderer = new Renderer({ dpr: clampDpr });
 			const gl = renderer.gl;
@@ -286,10 +287,7 @@ export default function MysteriousShader({
 			function resize() {
 				const nextDpr =
 					typeof window !== "undefined" ? window.devicePixelRatio : 1;
-				renderer.dpr = Math.max(
-					0.5,
-					Math.min(2, nextDpr * resolutionScale),
-				);
+				renderer.dpr = Math.max(0.5, Math.min(2, nextDpr * resolutionScale));
 				renderer.setSize(container.offsetWidth, container.offsetHeight);
 				program.uniforms.iResolution.value = [
 					gl.canvas.width,

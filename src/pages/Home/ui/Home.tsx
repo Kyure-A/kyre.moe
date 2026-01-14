@@ -1,11 +1,11 @@
 "use client";
 
-import { type CSSProperties, useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
-import { srcPath } from "@/shared/lib/path";
-import GlitchImage from "../../../shared/ui/GlitchImage/GlitchImage";
-import OrbitDock from "@/shared/ui/OrbitDock/OrbitDock";
+import { type CSSProperties, useEffect, useMemo, useState } from "react";
 import useDockItems from "@/shared/hooks/useDockItems";
+import { srcPath } from "@/shared/lib/path";
+import OrbitDock from "@/shared/ui/OrbitDock/OrbitDock";
+import GlitchImage from "../../../shared/ui/GlitchImage/GlitchImage";
 
 const MysteriousShader = dynamic(() => import("@/shared/ui/Mys/Mys"), {
 	ssr: false,
@@ -66,7 +66,10 @@ export default function Home() {
 	}, []);
 
 	return (
-		<div className="relative w-screen h-screen overflow-hidden" style={orbitVars}>
+		<div
+			className="relative w-screen h-screen overflow-hidden"
+			style={orbitVars}
+		>
 			<div className="absolute w-screen h-screen z-0">
 				<MysteriousShader
 					pixelFilter={250}

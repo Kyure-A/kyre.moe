@@ -66,8 +66,7 @@ export default function OrbitDock({
 	const speedValue = `${duration}s`;
 	const tiltXRad = (tiltX * Math.PI) / 180;
 	const ellipseScale = Math.max(0.2, Math.cos(tiltXRad));
-	const normalizedRotation =
-		((rotationValue % 360) + 360) % 360;
+	const normalizedRotation = ((rotationValue % 360) + 360) % 360;
 
 	const rootStyle = {
 		"--orbit-size": sizeValue ?? "min(76vmin, 760px)",
@@ -240,8 +239,7 @@ export default function OrbitDock({
 			<div className="orbit-dock__items" aria-hidden="false">
 				{items.map((item, index) => {
 					const delay = -(index / items.length) * duration;
-					const label =
-						typeof item.label === "string" ? item.label : undefined;
+					const label = typeof item.label === "string" ? item.label : undefined;
 
 					return (
 						<button
