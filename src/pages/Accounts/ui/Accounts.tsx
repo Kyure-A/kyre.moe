@@ -1,6 +1,6 @@
 import type { Omit } from "@react-spring/web";
 import Image from "next/image";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { FaGithub as FaGitHub } from "react-icons/fa";
 import {
 	FaBluesky,
@@ -18,10 +18,12 @@ import AnimatedContent from "@/shared/ui/AnimatedContent/AnimatedContent";
 
 type AccountProps = {
 	id: string;
-	description: string;
+	description?: string;
 	avatarUrl?: string;
 	serviceUrl: string;
 	serviceIcon: ReactNode;
+	platform: string;
+	accentColor: string;
 };
 
 function NostrIcon() {
@@ -38,27 +40,42 @@ function NostrIcon() {
 }
 
 function Account(props: AccountProps) {
+	const accentStyle = {
+		"--accent": props.accentColor,
+	} as CSSProperties;
+	const displayId =
+		props.id.includes("@") || props.id.startsWith("npub") || props.platform === "VRChat"
+		? props.id
+		: `@${props.id}`;
+	const descriptionText = props.description ?? "";
+	const hasDescription = descriptionText.trim().length > 0;
 	return (
-		<a href={props.serviceUrl} className="block w-full px-2">
-			<div className="flex items-center border border-gray-600 rounded-lg w-full my-2 p-3 bg-gray-1000 bg-opacity-50 min-h-20">
-				{/* <Image
-            className="rounded-full flex-shrink-0"
-            alt=""
-            src={props.avatarUrl as string}
-            width={60}
-            height={60}
-            /> */}
-				<div className="ml-2 flex-shrink-0">{props.serviceIcon}</div>
-				<div className="flex flex-col ml-4 overflow-hidden">
-					<div className="flex items-center">
-						<p className="text-white truncate">@{props.id}</p>
+		<li>
+			<a href={props.serviceUrl} className="group block w-full px-2" style={accentStyle}>
+				<div className="flex w-full items-center gap-5 px-0 py-3 text-gray-100 transition-[padding,background-color,border-radius,color] duration-[400ms] ease-out group-hover:px-5 group-hover:rounded-[10px] group-hover:bg-[var(--accent)] group-hover:text-white group-hover:[text-shadow:0_1px_4px_rgba(0,0,0,0.2)]">
+					<span className="flex h-6 w-6 items-center justify-center text-[22px] text-gray-200 transition-colors duration-[400ms] ease-out group-hover:text-white">
+						{props.serviceIcon}
+					</span>
+					<div className="flex min-w-0 flex-1 items-start">
+						<span className="platform mr-5 w-28 shrink-0 self-center truncate text-[16px] font-semibold text-gray-200 transition-[margin,color] duration-[400ms] ease-out group-hover:mr-1 group-hover:text-white">
+							{props.platform}
+						</span>
+						<div
+							className={`min-w-0 flex flex-col min-h-[40px] ${hasDescription ? "" : "justify-center"}`}
+						>
+							<p className="text-[15px] text-gray-100 truncate transition-colors duration-[400ms] ease-out group-hover:text-white">
+								{displayId}
+							</p>
+							{hasDescription ? (
+								<p className="text-[13px] text-gray-400 truncate transition-colors duration-[400ms] ease-out group-hover:text-white/90">
+									{descriptionText}
+								</p>
+							) : null}
+						</div>
 					</div>
-					<p className="text-xs text-gray-300 mt-1 truncate">
-						{props.description}
-					</p>
 				</div>
-			</div>
-		</a>
+			</a>
+		</li>
 	);
 }
 
@@ -66,7 +83,9 @@ export default function Accounts() {
 	const accounts: Omit<AccountProps, "delay">[] = [
 		{
 			id: "kyremoe",
-			description: "本アカウント 3 つめ",
+			description: "3 代目",
+			platform: "Twitter",
+			accentColor: "#1DA1F2",
 			serviceIcon: <FaTwitter />,
 			avatarUrl: srcPath("/icon.jpg"),
 			serviceUrl: "https://x.com/kyremoe",
@@ -74,27 +93,35 @@ export default function Accounts() {
 		{
 			id: "3kyu4",
 			description: "女装アカウント",
+			platform: "Twitter",
+			accentColor: "#1DA1F2",
 			serviceIcon: <FaTwitter />,
 			avatarUrl: srcPath("/icon.jpg"),
 			serviceUrl: "https://x.com/3kyu4",
 		},
 		{
 			id: "Kyure-A",
-			description: "OSS やったりやらない",
+			description: "",
+			platform: "GitHub",
+			accentColor: "#171515",
 			serviceIcon: <FaGitHub />,
 			avatarUrl: srcPath("/icon.jpg"),
 			serviceUrl: "https://github.com/Kyure-A",
 		},
 		{
 			id: "Kyure_A@misskey.io",
-			description: "xyz からやってる",
+			description: "xyz 世代",
+			platform: "Misskey",
+			accentColor: "#55C500",
 			serviceIcon: <SiMisskey />,
 			avatarUrl: srcPath("/icon.jpg"),
 			serviceUrl: "https://misskey.io/@Kyure_A",
 		},
 		{
 			id: "Kyure_A@mstdn.maud.io",
-			description: "中学からやってる",
+			description: "",
+			platform: "Mastodon",
+			accentColor: "#6364FF",
 			serviceIcon: <FaMastodon />,
 			avatarUrl: srcPath("/icon.jpg"),
 			serviceUrl: "https://mstdn.maud.io/@Kyure_A",
@@ -102,6 +129,8 @@ export default function Accounts() {
 		{
 			id: "kyure_a",
 			description: "",
+			platform: "Threads",
+			accentColor: "#1A1A1A",
 			serviceIcon: <FaThreads />,
 			avatarUrl: srcPath("/icon.jpg"),
 			serviceUrl: "https://threads.net/@kyure_a",
@@ -109,6 +138,8 @@ export default function Accounts() {
 		{
 			id: "kyure-a.bsky.social",
 			description: "",
+			platform: "Bluesky",
+			accentColor: "#0085FF",
 			serviceIcon: <FaBluesky />,
 			avatarUrl: srcPath("/icon.jpg"),
 			serviceUrl: "https://bsky.app/profile/kyure-a.bsky.social",
@@ -116,13 +147,17 @@ export default function Accounts() {
 		{
 			id: "npub1kyrem0e",
 			description: "",
+			platform: "Nostr",
+			accentColor: "#8E4BFF",
 			serviceIcon: <NostrIcon />,
 			avatarUrl: srcPath("/icon.jpg"),
 			serviceUrl: "https://iris.to/npub1kyrem0eejds8cwr2732ygtpksxnlehlg4wu92dkvyxxgz48fl5cqn6fay4",
 		},
 		{
 			id: "Kyure_A",
-			description: "「積みゲー」というゲーム",
+			description: "",
+			platform: "Steam",
+			accentColor: "#171A21",
 			serviceIcon: <FaSteam />,
 			avatarUrl: srcPath("/icon.jpg"),
 			serviceUrl: "https://steamcommunity.com/id/kyure_a/",
@@ -130,34 +165,47 @@ export default function Accounts() {
 		{
 			id: "Kyure_A",
 			description: "",
+			platform: "Minecraft",
+			accentColor: "#4CAF50",
 			serviceIcon: <TbBrandMinecraft />,
 			avatarUrl: srcPath("/icon.jpg"),
 			serviceUrl: "https://ja.namemc.com/profile/Kyure_A",
 		},
 		{
 			id: "Kyure_A",
-			description: "",
+			platform: "Last.fm",
+			accentColor: "#D51007",
 			serviceIcon: <FaLastfm />,
 			avatarUrl: srcPath("/icon.jpg"),
 			serviceUrl: "https://www.last.fm/user/Kyure_A",
 		},
+    {
+      id: "Kyure_A",
+      platform: "VRChat",
+      accentColor: "#FF6F61",
+      serviceIcon: <WiNightSnowThunderstorm />,
+      avatarUrl: srcPath("/icon.jpg"),
+      serviceUrl: "https://vrchat.com/home/user/usr_daa6a1ac-65c2-49a3-a9a7-074434c05a4d",
+    }
 	];
 	return (
 		<>
-			<div className="py-20 grid grid-cols-1 md:grid-cols-2 gap-4">
-				{accounts.map((account, index) => {
+			<ul className="py-24 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 list-none max-w-6xl mx-auto px-4 sm:px-6">
+				{accounts.map((account) => {
 					return (
 						<Account
-							key={index}
+							key={account.serviceUrl}
 							id={account.id}
 							description={account.description}
+							platform={account.platform}
+							accentColor={account.accentColor}
 							serviceIcon={account.serviceIcon}
 							avatarUrl={account.avatarUrl ?? ""}
 							serviceUrl={account.serviceUrl}
 						/>
 					);
 				})}
-			</div>
+			</ul>
 		</>
 	);
 }
