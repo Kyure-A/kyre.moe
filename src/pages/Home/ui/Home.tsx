@@ -36,6 +36,9 @@ export default function Home() {
 	const [orbitHovered, setOrbitHovered] = useState(false);
 	const [orbitDragging, setOrbitDragging] = useState(false);
 	const [isMobile, setIsMobile] = useState(false);
+	const [useWebp, setUseWebp] = useState(
+		process.env.NODE_ENV === "production",
+	);
 	const orbitVars = {
 		"--home-orbit-size": "clamp(300px, 86vmin, 760px)",
 		"--home-orbit-icon": "clamp(56px, 12vmin, 96px)",
@@ -69,6 +72,13 @@ export default function Home() {
 		}
 		mq.addListener(handleChange);
 		return () => mq.removeListener(handleChange);
+	}, []);
+
+	useEffect(() => {
+		if (typeof window === "undefined") return;
+		const host = window.location.hostname;
+		const isLocalhost = host === "localhost" || host === "127.0.0.1";
+		setUseWebp(!isLocalhost);
 	}, []);
 
 	return (
@@ -113,7 +123,11 @@ export default function Home() {
 				<div className="flex flex-col items-center center">
 					<GlitchImage
 						maskSrc={srcPath(
-							isMobile ? "/kyure_a-640.webp" : "/kyure_a-1000.webp",
+							useWebp
+								? isMobile
+									? "/kyure_a-640.webp"
+									: "/kyure_a-1000.webp"
+								: "/kyure_a.png",
 						)}
 						maskScale={1}
 						ambientNoiseStrength={0.12}
@@ -123,11 +137,13 @@ export default function Home() {
 						intensity={5}
 					>
 						<picture>
-							<source
-								type="image/webp"
-								srcSet={`${srcPath("/kyure_a-640.webp")} 640w, ${srcPath("/kyure_a-1000.webp")} 1000w, ${srcPath("/kyure_a-1600.webp")} 1600w, ${srcPath("/kyure_a.webp")} 2305w`}
-								sizes="(max-width: 768px) 60vw, 1000px"
-							/>
+							{useWebp && (
+								<source
+									type="image/webp"
+									srcSet={`${srcPath("/kyure_a-640.webp")} 640w, ${srcPath("/kyure_a-1000.webp")} 1000w, ${srcPath("/kyure_a-1600.webp")} 1600w, ${srcPath("/kyure_a.webp")} 2305w`}
+									sizes="(max-width: 768px) 60vw, 1000px"
+								/>
+							)}
 							<img
 								alt="Kyure_A"
 								src={srcPath("/kyure_a.png")}
