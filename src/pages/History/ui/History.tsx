@@ -1,4 +1,4 @@
-import Timeline, { type TimelineItem } from "./Timeline";
+import Timeline, { type TimelineItem } from "@/pages/History/ui/Timeline";
 
 export default function History() {
 	const timelineData: TimelineItem[] = [
