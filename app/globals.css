@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "highlight.js/styles/monokai.css";
 
 :root {
   --background: #ffffff;
@@ -240,4 +241,236 @@ body {
   .orbit-dock__scan {
     animation: none;
   }
+}
+
+.blog-content {
+  color: rgba(237, 237, 237, 0.84);
+  font-size: 1.03rem;
+  line-height: 1.85;
+  letter-spacing: 0.01em;
+}
+
+.blog-content h1,
+.blog-content h2,
+.blog-content h3,
+.blog-content h4 {
+  color: #ffffff;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-top: 2.4rem;
+  margin-bottom: 1rem;
+}
+
+.blog-content h1 {
+  font-size: 2rem;
+}
+
+.blog-content h2 {
+  font-size: 1.6rem;
+}
+
+.blog-content h3 {
+  font-size: 1.3rem;
+}
+
+.blog-content p {
+  margin: 1.1rem 0;
+}
+
+.blog-content a {
+  color: #f92672;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(249, 38, 114, 0.4);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.blog-content a:hover {
+  color: #ffffff;
+  border-bottom-color: rgba(249, 38, 114, 0.9);
+}
+
+.blog-content ul,
+.blog-content ol {
+  list-style-position: outside;
+  padding-left: 1.1rem;
+  margin: 1.1rem 0 1.1rem 0.4rem;
+}
+
+.blog-content ul {
+  list-style-type: disc;
+}
+
+.blog-content ol {
+  list-style-type: decimal;
+}
+
+.blog-content li {
+  margin: 0.4rem 0;
+}
+
+.blog-content .task-list-item {
+  list-style: none;
+}
+
+.blog-content .task-list-item input[type="checkbox"] {
+  margin-right: 0.6rem;
+  transform: translateY(1px);
+  accent-color: #f92672;
+}
+
+.blog-content ul ul,
+.blog-content ul ol,
+.blog-content ol ul,
+.blog-content ol ol {
+  margin-top: 0.6rem;
+  margin-bottom: 0.6rem;
+  margin-left: 0.8rem;
+  padding-left: 1.1rem;
+}
+
+.blog-content blockquote {
+  margin: 1.6rem 0;
+  padding: 1rem 1.2rem;
+  border-left: 2px solid rgba(249, 38, 114, 0.6);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(237, 237, 237, 0.75);
+}
+
+.blog-content .markdown-alert {
+  margin: 1.4rem 0;
+  padding: 0.9rem 1rem;
+  border-left: 3px solid var(--alert-color, rgba(255, 255, 255, 0.2));
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(237, 237, 237, 0.8);
+}
+
+.blog-content .markdown-alert-title {
+  margin: 0 0 0.35rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--alert-color, #f92672);
+}
+
+.blog-content .markdown-alert-title svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.blog-content .markdown-alert-note {
+  --alert-color: #61afef;
+}
+
+.blog-content .markdown-alert-tip {
+  --alert-color: #98c379;
+}
+
+.blog-content .markdown-alert-important {
+  --alert-color: #c678dd;
+}
+
+.blog-content .markdown-alert-warning {
+  --alert-color: #e5c07b;
+}
+
+.blog-content .markdown-alert-caution {
+  --alert-color: #e06c75;
+}
+
+.blog-content .markdown-magic-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.15rem 0.5rem 0.15rem 0.35rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(237, 237, 237, 0.9);
+  text-decoration: none;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
+.blog-content .markdown-magic-link:hover {
+  border-color: rgba(249, 38, 114, 0.6);
+  color: #fff;
+}
+
+.blog-content .markdown-magic-link-image {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  flex: none;
+}
+
+.blog-content code {
+  font-family: var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular, Menlo,
+    Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.9em;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 0.15em 0.35em;
+  border-radius: 6px;
+}
+
+.blog-content pre {
+  margin: 1.6rem 0;
+  padding: 2.2rem 1.2rem 1.1rem;
+  overflow-x: auto;
+  box-shadow: inset 0 0 24px rgba(249, 38, 114, 0.05);
+  position: relative;
+}
+
+.blog-content pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.9rem;
+}
+
+.blog-content .code-copy-button {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.7rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(10, 10, 10, 0.7);
+  color: rgba(255, 255, 255, 0.75);
+  width: 32px;
+  height: 32px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+  transition: border-color 0.2s ease, color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.blog-content .code-copy-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.blog-content .code-copy-button:hover {
+  color: #fff;
+  border-color: rgba(249, 38, 114, 0.7);
+  background: rgba(249, 38, 114, 0.2);
+}
+
+.blog-content .code-copy-button[data-copied="true"] {
+  color: #fff;
+  border-color: rgba(249, 38, 114, 0.9);
+  background: rgba(249, 38, 114, 0.35);
+}
+
+.blog-content hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  margin: 2.2rem 0;
+}
+
+.blog-content img {
+  margin: 1.4rem 0;
 }
