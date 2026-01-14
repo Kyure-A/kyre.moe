@@ -18,32 +18,30 @@ const META_MAP = {
 
 function walk(dir) {
 	const entries = fs.readdirSync(dir, { withFileTypes: true });
-	const files = [];
-	for (const entry of entries) {
-		const fullPath = path.join(dir, entry.name);
-		if (entry.isDirectory()) {
-			files.push(...walk(fullPath));
-		} else if (entry.isFile()) {
-			files.push(fullPath);
-		}
-	}
-	return files;
+	return entries
+		.map((entry) => {
+			const fullPath = path.join(dir, entry.name);
+			if (entry.isDirectory()) return walk(fullPath);
+			if (entry.isFile()) return [fullPath];
+			return [];
+		})
+		.flat();
 }
 
 function parseOrgMeta(source) {
-	const meta = {};
 	const lines = source.split(/\r?\n/);
-	for (const line of lines) {
-		const match = line.match(/^#\+([A-Z_]+):\s*(.*)$/);
-		if (!match) {
-			if (line.trim() === "") break;
-			continue;
-		}
-		const key = META_MAP[match[1]];
-		if (!key) continue;
-		meta[key] = match[2].trim();
-	}
-	return meta;
+	const blankIndex = lines.findIndex((line) => line.trim() === "");
+	const metaLines = blankIndex === -1 ? lines : lines.slice(0, blankIndex);
+	const pairs = metaLines
+		.map((line) => {
+			const match = line.match(/^#\+([A-Z_]+):\s*(.*)$/);
+			if (!match) return null;
+			const key = META_MAP[match[1]];
+			if (!key) return null;
+			return [key, match[2].trim()];
+		})
+		.filter((entry) => entry !== null);
+	return Object.fromEntries(pairs);
 }
 
 function yamlEscape(value) {
@@ -63,10 +61,7 @@ function buildFrontmatter(meta) {
 			.map((tag) => tag.trim())
 			.filter(Boolean);
 		if (tags.length) {
-			lines.push("tags:");
-			for (const tag of tags) {
-				lines.push(`  - ${yamlEscape(tag)}`);
-			}
+			lines.push("tags:", ...tags.map((tag) => `  - ${yamlEscape(tag)}`));
 		}
 	}
 	if (meta.draft) {
@@ -105,12 +100,16 @@ if (orgFiles.length === 0) {
 	process.exit(0);
 }
 
-for (const filePath of orgFiles) {
-	const source = fs.readFileSync(filePath, "utf-8");
-	const meta = parseOrgMeta(source);
-	const outputMarkdown = exportOrgToMarkdown(filePath);
-	const frontmatter = buildFrontmatter(meta);
-	const outputPath = filePath.replace(/\.org$/i, ".md");
-	fs.writeFileSync(outputPath, `${frontmatter}${outputMarkdown}`);
-	console.log(`Exported ${path.relative(process.cwd(), outputPath)}`);
-}
+orgFiles
+	.map((filePath) => {
+		const source = fs.readFileSync(filePath, "utf-8");
+		const meta = parseOrgMeta(source);
+		const outputMarkdown = exportOrgToMarkdown(filePath);
+		const frontmatter = buildFrontmatter(meta);
+		const outputPath = filePath.replace(/\.org$/i, ".md");
+		return { frontmatter, outputMarkdown, outputPath };
+	})
+	.forEach(({ frontmatter, outputMarkdown, outputPath }) => {
+		fs.writeFileSync(outputPath, `${frontmatter}${outputMarkdown}`);
+		console.log(`Exported ${path.relative(process.cwd(), outputPath)}`);
+	});
