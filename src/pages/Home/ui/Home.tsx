@@ -40,6 +40,14 @@ export default function Home() {
 	const shaderResolution = isMobile ? 0.65 : 1;
 	const asciiMaxFps = 24;
 	const startDelayMs = isMobile ? 450 : 200;
+	const heroWidth = 2305;
+	const heroHeight = 4776;
+	const heroStyle: CSSProperties = {
+		width: "min(60vw, 1000px)",
+		height: "auto",
+		aspectRatio: "2305 / 4776",
+		display: "block",
+	};
 
 	useEffect(() => {
 		const mq =
@@ -95,7 +103,9 @@ export default function Home() {
 				</div>
 				<div className="flex flex-col items-center center">
 					<GlitchImage
-						maskSrc={srcPath(isMobile ? "/kyure_a-640.webp" : "/kyure_a.webp")}
+						maskSrc={srcPath(
+							isMobile ? "/kyure_a-640.webp" : "/kyure_a-1000.webp",
+						)}
 						maskScale={1}
 						ambientNoiseStrength={0.12}
 						coolNoiseStrength={0.5}
@@ -106,17 +116,18 @@ export default function Home() {
 						<picture>
 							<source
 								type="image/webp"
-								srcSet={`${srcPath("/kyure_a-640.webp")} 640w, ${srcPath("/kyure_a.webp")} 2305w`}
-								sizes="(max-width: 768px) 60vw, 420px"
+								srcSet={`${srcPath("/kyure_a-640.webp")} 640w, ${srcPath("/kyure_a-1000.webp")} 1000w, ${srcPath("/kyure_a-1600.webp")} 1600w, ${srcPath("/kyure_a.webp")} 2305w`}
+								sizes="(max-width: 768px) 60vw, 1000px"
 							/>
 							<img
 								alt="Kyure_A"
 								src={srcPath("/kyure_a.png")}
-								width={1000}
-								height={1000}
+								width={heroWidth}
+								height={heroHeight}
 								loading="eager"
 								decoding="async"
 								fetchPriority="high"
+								style={heroStyle}
 							/>
 						</picture>
 					</GlitchImage>
