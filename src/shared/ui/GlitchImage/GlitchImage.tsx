@@ -192,8 +192,7 @@ const GlitchImage = ({
 	const clipPath = getRandomClipPath();
 	const glitchBlocks = generateGlitchBlocks();
 	const prismaticStrength = Math.max(0, Math.min(1, coolNoiseStrength));
-	const maskSize =
-		maskScale === 1 ? "contain" : `${maskScale * 100}% auto`;
+	const maskSize = maskScale === 1 ? "contain" : `${maskScale * 100}% auto`;
 	const maskStyle: CSSProperties | undefined = maskSrc
 		? {
 				WebkitMaskImage: `url(${maskSrc})`,
@@ -326,12 +325,9 @@ const GlitchImage = ({
 						}).map((_, index) => {
 							const top = Math.random() * 100;
 							const height = Math.random() * (normalizedIntensity * 6 + 1) + 1;
-							const offsetX =
-								(Math.random() - 0.5) * normalizedIntensity * 90;
-							const offsetY =
-								(Math.random() - 0.5) * normalizedIntensity * 8;
-							const skew =
-								(Math.random() - 0.5) * normalizedIntensity * 8;
+							const offsetX = (Math.random() - 0.5) * normalizedIntensity * 90;
+							const offsetY = (Math.random() - 0.5) * normalizedIntensity * 8;
+							const skew = (Math.random() - 0.5) * normalizedIntensity * 8;
 							const scaleX = 0.6 + Math.random() * 0.8;
 							const opacity =
 								(0.25 + Math.random() * 0.65) *
