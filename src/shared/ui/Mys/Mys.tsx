@@ -226,6 +226,8 @@ export default function MysteriousShader({
 	startOnIdle = false,
 }: MysteriousShaderProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
+	const offsetX = offset[0];
+	const offsetY = offset[1];
 
 	useEffect(() => {
 		if (!containerRef.current) return;
@@ -264,7 +266,7 @@ export default function MysteriousShader({
 					},
 					uSpinRotation: { value: spinRotation },
 					uSpinSpeed: { value: spinSpeed },
-					uOffset: { value: offset },
+					uOffset: { value: [offsetX, offsetY] },
 					uColor1: { value: hexToVec4(color1) },
 					uColor2: { value: hexToVec4(color2) },
 					uColor3: { value: hexToVec4(color3) },
@@ -359,7 +361,8 @@ export default function MysteriousShader({
 	}, [
 		spinRotation,
 		spinSpeed,
-		offset,
+		offsetX,
+		offsetY,
 		color1,
 		color2,
 		color3,
