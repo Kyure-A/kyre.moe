@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BlogPostView from "@/pages/Blog/ui/BlogPost";
+import { isBlogLang } from "@/shared/lib/blog";
 import {
 	getAllPosts,
 	getPost,
 	getPostLanguages,
-	isBlogLang,
-} from "@/shared/lib/blog";
+} from "@/shared/lib/blog.server";
 import { SITE_LANGS } from "@/shared/lib/i18n";
 
 type Params = { lang: string; slug: string };

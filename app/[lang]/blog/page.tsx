@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BlogIndex from "@/pages/Blog/ui/BlogIndex";
-import { getAllPosts, isBlogLang } from "@/shared/lib/blog";
+import { isBlogLang } from "@/shared/lib/blog";
+import { getAllPosts } from "@/shared/lib/blog.server";
 import { SITE_LANGS } from "@/shared/lib/i18n";
 
 type Params = { lang: string };
