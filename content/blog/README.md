@@ -31,9 +31,37 @@ Notes:
 - Drafts can be hidden by adding `draft: true` to frontmatter.
 
 Org-mode workflow:
-- Export Org to Markdown before build (e.g. with Emacs batch) and place the
-  generated Markdown here.
-- Keep Org files elsewhere or alongside, but only Markdown is parsed by Next.js.
-- Optional helper: `npm run content:org` converts `.org` files in this folder
-  into `.md` files using Emacs `ox-md`. Metadata is read from Org headers like:
-  `#+TITLE`, `#+DATE`, `#+DESCRIPTION`, `#+TAGS`, `#+CANONICAL`, `#+COVER`, `#+DRAFT`.
+- Org は `content/blog/<slug>/` に置き、`ja.org` / `en.org` を使う。
+- Next.js が読むのは `.md` なので、ビルド前に Org → Markdown を行う。
+- 変換は `npm run content:org` を使用（Emacs `ox-md` で `.org` を `.md` に出力）。
+
+Org ファイルに書く内容（例）:
+
+```
+#+TITLE: Hello World
+#+DATE: 2025-01-01
+#+DESCRIPTION: Short summary shown in lists and meta tags.
+#+TAGS: note, nextjs
+#+CANONICAL: https://example.com/original
+#+COVER: /images/blog/hello-world.jpg
+#+DRAFT: true
+
+はじめに軽い導入を書く（excerpt にも使われる）。
+
+* セクション見出し
+本文本文本文。
+
+** 小見出し
+- 箇条書き
+- 箇条書き
+
+#+begin_src ts
+console.log("code block");
+#+end_src
+```
+
+メタ情報のルール:
+- 先頭のメタ情報は「最初の空行」までが対象。
+- `#+TAGS` はカンマ区切り or 空白区切りで指定可能。
+- `#+DRAFT` は `true/yes/1` で下書き扱い。
+- `#+CANONICAL` と `#+COVER` は任意。
