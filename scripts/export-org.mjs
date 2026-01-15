@@ -79,7 +79,28 @@ function exportOrgToMarkdown(filePath) {
 		os.tmpdir(),
 		`org-md-${Date.now()}-${path.basename(filePath, ORG_EXTENSION)}.md`,
 	);
-	const elisp = `(progn (require 'ox-md) (setq org-export-with-toc nil org-export-with-title nil) (org-export-to-file 'md ${JSON.stringify(tempOut)}))`;
+	const elisp = `(progn
+		(require 'ox-md)
+		(defun kyre-md--ensure-trailing-newline (value)
+			(if (and value (not (string-suffix-p "\\n" value)))
+				(concat value "\\n")
+				value))
+		(defun kyre-md-src-block (src-block _contents info)
+			(let* ((lang (org-element-property :language src-block))
+					(code (org-remove-indentation (org-export-format-code-default src-block info)))
+					(code (kyre-md--ensure-trailing-newline code))
+					(lang (or lang "")))
+				(format "\`\`\`%s\\n%s\`\`\`" lang code)))
+		(defun kyre-md-underline (_underline contents _info)
+			(format "__%s__" (or contents "")))
+		(defun kyre-md-strike-through (_strike-through contents _info)
+			(format "~~%s~~" (or contents "")))
+		(org-export-define-derived-backend 'md-fenced 'md
+			:translate-alist '((src-block . kyre-md-src-block)
+				(underline . kyre-md-underline)
+				(strike-through . kyre-md-strike-through)))
+		(setq org-export-with-toc nil org-export-with-title nil)
+		(org-export-to-file 'md-fenced ${JSON.stringify(tempOut)}))`;
 	execFileSync("emacs", ["--batch", filePath, "--eval", elisp], {
 		stdio: "inherit",
 	});
