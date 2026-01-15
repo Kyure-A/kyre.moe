@@ -16,10 +16,10 @@ export const metadata: Metadata = {
 		default: "Kyure_A / キュレェ",
 		template: "%s | Kyure_A",
 	},
-	description: "Kyure_A's portfolio. Powered by Next.js",
+	description: "Kyure_A's portfolio. ",
 	openGraph: {
 		title: "Kyure_A / キュレェ",
-		description: "Kyure_A's portfolio. Powered by Next.js",
+		description: "Kyure_A's portfolio. ",
 		url: "https://kyre.moe",
 		siteName: "Kyure_A",
 		type: "website",
