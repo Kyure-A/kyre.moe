@@ -11,8 +11,22 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-	title: "Kyure_A / キュレェ",
+	metadataBase: new URL("https://kyre.moe"),
+	title: {
+		default: "Kyure_A / キュレェ",
+		template: "%s | Kyure_A",
+	},
 	description: "Kyure_A's portfolio. Powered by Next.js",
+	openGraph: {
+		title: "Kyure_A / キュレェ",
+		description: "Kyure_A's portfolio. Powered by Next.js",
+		url: "https://kyre.moe",
+		siteName: "Kyure_A",
+		type: "website",
+	},
+	twitter: {
+		card: "summary",
+	},
 };
 
 export default function RootLayout({
