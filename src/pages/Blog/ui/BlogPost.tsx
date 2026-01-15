@@ -20,7 +20,7 @@ export default function BlogPostView({ post }: Props) {
 	})();
 
 	return (
-		<section className="py-24 max-w-3xl mx-auto px-4 sm:px-6">
+		<section className="w-full py-24 max-w-3xl mx-auto px-4 sm:px-6">
 			<CodeCopyEnhancer />
 			<TwitterEmbedEnhancer />
 			<header className="mt-8">
