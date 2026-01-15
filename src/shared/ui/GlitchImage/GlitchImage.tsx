@@ -28,6 +28,8 @@ interface GlitchImageProps {
 	active?: boolean;
 	/** Intensity of the glitch effect (1-10) (default: 5) */
 	intensity?: number;
+	/** Delay before starting glitch checks (ms) (default: 1000) */
+	startDelayMs?: number;
 }
 
 interface GlitchBlock {
@@ -62,6 +64,7 @@ const GlitchImage = ({
 	glitchDuration = 500,
 	active = true,
 	intensity = 5,
+	startDelayMs = 1000,
 }: GlitchImageProps): JSX.Element => {
 	const [isGlitching, setIsGlitching] = useState<boolean>(false);
 	const [glitchType, setGlitchType] = useState<number>(3);
@@ -108,17 +111,20 @@ const GlitchImage = ({
 
 	// Setup interval to check for glitch
 	useEffect(() => {
-		if (active) {
-			// Initial check after a short delay
-			const initialTimeout = setTimeout(() => {
-				triggerGlitch();
-			}, 1000);
+		let startTimer: NodeJS.Timeout | null = null;
 
-			// Regular interval checks
-			intervalRef.current = setInterval(triggerGlitch, interval * 1000);
+		if (active) {
+			const schedule = () => {
+				triggerGlitch();
+				intervalRef.current = setInterval(triggerGlitch, interval * 1000);
+			};
+
+			startTimer = setTimeout(schedule, Math.max(0, startDelayMs));
 
 			return () => {
-				clearTimeout(initialTimeout);
+				if (startTimer) {
+					clearTimeout(startTimer);
+				}
 				if (intervalRef.current) {
 					clearInterval(intervalRef.current);
 				}
@@ -129,6 +135,9 @@ const GlitchImage = ({
 		}
 
 		return () => {
+			if (startTimer) {
+				clearTimeout(startTimer);
+			}
 			if (intervalRef.current) {
 				clearInterval(intervalRef.current);
 			}
@@ -136,7 +145,7 @@ const GlitchImage = ({
 				clearTimeout(timeoutRef.current);
 			}
 		};
-	}, [active, interval, triggerGlitch]);
+	}, [active, interval, startDelayMs, triggerGlitch]);
 
 	// Generate random clip path for partial visibility (horror effect)
 	const getRandomClipPath = (): string => {
