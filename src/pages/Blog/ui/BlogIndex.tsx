@@ -24,7 +24,7 @@ export default function BlogIndex({ lang, posts }: Props) {
 	} as CSSProperties;
 
 	return (
-		<section className="py-24 max-w-4xl mx-auto px-4 sm:px-6">
+		<section className="w-full py-24 max-w-4xl mx-auto px-4 sm:px-6">
 			<ul className="list-none space-y-2">
 				{posts.length === 0 ? (
 					<li className="px-2 py-3 text-sm text-gray-500">{copy.empty}</li>
