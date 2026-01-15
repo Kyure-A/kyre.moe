@@ -127,6 +127,7 @@ export default function Home() {
 									: "/kyure_a-1000.webp"
 								: "/kyure_a.png",
 						)}
+						startDelayMs={1000}
 						maskScale={1}
 						ambientNoiseStrength={0.12}
 						coolNoiseStrength={0.5}

@@ -1,7 +1,7 @@
 export const SITE_LANGS = ["ja", "en"] as const;
 export type SiteLang = (typeof SITE_LANGS)[number];
 
-export const DEFAULT_LANG: SiteLang = "en";
+export const DEFAULT_LANG: SiteLang = "ja";
 
 const LANG_PATTERN = SITE_LANGS.join("|");
 const LANG_PREFIX_REGEX = new RegExp(`^/(${LANG_PATTERN})(?=/|$)`);
