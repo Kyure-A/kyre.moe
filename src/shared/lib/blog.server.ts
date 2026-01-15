@@ -1,6 +1,5 @@
 import "server-only";
 import * as fs from "fs";
-import * as path from "path";
 import matter from "gray-matter";
 import hljs from "highlight.js";
 import { createMarkdownExit } from "markdown-exit";
@@ -11,6 +10,7 @@ import magicLink, {
 	handlerLink,
 } from "markdown-it-magic-link";
 import taskLists from "markdown-it-task-lists";
+import * as path from "path";
 import type { BlogLang, BlogPost, BlogPostMeta } from "./blog";
 import { isBlogLang } from "./blog";
 import { DEFAULT_LANG } from "./i18n";
