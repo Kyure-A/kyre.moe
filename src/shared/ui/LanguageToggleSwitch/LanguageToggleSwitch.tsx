@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect, useMemo, useState } from "react";
 import {
 	DEFAULT_LANG,
 	getLangFromPath,
@@ -19,9 +19,7 @@ const LanguageToggle = ({ onChange }: LanguageToggleProps) => {
 	const pathLang = useMemo(() => {
 		return getLangFromPath(pathname);
 	}, [pathname]);
-	const [language, setLanguage] = useState<SiteLang>(
-		pathLang ?? DEFAULT_LANG,
-	);
+	const [language, setLanguage] = useState<SiteLang>(pathLang ?? DEFAULT_LANG);
 
 	useEffect(() => {
 		if (pathLang) {

@@ -3,8 +3,8 @@
 import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { FaArrowLeft } from "react-icons/fa6";
-import LanguageToggle from "@/shared/ui/LanguageToggleSwitch/LanguageToggleSwitch";
 import { DEFAULT_LANG, getLangFromPath } from "@/shared/lib/i18n";
+import LanguageToggle from "@/shared/ui/LanguageToggleSwitch/LanguageToggleSwitch";
 
 type Props = { children: ReactNode };
 

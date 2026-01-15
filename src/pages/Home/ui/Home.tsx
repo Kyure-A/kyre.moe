@@ -36,9 +36,7 @@ export default function Home() {
 	const [orbitHovered, setOrbitHovered] = useState(false);
 	const [orbitDragging, setOrbitDragging] = useState(false);
 	const [isMobile, setIsMobile] = useState(false);
-	const [useWebp, setUseWebp] = useState(
-		process.env.NODE_ENV === "production",
-	);
+	const [useWebp, setUseWebp] = useState(process.env.NODE_ENV === "production");
 	const orbitVars = {
 		"--home-orbit-size": "clamp(300px, 86vmin, 760px)",
 		"--home-orbit-icon": "clamp(56px, 12vmin, 96px)",

@@ -1,7 +1,7 @@
-import fs from "node:fs";
-import path from "node:path";
-import os from "node:os";
 import { execFileSync } from "node:child_process";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 
 const BLOG_DIR = path.join(process.cwd(), "content", "blog");
 const ORG_EXTENSION = ".org";
@@ -18,14 +18,12 @@ const META_MAP = {
 
 function walk(dir) {
 	const entries = fs.readdirSync(dir, { withFileTypes: true });
-	return entries
-		.map((entry) => {
-			const fullPath = path.join(dir, entry.name);
-			if (entry.isDirectory()) return walk(fullPath);
-			if (entry.isFile()) return [fullPath];
-			return [];
-		})
-		.flat();
+	return entries.flatMap((entry) => {
+		const fullPath = path.join(dir, entry.name);
+		if (entry.isDirectory()) return walk(fullPath);
+		if (entry.isFile()) return [fullPath];
+		return [];
+	});
 }
 
 function parseOrgMeta(source) {
@@ -52,7 +50,8 @@ function escapeString(value) {
 function buildFrontmatter(meta) {
 	const lines = ["---"];
 	if (meta.title) lines.push(`title: ${escapeString(meta.title)}`);
-	if (meta.description) lines.push(`description: ${escapeString(meta.description)}`);
+	if (meta.description)
+		lines.push(`description: ${escapeString(meta.description)}`);
 	if (meta.date) lines.push(`date: ${escapeString(meta.date)}`);
 	if (meta.canonical) lines.push(`canonical: ${escapeString(meta.canonical)}`);
 	if (meta.cover) lines.push(`cover: ${escapeString(meta.cover)}`);

@@ -132,7 +132,7 @@ export default function Accounts({ lang }: { lang: SiteLang }) {
 		description:
 			typeof account.description === "string"
 				? account.description
-				: account.description?.[lang] ?? "",
+				: (account.description?.[lang] ?? ""),
 	}));
 	return (
 		<>

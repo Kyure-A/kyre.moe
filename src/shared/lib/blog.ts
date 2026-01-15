@@ -1,12 +1,15 @@
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
-import { createMarkdownExit } from "markdown-exit";
 import hljs from "highlight.js";
+import { createMarkdownExit } from "markdown-exit";
 import footnote from "markdown-it-footnote";
-import taskLists from "markdown-it-task-lists";
 import githubAlerts from "markdown-it-github-alerts";
-import magicLink, { handlerGitHubAt, handlerLink } from "markdown-it-magic-link";
+import magicLink, {
+	handlerGitHubAt,
+	handlerLink,
+} from "markdown-it-magic-link";
+import taskLists from "markdown-it-task-lists";
 import { DEFAULT_LANG, isSiteLang, type SiteLang } from "./i18n";
 
 export type BlogLang = SiteLang;
@@ -173,7 +176,8 @@ function embedMediaPlugin(md: any) {
 			const inline = state.tokens[i + 1];
 			const close = state.tokens[i + 2];
 			if (!inline || !close) continue;
-			if (inline.type !== "inline" || close.type !== "paragraph_close") continue;
+			if (inline.type !== "inline" || close.type !== "paragraph_close")
+				continue;
 
 			const href = extractSingleLink(inline);
 			if (!href) continue;
@@ -255,8 +259,8 @@ function createExcerpt(source: string, maxLength = 180) {
 	const stripped = source
 		.replace(/```[\s\S]*?```/g, " ")
 		.replace(/`[^`]*`/g, " ")
-		.replace(/\[[^\]]*\]\([^\)]*\)/g, " ")
-		.replace(/[#>*_~\-]/g, " ")
+		.replace(/\[[^\]]*\]\([^)]*\)/g, " ")
+		.replace(/[#>*_~-]/g, " ")
 		.replace(/\s+/g, " ")
 		.trim();
 	if (!stripped) return "";
@@ -293,7 +297,8 @@ function parseFrontmatter(
 					.map((tag) => tag.trim())
 					.filter(Boolean)
 			: [];
-	const canonical = typeof data.canonical === "string" ? data.canonical : undefined;
+	const canonical =
+		typeof data.canonical === "string" ? data.canonical : undefined;
 	const cover = typeof data.cover === "string" ? data.cover : undefined;
 	const draft = data.draft === true;
 
