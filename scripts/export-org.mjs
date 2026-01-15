@@ -44,24 +44,24 @@ function parseOrgMeta(source) {
 	return Object.fromEntries(pairs);
 }
 
-function yamlEscape(value) {
+function escapeString(value) {
 	return `"${String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
 }
 
 function buildFrontmatter(meta) {
 	const lines = ["---"];
-	if (meta.title) lines.push(`title: ${yamlEscape(meta.title)}`);
-	if (meta.description) lines.push(`description: ${yamlEscape(meta.description)}`);
-	if (meta.date) lines.push(`date: ${yamlEscape(meta.date)}`);
-	if (meta.canonical) lines.push(`canonical: ${yamlEscape(meta.canonical)}`);
-	if (meta.cover) lines.push(`cover: ${yamlEscape(meta.cover)}`);
+	if (meta.title) lines.push(`title: ${escapeString(meta.title)}`);
+	if (meta.description) lines.push(`description: ${escapeString(meta.description)}`);
+	if (meta.date) lines.push(`date: ${escapeString(meta.date)}`);
+	if (meta.canonical) lines.push(`canonical: ${escapeString(meta.canonical)}`);
+	if (meta.cover) lines.push(`cover: ${escapeString(meta.cover)}`);
 	if (meta.tags) {
 		const tags = String(meta.tags)
 			.split(/[,\s]+/)
 			.map((tag) => tag.trim())
 			.filter(Boolean);
 		if (tags.length) {
-			lines.push("tags:", ...tags.map((tag) => `  - ${yamlEscape(tag)}`));
+			lines.push("tags:", ...tags.map((tag) => `  - ${escapeString(tag)}`));
 		}
 	}
 	if (meta.draft) {
@@ -74,16 +74,12 @@ function buildFrontmatter(meta) {
 	return lines.join("\n");
 }
 
-function elispEscape(value) {
-	return `"${String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
-}
-
 function exportOrgToMarkdown(filePath) {
 	const tempOut = path.join(
 		os.tmpdir(),
 		`org-md-${Date.now()}-${path.basename(filePath, ORG_EXTENSION)}.md`,
 	);
-	const elisp = `(progn (require 'ox-md) (setq org-export-with-toc nil org-export-with-title nil) (org-export-to-file 'md ${elispEscape(tempOut)}))`;
+	const elisp = `(progn (require 'ox-md) (setq org-export-with-toc nil org-export-with-title nil) (org-export-to-file 'md ${escapeString(tempOut)}))`;
 	execFileSync("emacs", ["--batch", filePath, "--eval", elisp], {
 		stdio: "inherit",
 	});
