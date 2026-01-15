@@ -12,11 +12,11 @@ type Props = {
 const META_BY_LANG: Record<SiteLang, { title: string; description: string }> = {
 	ja: {
 		title: "ホーム",
-		description: "Kyure_A のポートフォリオのトップページ。",
+		description: "Kyure_A のポートフォリオ",
 	},
 	en: {
 		title: "Home",
-		description: "Kyure_A's portfolio home page.",
+		description: "Kyure_A's portfolio.",
 	},
 };
 
