@@ -2,7 +2,6 @@
 #+DATE: 2025-01-15
 #+DESCRIPTION: 新しくブログを作りました
 #+TAGS: note
-#+COVER: /images/blog/hello-world.jpg
 #+DRAFT: false
 
 ** はじめに
