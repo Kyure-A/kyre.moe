@@ -1,15 +1,50 @@
-import React, { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect, useMemo, useState } from "react";
+import {
+	DEFAULT_LANG,
+	getLangFromPath,
+	replacePathLang,
+	type SiteLang,
+} from "@/shared/lib/i18n";
 
 type LanguageToggleProps = {
 	onChange: (s: string) => void;
 };
 
+const STORAGE_KEY = "kyre-lang";
+
 const LanguageToggle = ({ onChange }: LanguageToggleProps) => {
-	const [language, setLanguage] = useState("ja"); // 'ja' for Japanese, 'en' for English
+	const router = useRouter();
+	const pathname = usePathname();
+	const pathLang = useMemo(() => {
+		return getLangFromPath(pathname);
+	}, [pathname]);
+	const [language, setLanguage] = useState<SiteLang>(pathLang ?? DEFAULT_LANG);
+
+	useEffect(() => {
+		if (pathLang) {
+			setLanguage(pathLang);
+			return;
+		}
+		if (typeof window === "undefined") return;
+		const stored = window.localStorage.getItem(STORAGE_KEY);
+		if (stored === "ja" || stored === "en") {
+			setLanguage(stored);
+		}
+	}, [pathLang]);
+
+	const getNextPath = (lang: SiteLang) => {
+		if (!pathname) return `/${lang}`;
+		return replacePathLang(pathname, lang);
+	};
 
 	const handleToggle = () => {
 		const newLanguage = language === "ja" ? "en" : "ja";
 		setLanguage(newLanguage);
+		if (typeof window !== "undefined") {
+			window.localStorage.setItem(STORAGE_KEY, newLanguage);
+		}
+		router.push(getNextPath(newLanguage));
 		if (onChange) {
 			onChange(newLanguage);
 		}

@@ -59,6 +59,12 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
+      - name: Install Emacs for Org export
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y emacs-nox
+      - name: Export Org to Markdown
+        run: pnpm content:org
       - name: Convert hero image to WebP
         run: |
           sudo apt-get update
