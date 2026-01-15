@@ -1,6 +1,7 @@
 import type { BlogPost } from "@/shared/lib/blog";
 import { formatDate } from "@/shared/lib/blog";
 import CodeCopyEnhancer from "@/shared/ui/CodeCopy/CodeCopy";
+import TwitterEmbedEnhancer from "@/shared/ui/TwitterEmbed/TwitterEmbed";
 
 type Props = {
 	post: BlogPost;
@@ -21,6 +22,7 @@ export default function BlogPostView({ post }: Props) {
 	return (
 		<section className="py-24 max-w-3xl mx-auto px-4 sm:px-6">
 			<CodeCopyEnhancer />
+			<TwitterEmbedEnhancer />
 			<header className="mt-8">
 				<p className="text-[11px] tracking-[0.08em] text-gray-500">
 					{formatDate(post.date, post.lang)}
