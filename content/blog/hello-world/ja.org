@@ -74,7 +74,7 @@ https://x.com/jack/status/20
 {@ryoppippi} が個人ブログに移行しようみたいな波を作っていたので俺も乗った。
 
 ** 構成
-ryoppippi.com を参考に、[[https://github.com/markdown-it/markdown-it][markdown-it]] / [[github.com/serkodev/markdown-exit][markdown-exit]] ベースで組んだ。Codex にしっかり要件を伝えたつもりだったが、全くデザインについての要件を伝えていないことを忘れておりクソみたいな見た目になったので全部デザインを直した。
+ryoppippi.com を参考に、[[https://github.com/markdown-it/markdown-it][markdown-it]] / [[https://github.com/serkodev/markdown-exit][markdown-exit]] ベースで組んだ。Codex にしっかり要件を伝えたつもりだったが、全くデザインについての要件を伝えていないことを忘れておりクソみたいな見た目になったので全部デザインを直した。
 
 文章自体は Org-mode で書いたものを CI で Markdown に変換している。
 
