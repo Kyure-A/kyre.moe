@@ -28,7 +28,7 @@ export function formatDate(date: string, lang: BlogLang) {
 	try {
 		return new Intl.DateTimeFormat(lang === "ja" ? "ja-JP" : "en-US", {
 			year: "numeric",
-			month: "short",
+			month: "2-digit",
 			day: "2-digit",
 		}).format(new Date(date));
 	} catch {
