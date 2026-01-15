@@ -74,12 +74,16 @@ function buildFrontmatter(meta) {
 	return lines.join("\n");
 }
 
+function elispEscape(value) {
+	return `"${String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+}
+
 function exportOrgToMarkdown(filePath) {
 	const tempOut = path.join(
 		os.tmpdir(),
 		`org-md-${Date.now()}-${path.basename(filePath, ORG_EXTENSION)}.md`,
 	);
-	const elisp = `(progn (require 'ox-md) (setq org-export-with-toc nil org-export-with-title nil) (org-export-to-file 'md ${JSON.stringify(tempOut)}))`;
+	const elisp = `(progn (require 'ox-md) (setq org-export-with-toc nil org-export-with-title nil) (org-export-to-file 'md ${elispEscape(tempOut)}))`;
 	execFileSync("emacs", ["--batch", filePath, "--eval", elisp], {
 		stdio: "inherit",
 	});
