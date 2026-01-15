@@ -1,7 +1,7 @@
-import { execFileSync } from "node:child_process";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
+import os from "node:os";
+import { execFileSync } from "node:child_process";
 
 const BLOG_DIR = path.join(process.cwd(), "content", "blog");
 const ORG_EXTENSION = ".org";
@@ -20,10 +20,10 @@ function walk(dir) {
 	const entries = fs.readdirSync(dir, { withFileTypes: true });
 	return entries.flatMap((entry) => {
 		const fullPath = path.join(dir, entry.name);
-		if (entry.isDirectory()) return walk(fullPath);
-		if (entry.isFile()) return [fullPath];
-		return [];
-	});
+			if (entry.isDirectory()) return walk(fullPath);
+			if (entry.isFile()) return [fullPath];
+			return [];
+		});
 }
 
 function parseOrgMeta(source) {
@@ -50,8 +50,7 @@ function escapeString(value) {
 function buildFrontmatter(meta) {
 	const lines = ["---"];
 	if (meta.title) lines.push(`title: ${escapeString(meta.title)}`);
-	if (meta.description)
-		lines.push(`description: ${escapeString(meta.description)}`);
+	if (meta.description) lines.push(`description: ${escapeString(meta.description)}`);
 	if (meta.date) lines.push(`date: ${escapeString(meta.date)}`);
 	if (meta.canonical) lines.push(`canonical: ${escapeString(meta.canonical)}`);
 	if (meta.cover) lines.push(`cover: ${escapeString(meta.cover)}`);
@@ -79,28 +78,7 @@ function exportOrgToMarkdown(filePath) {
 		os.tmpdir(),
 		`org-md-${Date.now()}-${path.basename(filePath, ORG_EXTENSION)}.md`,
 	);
-	const elisp = `(progn
-		(require 'ox-md)
-		(defun kyre-md--ensure-trailing-newline (value)
-			(if (and value (not (string-suffix-p "\\n" value)))
-				(concat value "\\n")
-				value))
-		(defun kyre-md-src-block (src-block _contents info)
-			(let* ((lang (org-element-property :language src-block))
-					(code (org-remove-indentation (org-export-format-code-default src-block info)))
-					(code (kyre-md--ensure-trailing-newline code))
-					(lang (or lang "")))
-				(format "\`\`\`%s\\n%s\`\`\`" lang code)))
-		(defun kyre-md-underline (_underline contents _info)
-			(format "__%s__" (or contents "")))
-		(defun kyre-md-strike-through (_strike-through contents _info)
-			(format "~~%s~~" (or contents "")))
-		(org-export-define-derived-backend 'md-fenced 'md
-			:translate-alist '((src-block . kyre-md-src-block)
-				(underline . kyre-md-underline)
-				(strike-through . kyre-md-strike-through)))
-		(setq org-export-with-toc nil org-export-with-title nil)
-		(org-export-to-file 'md-fenced ${escapeString(tempOut)}))`;
+	const elisp = `(progn (require 'ox-md) (setq org-export-with-toc nil org-export-with-title nil) (org-export-to-file 'md ${escapeString(tempOut)}))`;
 	execFileSync("emacs", ["--batch", filePath, "--eval", elisp], {
 		stdio: "inherit",
 	});
