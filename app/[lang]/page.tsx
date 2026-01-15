@@ -1,12 +1,23 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Home from "@/pages/Home/ui/Home";
-import { isSiteLang, SITE_LANGS } from "@/shared/lib/i18n";
+import { isSiteLang, SITE_LANGS, type SiteLang } from "@/shared/lib/i18n";
 
 type Params = { lang: string };
 
 type Props = {
 	params: Promise<Params>;
+};
+
+const META_BY_LANG: Record<SiteLang, { title: string; description: string }> = {
+	ja: {
+		title: "ホーム",
+		description: "Kyure_A のポートフォリオのトップページ。",
+	},
+	en: {
+		title: "Home",
+		description: "Kyure_A's portfolio home page.",
+	},
 };
 
 export function generateStaticParams() {
@@ -16,13 +27,20 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const { lang } = await params;
 	if (!isSiteLang(lang)) return {};
+	const meta = META_BY_LANG[lang];
 	return {
+		title: meta.title,
+		description: meta.description,
 		alternates: {
 			canonical: `/${lang}`,
 			languages: {
 				ja: "/ja",
 				en: "/en",
 			},
+		},
+		openGraph: {
+			title: meta.title,
+			description: meta.description,
 		},
 	};
 }
