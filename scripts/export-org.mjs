@@ -45,7 +45,7 @@ function parseOrgMeta(source) {
 }
 
 function escapeString(value) {
-	if (value == null) return '""';
+	if (value === null || value === undefined) return '""';
 	return `"${String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
 }
 
