@@ -1,10 +1,11 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { FaHome } from "react-icons/fa";
-import { FaClock, FaUser } from "react-icons/fa6";
+import { FaClock, FaPenNib, FaUser } from "react-icons/fa6";
 import { MdDescription } from "react-icons/md";
+import { DEFAULT_LANG, getLangFromPath } from "@/shared/lib/i18n";
 
 export type DockItemData = {
 	icon: React.ReactNode;
@@ -15,26 +16,38 @@ export type DockItemData = {
 
 export default function useDockItems(): DockItemData[] {
 	const router = useRouter();
+	const pathname = usePathname();
+	const lang = getLangFromPath(pathname) ?? DEFAULT_LANG;
+	const basePath = `/${lang}`;
 
 	return useMemo(
 		() => [
-			{ icon: <FaHome />, label: "Home", onClick: () => router.push("/") },
+			{
+				icon: <FaHome />,
+				label: "Home",
+				onClick: () => router.push(basePath),
+			},
+			{
+				icon: <FaPenNib />,
+				label: "Blog",
+				onClick: () => router.push(`${basePath}/blog`),
+			},
 			{
 				icon: <FaUser />,
 				label: "Accounts",
-				onClick: () => router.push("/accounts"),
+				onClick: () => router.push(`${basePath}/accounts`),
 			},
 			{
 				icon: <FaClock />,
 				label: "History",
-				onClick: () => router.push("/history"),
+				onClick: () => router.push(`${basePath}/history`),
 			},
 			{
 				icon: <MdDescription />,
 				label: "About me",
-				onClick: () => router.push("/about"),
+				onClick: () => router.push(`${basePath}/about`),
 			},
 		],
-		[router],
+		[basePath, router],
 	);
 }
