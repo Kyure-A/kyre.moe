@@ -1,15 +1,17 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import type { Metadata } from "next";
+import Home from "@/pages/Home/ui/Home";
 import { DEFAULT_LANG } from "@/shared/lib/i18n";
 
-export default function HomePage() {
-	const router = useRouter();
+export const metadata: Metadata = {
+	alternates: {
+		canonical: `/${DEFAULT_LANG}`,
+		languages: {
+			ja: "/ja",
+			en: "/en",
+		},
+	},
+};
 
-	useEffect(() => {
-		router.replace(`/${DEFAULT_LANG}`);
-	}, [router]);
-
-	return null;
+export default function RootPage() {
+	return <Home />;
 }
