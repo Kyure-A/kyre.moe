@@ -14,7 +14,7 @@ type Props = {
 const META_BY_LANG: Record<BlogLang, { title: string; description: string }> = {
 	ja: {
 		title: "ブログ",
-		description: "Kyure_A のブログ一覧。",
+		description: "記事一覧",
 	},
 	en: {
 		title: "Blog",
