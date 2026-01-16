@@ -332,7 +332,8 @@ export function getPostLanguages(slug: string): SiteLang[] {
 md.use(footnote);
 md.use(taskLists, { label: true, labelAfter: false });
 md.use(githubAlerts);
-md.use(magicLink, { handlers: [handlerLink(), handlerGitHubAt()] });
+// FIXME: magic-link types are broken
+md.use(magicLink as any, { handlers: [handlerLink(), handlerGitHubAt()] });
 md.use(embedMediaPlugin);
 md.use(markdownItTocDoneRight);
 md.inline.ruler.after("emphasis", "underline", (state, silent) => {
