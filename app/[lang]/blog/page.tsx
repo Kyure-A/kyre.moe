@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BlogIndex from "@/pages/Blog/ui/BlogIndex";
 import { getAllPosts } from "@/shared/lib/blog.server";
-import { isSiteLang, SITE_LANGS, SiteLang } from "@/shared/lib/i18n";
+import { isSiteLang, SITE_LANGS, type SiteLang } from "@/shared/lib/i18n";
 
 type Params = { lang: string };
 

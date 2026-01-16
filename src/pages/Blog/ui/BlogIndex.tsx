@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import type { BlogPostMeta } from "@/shared/lib/blog";
 import { formatDate } from "@/shared/lib/blog";
-import { SiteLang } from "@/shared/lib/i18n";
+import type { SiteLang } from "@/shared/lib/i18n";
 
 const COPY: Record<SiteLang, { empty: string }> = {
 	ja: {
