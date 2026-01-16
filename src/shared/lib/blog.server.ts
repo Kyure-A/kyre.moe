@@ -179,7 +179,7 @@ const md = createMarkdownExit({
 	html: false,
 	linkify: true,
 	typographer: true,
-	highlight: (code, lang) => {
+	highlight: async (code, lang) => {
 		try {
 			if (lang && hljs.getLanguage(lang)) {
 				const result = hljs.highlight(code, {
