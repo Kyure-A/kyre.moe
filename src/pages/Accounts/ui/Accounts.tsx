@@ -15,11 +15,11 @@ import { VRChatIcon } from "@/shared/icons/vrchat";
 import type { SiteLang } from "@/shared/lib/i18n";
 import Account, { type AccountProps } from "./Account";
 
-type AccountSeed = Omit<AccountProps, "delay" | "description"> & {
+type AccountData = Omit<AccountProps, "delay" | "description"> & {
 	description?: Partial<Record<SiteLang, string>>;
 };
 
-const ACCOUNT_SEEDS: AccountSeed[] = [
+const ACCOUNT_DATA: AccountData[] = [
 	{
 		id: "@kyremoe",
 		description: { ja: "3 代目", en: "3rd account" },
@@ -120,7 +120,7 @@ const ACCOUNT_SEEDS: AccountSeed[] = [
 ];
 
 export default function Accounts({ lang }: { lang: SiteLang }) {
-	const accounts = ACCOUNT_SEEDS.map((account) => ({
+	const accounts = ACCOUNT_DATA.map((account) => ({
 		...account,
 		description: account.description?.[lang] ?? "",
 	}));
