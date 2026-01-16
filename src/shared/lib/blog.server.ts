@@ -13,6 +13,7 @@ import taskLists from "markdown-it-task-lists";
 import * as path from "path";
 import type { BlogPost, BlogPostMeta } from "./blog";
 import { DEFAULT_LANG, isSiteLang, type SiteLang } from "./i18n";
+import markdownItTocDoneRight from "markdown-it-toc-done-right";
 
 const BLOG_DIR = path.join(process.cwd(), "content", "blog");
 const MARKDOWN_EXTENSIONS = [".md", ".mdx"];
@@ -333,6 +334,7 @@ md.use(taskLists, { label: true, labelAfter: false });
 md.use(githubAlerts);
 md.use(magicLink, { handlers: [handlerLink(), handlerGitHubAt()] });
 md.use(embedMediaPlugin);
+md.use(markdownItTocDoneRight);
 md.inline.ruler.after("emphasis", "underline", (state, silent) => {
 	const start = state.pos;
 	if (state.src.charCodeAt(start) !== 0x5f) return false;
