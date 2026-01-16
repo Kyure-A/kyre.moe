@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BlogPostView from "@/pages/Blog/ui/BlogPost";
-import { isBlogLang } from "@/shared/lib/blog";
 import {
 	getAllPosts,
 	getPost,
 	getPostLanguages,
 } from "@/shared/lib/blog.server";
-import { SITE_LANGS } from "@/shared/lib/i18n";
+import { isSiteLang, SITE_LANGS } from "@/shared/lib/i18n";
 
 type Params = { lang: string; slug: string };
 
@@ -24,7 +23,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const { lang, slug } = await params;
-	if (!isBlogLang(lang)) return {};
+	if (!isSiteLang(lang)) return {};
 	const post = getPost(slug, lang);
 	if (!post) return {};
 	const availableLangs = getPostLanguages(post.slug);
@@ -61,7 +60,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Props) {
 	const { lang, slug } = await params;
-	if (!isBlogLang(lang)) notFound();
+	if (!isSiteLang(lang)) notFound();
 	const post = getPost(slug, lang);
 	if (!post) notFound();
 	return <BlogPostView post={post} />;

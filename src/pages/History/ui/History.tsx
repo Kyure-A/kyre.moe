@@ -1,6 +1,7 @@
 import Timeline, { type TimelineItem } from "@/pages/History/ui/Timeline";
 import type { SiteLang } from "@/shared/lib/i18n";
 
+// FIXME: url と date は共通化する
 
 export default function History({ lang }: { lang: SiteLang }) {
 	const timelineData = TIMELINE_DATA[lang];
