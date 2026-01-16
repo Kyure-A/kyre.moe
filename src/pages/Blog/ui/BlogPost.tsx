@@ -9,8 +9,7 @@ type Props = {
 
 export default function BlogPostView({ post }: Props) {
 	const showCanonical = (() => {
-		if (!post.canonical) return false;
-		if (post.canonical.startsWith("/")) return false;
+		if (!post.canonical || post.canonical.startsWith("/")) return false;
 		try {
 			const url = new URL(post.canonical);
 			return url.hostname !== "kyre.moe";
