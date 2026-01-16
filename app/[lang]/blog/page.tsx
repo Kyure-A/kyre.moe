@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BlogIndex from "@/pages/Blog/ui/BlogIndex";
-import { type BlogLang, isBlogLang } from "@/shared/lib/blog";
 import { getAllPosts } from "@/shared/lib/blog.server";
-import { SITE_LANGS } from "@/shared/lib/i18n";
+import { isSiteLang, SITE_LANGS, type SiteLang } from "@/shared/lib/i18n";
 
 type Params = { lang: string };
 
@@ -11,7 +10,7 @@ type Props = {
 	params: Promise<Params>;
 };
 
-const META_BY_LANG: Record<BlogLang, { title: string; description: string }> = {
+const META_BY_LANG: Record<SiteLang, { title: string; description: string }> = {
 	ja: {
 		title: "ブログ",
 		description: "記事一覧",
@@ -28,7 +27,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const { lang } = await params;
-	if (!isBlogLang(lang)) return {};
+	if (!isSiteLang(lang)) return {};
 	const meta = META_BY_LANG[lang];
 	return {
 		title: meta.title,
@@ -57,7 +56,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogIndexPage({ params }: Props) {
 	const { lang } = await params;
-	if (!isBlogLang(lang)) notFound();
+	if (!isSiteLang(lang)) notFound();
 	const posts = getAllPosts(lang);
 	return <BlogIndex lang={lang} posts={posts} />;
 }

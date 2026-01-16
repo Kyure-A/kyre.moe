@@ -11,9 +11,9 @@ import magicLink, {
 } from "markdown-it-magic-link";
 import taskLists from "markdown-it-task-lists";
 import * as path from "path";
-import type { BlogLang, BlogPost, BlogPostMeta } from "./blog";
-import { isBlogLang } from "./blog";
-import { DEFAULT_LANG } from "./i18n";
+import type { BlogPost, BlogPostMeta } from "./blog";
+import { DEFAULT_LANG, isSiteLang, type SiteLang } from "./i18n";
+import markdownItTocDoneRight from "markdown-it-toc-done-right";
 
 const BLOG_DIR = path.join(process.cwd(), "content", "blog");
 const MARKDOWN_EXTENSIONS = [".md", ".mdx"];
@@ -197,36 +197,6 @@ const md = createMarkdownExit({
 	},
 });
 
-md.use(footnote);
-md.use(taskLists, { label: true, labelAfter: false });
-md.use(githubAlerts);
-md.use(magicLink, { handlers: [handlerLink(), handlerGitHubAt()] });
-md.use(embedMediaPlugin);
-md.inline.ruler.after("emphasis", "underline", (state, silent) => {
-	const start = state.pos;
-	if (state.src.charCodeAt(start) !== 0x5f) return false;
-	if (state.src.charCodeAt(start + 1) !== 0x5f) return false;
-	let pos = start + 2;
-	while (pos < state.posMax) {
-		if (
-			state.src.charCodeAt(pos) === 0x5f &&
-			state.src.charCodeAt(pos + 1) === 0x5f
-		) {
-			if (!silent) {
-				state.push("u_open", "u", 1);
-				state.push("text", "", 0).content = state.src.slice(start + 2, pos);
-				state.push("u_close", "u", -1);
-			}
-			state.pos = pos + 2;
-			return true;
-		}
-		pos += 1;
-	}
-	return false;
-});
-md.renderer.rules.u_open = () => "<u>";
-md.renderer.rules.u_close = () => "</u>";
-
 function safeReadDir(dirPath: string) {
 	try {
 		return fs.readdirSync(dirPath, { withFileTypes: true });
@@ -249,16 +219,16 @@ function createExcerpt(source: string, maxLength = 180) {
 		: stripped;
 }
 
-function resolveLangFromFile(fileName: string): BlogLang | null {
+function resolveLangFromFile(fileName: string): SiteLang | null {
 	const base = path.parse(fileName).name;
-	if (isBlogLang(base)) return base;
+	if (isSiteLang(base)) return base;
 	if (base === "index") return DEFAULT_LANG;
 	return null;
 }
 
 function parseFrontmatter(
 	slug: string,
-	lang: BlogLang,
+	lang: SiteLang,
 	filePath: string,
 ): { meta: BlogPostMeta; content: string } {
 	const raw = fs.readFileSync(filePath, "utf-8");
@@ -298,7 +268,7 @@ function parseFrontmatter(
 	};
 }
 
-function getPostFilePath(slug: string, lang: BlogLang): string | null {
+function getPostFilePath(slug: string, lang: SiteLang): string | null {
 	const dirPath = path.join(BLOG_DIR, slug);
 	const ext = MARKDOWN_EXTENSIONS.find((item) =>
 		fs.existsSync(path.join(dirPath, `${lang}${item}`)),
@@ -306,7 +276,7 @@ function getPostFilePath(slug: string, lang: BlogLang): string | null {
 	return ext ? path.join(dirPath, `${lang}${ext}`) : null;
 }
 
-export function getAllPosts(lang?: BlogLang): BlogPostMeta[] {
+export function getAllPosts(lang?: SiteLang): BlogPostMeta[] {
 	const entries = safeReadDir(BLOG_DIR).filter((entry) => entry.isDirectory());
 	const posts = entries.flatMap((entry) => {
 		const slug = entry.name;
@@ -335,7 +305,7 @@ export function getAllPosts(lang?: BlogLang): BlogPostMeta[] {
 	});
 }
 
-export function getPost(slug: string, lang: BlogLang): BlogPost | null {
+export function getPost(slug: string, lang: SiteLang): BlogPost | null {
 	const filePath = getPostFilePath(slug, lang);
 	if (!filePath) return null;
 	const { meta, content } = parseFrontmatter(slug, lang, filePath);
@@ -344,7 +314,7 @@ export function getPost(slug: string, lang: BlogLang): BlogPost | null {
 	return { ...meta, content, html };
 }
 
-export function getPostLanguages(slug: string): BlogLang[] {
+export function getPostLanguages(slug: string): SiteLang[] {
 	const dirPath = path.join(BLOG_DIR, slug);
 	const files = safeReadDir(dirPath).filter((file) => file.isFile());
 	const langs = new Set(
@@ -354,7 +324,38 @@ export function getPostLanguages(slug: string): BlogLang[] {
 				if (!MARKDOWN_EXTENSIONS.includes(ext)) return null;
 				return resolveLangFromFile(file.name);
 			})
-			.filter((fileLang): fileLang is BlogLang => Boolean(fileLang)),
+			.filter((fileLang): fileLang is SiteLang => Boolean(fileLang)),
 	);
 	return Array.from(langs);
 }
+
+md.use(footnote);
+md.use(taskLists, { label: true, labelAfter: false });
+md.use(githubAlerts);
+md.use(magicLink, { handlers: [handlerLink(), handlerGitHubAt()] });
+md.use(embedMediaPlugin);
+md.use(markdownItTocDoneRight);
+md.inline.ruler.after("emphasis", "underline", (state, silent) => {
+	const start = state.pos;
+	if (state.src.charCodeAt(start) !== 0x5f) return false;
+	if (state.src.charCodeAt(start + 1) !== 0x5f) return false;
+	let pos = start + 2;
+	while (pos < state.posMax) {
+		if (
+			state.src.charCodeAt(pos) === 0x5f &&
+			state.src.charCodeAt(pos + 1) === 0x5f
+		) {
+			if (!silent) {
+				state.push("u_open", "u", 1);
+				state.push("text", "", 0).content = state.src.slice(start + 2, pos);
+				state.push("u_close", "u", -1);
+			}
+			state.pos = pos + 2;
+			return true;
+		}
+		pos += 1;
+	}
+	return false;
+});
+md.renderer.rules.u_open = () => "<u>";
+md.renderer.rules.u_close = () => "</u>";

@@ -12,7 +12,7 @@ type SectionProps = {
 	index: number;
 };
 
-const DATA: Record<SiteLang, Section[]> = {
+const ABOUTME_DATA: Record<SiteLang, Section[]> = {
 	ja: [
 		{
 			label: "who",
@@ -76,7 +76,7 @@ function Section({ section, index }: SectionProps) {
 }
 
 export default function AboutMe({ lang }: { lang: SiteLang }) {
-	const data = DATA[lang];
+	const data = ABOUTME_DATA[lang];
 	return (
 		<section className="py-24 px-6 max-w-6xl mx-auto">
 			<div className="grid md:grid-cols-12 gap-y-12">

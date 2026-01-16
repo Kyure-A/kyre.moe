@@ -1,10 +1,8 @@
-import { isSiteLang, type SiteLang } from "./i18n";
-
-export type BlogLang = SiteLang;
+import type { SiteLang } from "./i18n";
 
 export type BlogPostMeta = {
 	slug: string;
-	lang: BlogLang;
+	lang: SiteLang;
 	title: string;
 	description: string;
 	date: string;
@@ -19,11 +17,7 @@ export type BlogPost = BlogPostMeta & {
 	html: string;
 };
 
-export function isBlogLang(value: string): value is BlogLang {
-	return isSiteLang(value);
-}
-
-export function formatDate(date: string, lang: BlogLang) {
+export function formatDate(date: string, lang: SiteLang) {
 	if (!date) return "";
 	try {
 		return new Intl.DateTimeFormat(lang === "ja" ? "ja-JP" : "en-US", {
