@@ -16,7 +16,7 @@ import type { SiteLang } from "@/shared/lib/i18n";
 import Account, { type AccountProps } from "./Account";
 
 type AccountSeed = Omit<AccountProps, "delay" | "description"> & {
-	description?: string | Partial<Record<SiteLang, string>>;
+	description?: Partial<Record<SiteLang, string>>;
 };
 
 const ACCOUNT_SEEDS: AccountSeed[] = [
@@ -46,7 +46,6 @@ const ACCOUNT_SEEDS: AccountSeed[] = [
 	},
 	{
 		id: "Kyure-A",
-		description: "",
 		platform: "GitHub",
 		accentColor: "#171515",
 		serviceIcon: <FaGitHub />,
@@ -62,7 +61,6 @@ const ACCOUNT_SEEDS: AccountSeed[] = [
 	},
 	{
 		id: "Kyure_A@mstdn.maud.io",
-		description: "",
 		platform: "Mastodon",
 		accentColor: "#6364FF",
 		serviceIcon: <FaMastodon />,
@@ -70,7 +68,6 @@ const ACCOUNT_SEEDS: AccountSeed[] = [
 	},
 	{
 		id: "@kyure_a",
-		description: "",
 		platform: "Threads",
 		accentColor: "#1A1A1A",
 		serviceIcon: <FaThreads />,
@@ -78,7 +75,6 @@ const ACCOUNT_SEEDS: AccountSeed[] = [
 	},
 	{
 		id: "kyre.moe",
-		description: "",
 		platform: "Bluesky",
 		accentColor: "#0085FF",
 		serviceIcon: <FaBluesky />,
@@ -86,7 +82,6 @@ const ACCOUNT_SEEDS: AccountSeed[] = [
 	},
 	{
 		id: "npub1kyrem0e",
-		description: "",
 		platform: "Nostr",
 		accentColor: "#8E4BFF",
 		serviceIcon: <NostrIcon />,
@@ -95,7 +90,6 @@ const ACCOUNT_SEEDS: AccountSeed[] = [
 	},
 	{
 		id: "Kyure_A",
-		description: "",
 		platform: "Steam",
 		accentColor: "#171A21",
 		serviceIcon: <FaSteam />,
@@ -103,7 +97,6 @@ const ACCOUNT_SEEDS: AccountSeed[] = [
 	},
 	{
 		id: "Kyure_A",
-		description: "",
 		platform: "Minecraft",
 		accentColor: "#4CAF50",
 		serviceIcon: <TbBrandMinecraft />,
@@ -129,10 +122,7 @@ const ACCOUNT_SEEDS: AccountSeed[] = [
 export default function Accounts({ lang }: { lang: SiteLang }) {
 	const accounts = ACCOUNT_SEEDS.map((account) => ({
 		...account,
-		description:
-			typeof account.description === "string"
-				? account.description
-				: (account.description?.[lang] ?? ""),
+		description: account.description?.[lang] ?? "",
 	}));
 	return (
 		<>
