@@ -1,9 +1,10 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import type { BlogLang, BlogPostMeta } from "@/shared/lib/blog";
+import type { BlogPostMeta } from "@/shared/lib/blog";
 import { formatDate } from "@/shared/lib/blog";
+import type { SiteLang } from "@/shared/lib/i18n";
 
-const COPY: Record<BlogLang, { empty: string }> = {
+const COPY: Record<SiteLang, { empty: string }> = {
 	ja: {
 		empty: "まだ記事がありません。",
 	},
@@ -13,7 +14,7 @@ const COPY: Record<BlogLang, { empty: string }> = {
 };
 
 type Props = {
-	lang: BlogLang;
+	lang: SiteLang;
 	posts: BlogPostMeta[];
 };
 
