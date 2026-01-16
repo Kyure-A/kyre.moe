@@ -12,7 +12,7 @@ import magicLink, {
 import taskLists from "markdown-it-task-lists";
 import * as path from "path";
 import type { BlogPost, BlogPostMeta } from "./blog";
-import { DEFAULT_LANG, isSiteLang, SiteLang } from "./i18n";
+import { DEFAULT_LANG, isSiteLang, type SiteLang } from "./i18n";
 
 const BLOG_DIR = path.join(process.cwd(), "content", "blog");
 const MARKDOWN_EXTENSIONS = [".md", ".mdx"];
@@ -196,36 +196,6 @@ const md = createMarkdownExit({
 	},
 });
 
-md.use(footnote);
-md.use(taskLists, { label: true, labelAfter: false });
-md.use(githubAlerts);
-md.use(magicLink, { handlers: [handlerLink(), handlerGitHubAt()] });
-md.use(embedMediaPlugin);
-md.inline.ruler.after("emphasis", "underline", (state, silent) => {
-	const start = state.pos;
-	if (state.src.charCodeAt(start) !== 0x5f) return false;
-	if (state.src.charCodeAt(start + 1) !== 0x5f) return false;
-	let pos = start + 2;
-	while (pos < state.posMax) {
-		if (
-			state.src.charCodeAt(pos) === 0x5f &&
-			state.src.charCodeAt(pos + 1) === 0x5f
-		) {
-			if (!silent) {
-				state.push("u_open", "u", 1);
-				state.push("text", "", 0).content = state.src.slice(start + 2, pos);
-				state.push("u_close", "u", -1);
-			}
-			state.pos = pos + 2;
-			return true;
-		}
-		pos += 1;
-	}
-	return false;
-});
-md.renderer.rules.u_open = () => "<u>";
-md.renderer.rules.u_close = () => "</u>";
-
 function safeReadDir(dirPath: string) {
 	try {
 		return fs.readdirSync(dirPath, { withFileTypes: true });
@@ -357,3 +327,33 @@ export function getPostLanguages(slug: string): SiteLang[] {
 	);
 	return Array.from(langs);
 }
+
+md.use(footnote);
+md.use(taskLists, { label: true, labelAfter: false });
+md.use(githubAlerts);
+md.use(magicLink, { handlers: [handlerLink(), handlerGitHubAt()] });
+md.use(embedMediaPlugin);
+md.inline.ruler.after("emphasis", "underline", (state, silent) => {
+	const start = state.pos;
+	if (state.src.charCodeAt(start) !== 0x5f) return false;
+	if (state.src.charCodeAt(start + 1) !== 0x5f) return false;
+	let pos = start + 2;
+	while (pos < state.posMax) {
+		if (
+			state.src.charCodeAt(pos) === 0x5f &&
+			state.src.charCodeAt(pos + 1) === 0x5f
+		) {
+			if (!silent) {
+				state.push("u_open", "u", 1);
+				state.push("text", "", 0).content = state.src.slice(start + 2, pos);
+				state.push("u_close", "u", -1);
+			}
+			state.pos = pos + 2;
+			return true;
+		}
+		pos += 1;
+	}
+	return false;
+});
+md.renderer.rules.u_open = () => "<u>";
+md.renderer.rules.u_close = () => "</u>";
