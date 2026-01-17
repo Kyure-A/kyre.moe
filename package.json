@@ -27,7 +27,6 @@
 		"markdown-it-magic-link": "^0.1.4",
 		"markdown-it-task-lists": "^2.1.1",
 		"markdown-it-toc-done-right": "^4.2.0",
-		"markdown-it-video": "^0.6.3",
 		"next": "15.4.10",
 		"ogl": "^1.0.11",
 		"react": "^18.0.0",
