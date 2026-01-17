@@ -2,6 +2,23 @@
 @import "highlight.js/styles/monokai.css";
 @import "katex/dist/katex.min.css";
 
+/* View Transitions */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.25s;
+  animation-timing-function: ease-out;
+}
+
+/* Blog title shared element transition */
+::view-transition-group(*) {
+  animation-duration: 0.3s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
