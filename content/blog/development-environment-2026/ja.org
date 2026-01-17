@@ -13,7 +13,7 @@ Nix の設定が壊れて NixOS-WSL 側で Emacs を起動しても設定が読�
 ** エディタ
 Emacs を使っている。以前 [[https://scrapbox.io/kyre/Emacs_%E3%81%A8%E3%82%AD%E3%83%A5%E3%83%AC%E3%82%A7][Cosense]] にてまとめたが，使い始めて 5 年くらいになる。去年くらいに [[https://zenn.dev/kyre/articles/b1959567edfc15][Twist.nix に Emacs の設定を寄せた]]。
 
-https://github.com/Kyure-A/.emacs.d
+[@preview](https://github.com/Kyure-A/.emacs.d)
 
 
 Windows で Unity 周りを触る時にたま〜に Visual Studio Code を開くがそれくらい。VSCode についても Emacs キーバインドを使っている。
@@ -32,7 +32,7 @@ Agent Skills の設定には自分で作った `agent-skills-nix` ってやつ�
 
 ありがたい話だ，去年の末に作って以降ろくに更新していないのでやっていきたい。
 
-https://github.com/Kyure-A/agent-skills-nix
+[@preview](https://github.com/Kyure-A/agent-skills-nix)
 
 ** ターミナルエミュレータ
 Windows では Windows Terminal を使っている。macOS では Alacrrity。
@@ -64,7 +64,7 @@ Windows は Noto Sans を大抵のアプリケーションで強要している�
 ** 開発環境のセットアップ
 nix-community/home-manager で管理している。macOS は nix-darwin で管理している。NixOS-WSL についての設定も残っているが，最近はメンテナンスしていないので絶対に壊れているという実感がある。
 
-https://github.com/Kyure-A/nix-config
+[@preview](https://github.com/Kyure-A/nix-config)
 
 ** タスク管理・ノートテイキング
 ノートテイキングには [[https://scrapbox.io/kyre][Cosense]] を使っている。また，Discord に自分のファイル共有や文章共有用のサーバーがある。あんまりセキュアではないと思うが，まあ転送寺ギガヒコに任せるのも大概だしな。
