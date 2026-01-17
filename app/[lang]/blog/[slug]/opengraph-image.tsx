@@ -31,7 +31,7 @@ export default async function Image({ params }: Props) {
 		});
 	}
 
-	const post = getPost(slug, lang);
+	const post = await getPost(slug, lang);
 
 	if (!post) {
 		return generateOgImage({

@@ -421,7 +421,7 @@ body {
 
 .blog-content :not(pre) > code::before,
 .blog-content :not(pre) > code::after {
-  content: "\`";
+  content: "`";
   color: #75715e;
 }
 

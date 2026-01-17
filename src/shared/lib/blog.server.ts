@@ -217,12 +217,15 @@ export function getAllPosts(lang?: SiteLang): BlogPostMeta[] {
 	});
 }
 
-export function getPost(slug: string, lang: SiteLang): BlogPost | null {
+export async function getPost(
+	slug: string,
+	lang: SiteLang,
+): Promise<BlogPost | null> {
 	const filePath = getPostFilePath(slug, lang);
 	if (!filePath) return null;
 	const { meta, content } = parseFrontmatter(slug, lang, filePath);
 	if (meta.draft) return null;
-	const html = md.render(content);
+	const html = await md.renderAsync(content);
 	return { ...meta, content, html };
 }
 

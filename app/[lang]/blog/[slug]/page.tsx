@@ -24,7 +24,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	const { lang, slug } = await params;
 	if (!isSiteLang(lang)) return {};
-	const post = getPost(slug, lang);
+	const post = await getPost(slug, lang);
 	if (!post) return {};
 	const availableLangs = getPostLanguages(post.slug);
 	const alternates: Record<string, string> = {};
@@ -61,7 +61,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function BlogPostPage({ params }: Props) {
 	const { lang, slug } = await params;
 	if (!isSiteLang(lang)) notFound();
-	const post = getPost(slug, lang);
+	const post = await getPost(slug, lang);
 	if (!post) notFound();
 	return <BlogPostView post={post} />;
 }
