@@ -46,6 +46,21 @@ https://www.youtube.com/watch?v=jNQXAC9IVRw
 
 https://x.com/jack/status/20
 
+*** 数式
+KaTeX で数式が書ける。インラインは $E = mc^2$ のように書く。
+
+ブロックはこんな感じ:
+
+$$
+\int_0^\infty e^{-x^2} dx = \frac{\sqrt{\pi}}{2}
+$$
+
+Maxwell 方程式:
+
+$$
+\nabla \times \vec{\mathbf{B}} - \frac{1}{c} \frac{\partial \vec{\mathbf{E}}}{\partial t} = \frac{4\pi}{c} \vec{\mathbf{j}}
+$$
+
 ** 経緯
 *** アウトプットの場として
 このブログを作る以前から運用していたのが
