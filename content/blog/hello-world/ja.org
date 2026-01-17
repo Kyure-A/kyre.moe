@@ -1,5 +1,5 @@
 #+TITLE: Hello World
-#+DATE: 2025-01-15
+#+DATE: 2026-01-15
 #+DESCRIPTION: 新しくブログを作りました
 #+TAGS: note
 #+DRAFT: false
