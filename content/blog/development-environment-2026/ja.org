@@ -64,8 +64,10 @@ nix-community/home-manager で管理している。macOS は nix-darwin で管�
 
 https://github.com/Kyure-A/nix-config
 
-** ノートテイキング
-[[https://scrapbox.io/kyre][Cosense]] を使っている。また，Discord に自分のファイル共有や文章共有用のサーバーがある。あんまりセキュアではないと思うが，まあ転送寺ギガヒコに任せるのも大概だしな。
+** タスク管理・ノートテイキング
+ノートテイキングには [[https://scrapbox.io/kyre][Cosense]] を使っている。また，Discord に自分のファイル共有や文章共有用のサーバーがある。あんまりセキュアではないと思うが，まあ転送寺ギガヒコに任せるのも大概だしな。
+
+タスク管理は Habitica を使っている。今までは Todoist や Structured，Trello などをホッピングしてきたが，結局比較的楽しそうな Habitica に落ち着いた。Habitica を使い始める以前はそもそもタスク管理をしない期間が数年くらいあり，思い出した時にやるかみたいな生活をしていたが，流石に社会生活をやっていくに当たってはハンデすぎる。
 
 ** キーボード
 TEX Shura に Holy Panda のパチモンを入れていたが，授業中にコーディングしているとあまりにもうるさいと言われたので Kailh Midnight Silent V2 Switch / Tactile に変えた。
