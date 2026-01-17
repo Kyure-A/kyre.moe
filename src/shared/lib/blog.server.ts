@@ -13,7 +13,6 @@ import magicLink, {
 } from "markdown-it-magic-link";
 import taskLists from "markdown-it-task-lists";
 import markdownItTocDoneRight from "markdown-it-toc-done-right";
-import video from "markdown-it-video";
 import * as path from "path";
 import type { BlogPost, BlogPostMeta } from "./blog";
 import { DEFAULT_LANG, isSiteLang, type SiteLang } from "./i18n";
@@ -29,6 +28,29 @@ const TWITTER_HOSTS = new Set([
   "mobile.twitter.com",
 ]);
 
+const YOUTUBE_HOSTS = new Set([
+  "youtube.com",
+  "www.youtube.com",
+  "m.youtube.com",
+  "youtu.be",
+]);
+
+function buildYouTubeEmbed(url: URL): string | null {
+  if (!YOUTUBE_HOSTS.has(url.hostname)) return null;
+
+  let videoId: string | null = null;
+
+  if (url.hostname === "youtu.be") {
+    videoId = url.pathname.slice(1).split("/")[0];
+  } else {
+    videoId = url.searchParams.get("v");
+  }
+
+  if (!videoId || !/^[\w-]{11}$/.test(videoId)) return null;
+
+  return `<div class="markdown-embed markdown-embed-youtube"><div class="markdown-embed-inner"><iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe></div></div>`;
+}
+
 function buildTwitterEmbed(url: URL): string | null {
   if (!TWITTER_HOSTS.has(url.hostname)) return null;
   const parts = url.pathname.split("/").filter(Boolean);
@@ -40,13 +62,13 @@ function buildTwitterEmbed(url: URL): string | null {
   if (!id || !/^\d+$/.test(id)) return null;
   const user = parts[statusIndex - 1] ?? "i";
   const canonical = `https://twitter.com/${user}/status/${id}`;
-  return `<div class="markdown-embed markdown-embed-twitter"><blockquote class="twitter-tweet" data-dnt="true" data-theme="dark"><a href="${canonical}"></a></blockquote></div>`;
+  return `<div class="markdown-embed markdown-embed-twitter"><blockquote class="twitter-tweet" data-dnt="true" data-theme="dark" data-width="550"><a href="${canonical}"></a></blockquote></div>`;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function twitterEmbedPlugin(md: any) {
+function embedPlugin(md: any) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  md.core.ruler.after("inline", "twitter-embed", (state: any) => {
+  md.core.ruler.after("inline", "embed", (state: any) => {
     const tokens = state.tokens;
     for (let i = 0; i < tokens.length; i++) {
       const token = tokens[i];
@@ -78,7 +100,7 @@ function twitterEmbedPlugin(md: any) {
         continue;
       }
 
-      const html = buildTwitterEmbed(url);
+      const html = buildYouTubeEmbed(url) ?? buildTwitterEmbed(url);
       if (!html) continue;
 
       const embedToken = new state.Token("html_block", "", 0);
@@ -252,11 +274,8 @@ md.use(githubAlerts);
 md.use(katex as any);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 md.use(magicLink as any, { handlers: [handlerLink(), handlerGitHubAt()] });
-md.use(video, {
-  youtube: { width: 640, height: 390 },
-});
 md.use(linkPreview);
-md.use(twitterEmbedPlugin);
+md.use(embedPlugin);
 md.use(markdownItTocDoneRight);
 md.inline.ruler.after("emphasis", "underline", (state, silent) => {
   const start = state.pos;
