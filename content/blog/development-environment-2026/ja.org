@@ -17,10 +17,7 @@ https://github.com/Kyure-A/.emacs.d
 
 
 Windows で Unity 周りを触る時にたま〜に Visual Studio Code を開くがそれくらい。VSCode についても Emacs キーバインドを使っている。
-Emacs については特に PC を深く使えるようになる前から設定していたキーバインドがあり，それに下手に慣れてしまったせいで離れられず困っている:
-
-> Undo -> C-u
-> Redo -> C-r
+Emacs については特に PC を深く使えるようになる前から設定していたキーバインドがあり，それに下手に慣れてしまったせいで離れられず困っている。例えば Undo は `C-u`，Redo は `C-r` にしているので困る。
 
 最近は Blender のおかげで C-z と C-Z で Undo/Redo するのも癖になってきたので，俺の Emacs には Undo と Redo のキーバインドがそれぞれ 3 種類くらいある。
 
