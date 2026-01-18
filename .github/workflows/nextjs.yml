@@ -65,6 +65,13 @@ jobs:
           sudo apt-get install -y emacs-nox
       - name: Export Org to Markdown
         run: pnpm content:org
+      - name: Copy blog images to public
+        run: |
+          for dir in content/blog/*/; do
+            slug=$(basename "$dir")
+            mkdir -p "public/blog/$slug"
+            find "$dir" -maxdepth 1 -type f \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" -o -name "*.gif" -o -name "*.webp" -o -name "*.svg" \) -exec cp {} "public/blog/$slug/" \;
+          done
       - name: Convert hero image to WebP
         run: |
           sudo apt-get update
