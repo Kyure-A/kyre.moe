@@ -39,11 +39,7 @@ export default function BlogIndex({ lang, posts }: Props) {
 							>
 								<div className="flex flex-col gap-2 px-0 py-3 text-gray-100 transition-[padding,background-color,border-radius,color] duration-[400ms] ease-out group-hover:px-4 group-hover:rounded-[10px] group-hover:bg-[var(--accent)] group-hover:text-white">
 									<div className="flex flex-wrap items-center gap-3 text-[11px] tracking-[0.08em] text-gray-400 transition-colors duration-[400ms] ease-out group-hover:text-white/80">
-										<span
-											style={{ viewTransitionName: `blog-date-${post.slug}` }}
-										>
-											{formatDate(post.date, post.lang)}
-										</span>
+										<span>{formatDate(post.date, post.lang)}</span>
 									</div>
 									<h2
 										className="text-lg font-semibold leading-snug text-gray-100 transition-colors duration-[400ms] ease-out group-hover:text-white md:text-xl"
@@ -60,10 +56,7 @@ export default function BlogIndex({ lang, posts }: Props) {
 										</p>
 									)}
 									{post.tags.length > 0 && (
-										<div
-											className="flex flex-wrap gap-2 text-[11px] tracking-[0.08em] text-gray-500 transition-colors duration-[400ms] ease-out group-hover:text-white/85"
-											style={{ viewTransitionName: `blog-tags-${post.slug}` }}
-										>
+										<div className="flex flex-wrap gap-2 text-[11px] tracking-[0.08em] text-gray-500 transition-colors duration-[400ms] ease-out group-hover:text-white/85">
 											{post.tags.map((tag) => (
 												<span
 													key={`${post.slug}-${tag}`}
