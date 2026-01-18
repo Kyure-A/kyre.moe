@@ -47,9 +47,14 @@ export default function BlogIndex({ lang, posts }: Props) {
 									>
 										{post.title}
 									</h2>
-									<p className="text-sm leading-relaxed text-gray-400 transition-colors duration-[400ms] ease-out group-hover:text-white/85">
-										{post.description}
-									</p>
+									{post.description && (
+										<p
+											className="text-sm leading-relaxed text-gray-400 transition-colors duration-[400ms] ease-out group-hover:text-white/85"
+											style={{ viewTransitionName: `blog-desc-${post.slug}` }}
+										>
+											{post.description}
+										</p>
+									)}
 									{post.tags.length > 0 && (
 										<div className="flex flex-wrap gap-2 text-[11px] tracking-[0.08em] text-gray-500 transition-colors duration-[400ms] ease-out group-hover:text-white/85">
 											{post.tags.map((tag) => (

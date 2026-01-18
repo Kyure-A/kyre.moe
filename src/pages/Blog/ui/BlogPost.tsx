@@ -33,7 +33,10 @@ export default function BlogPostView({ post }: Props) {
 					{post.title}
 				</h1>
 				{post.description && (
-					<p className="mt-4 text-sm leading-relaxed text-gray-400 md:text-base">
+					<p
+						className="mt-4 text-sm leading-relaxed text-gray-400 md:text-base"
+						style={{ viewTransitionName: `blog-desc-${post.slug}` }}
+					>
 						{post.description}
 					</p>
 				)}

@@ -240,6 +240,25 @@ export function getAllPosts(lang?: SiteLang): BlogPostMeta[] {
 	});
 }
 
+function rewriteRelativeImagePaths(content: string, slug: string): string {
+	// ![alt](./path) 形式
+	const markdownImageRegex = /!\[([^\]]*)\]\(\.\/([^)]+)\)/g;
+	// [text](./path) 形式（画像リンク）
+	const markdownLinkImageRegex =
+		/\[([^\]]*)\]\(\.\/([^)]+\.(png|jpg|jpeg|gif|webp|svg))\)/gi;
+
+	let result = content.replace(
+		markdownImageRegex,
+		(_match, alt, imagePath) => `![${alt}](/blog/${slug}/${imagePath})`,
+	);
+	result = result.replace(
+		markdownLinkImageRegex,
+		(_match, text, imagePath) => `[${text}](/blog/${slug}/${imagePath})`,
+	);
+
+	return result;
+}
+
 export async function getPost(
 	slug: string,
 	lang: SiteLang,
@@ -248,8 +267,9 @@ export async function getPost(
 	if (!filePath) return null;
 	const { meta, content } = parseFrontmatter(slug, lang, filePath);
 	if (meta.draft) return null;
-	const html = await md.renderAsync(content);
-	return { ...meta, content, html };
+	const rewrittenContent = rewriteRelativeImagePaths(content, slug);
+	const html = await md.renderAsync(rewrittenContent);
+	return { ...meta, content: rewrittenContent, html };
 }
 
 export function getPostLanguages(slug: string): SiteLang[] {
