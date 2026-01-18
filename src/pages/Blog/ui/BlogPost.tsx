@@ -23,7 +23,10 @@ export default function BlogPostView({ post }: Props) {
 			<CopyCodeBlock />
 			<TwitterEmbedEnhancer />
 			<header className="mt-8">
-				<p className="text-[11px] tracking-[0.08em] text-gray-500">
+				<p
+					className="text-[11px] tracking-[0.08em] text-gray-500"
+					style={{ viewTransitionName: `blog-date-${post.slug}` }}
+				>
 					{formatDate(post.date, post.lang)}
 				</p>
 				<h1
@@ -46,6 +49,7 @@ export default function BlogPostView({ post }: Props) {
 							<span
 								key={`${post.slug}-${tag}`}
 								className="rounded-full border border-white/10 px-3 py-1"
+								style={{ viewTransitionName: `blog-tag-${post.slug}-${tag}` }}
 							>
 								#{tag}
 							</span>
