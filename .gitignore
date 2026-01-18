@@ -17,6 +17,9 @@
 /.next/
 /out/
 
+# auto-generated blog images
+/public/blog/
+
 # production
 /build
 
