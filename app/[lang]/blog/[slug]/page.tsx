@@ -43,6 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			canonical,
 			languages: alternates,
 		},
+		...(post.canonical && { robots: { index: false, follow: true } }),
 		openGraph: {
 			title: post.title,
 			description: post.description,
