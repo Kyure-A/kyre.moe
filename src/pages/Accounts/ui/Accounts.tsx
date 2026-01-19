@@ -30,7 +30,7 @@ const ACCOUNT_DATA: AccountData[] = [
 	},
 	{
 		id: "@3kyu4",
-		description: { ja: "女装アカウント", en: "Crossdressing account" },
+		description: { ja: "女装", en: "for crossdressing" },
 		platform: "Twitter",
 		accentColor: "#1DA1F2",
 		serviceIcon: <FaTwitter />,
@@ -38,11 +38,19 @@ const ACCOUNT_DATA: AccountData[] = [
 	},
 	{
 		id: "@_______kyu",
-		description: { ja: "VRChat 用アカウント", en: "VRChat account" },
+		description: { ja: "VRChat", en: "for VRChat" },
 		platform: "Twitter",
 		accentColor: "#1DA1F2",
 		serviceIcon: <FaTwitter />,
 		serviceUrl: "https://x.com/_______kyu",
+	},
+	{
+		id: "@kyreroe",
+		description: { ja: "絵を RT する", en: "for retweet illustrations" },
+		platform: "Twitter",
+		accentColor: "#1DA1F2",
+		serviceIcon: <FaTwitter />,
+		serviceUrl: "https://x.com/kyreroe",
 	},
 	{
 		id: "Kyure-A",
