@@ -21,6 +21,14 @@ const BackgroundShader = dynamic(
 	},
 );
 
+const FadeTextRotator = dynamic(
+	() => import("@/pages/Home/ui/FadeTextRotator"),
+	{
+		ssr: false,
+		loading: () => <div className="w-full" />,
+	},
+);
+
 const ORBIT_VARS: CSSProperties = {
 	"--home-orbit-size": "clamp(300px, 86vmin, 760px)",
 	"--home-orbit-icon": "clamp(56px, 12vmin, 96px)",
@@ -28,6 +36,7 @@ const ORBIT_VARS: CSSProperties = {
 } as CSSProperties;
 
 const SHADER_MAX_FPS = 24;
+const ASCII_MAX_FPS = 24;
 
 type Props = { children: ReactNode };
 
@@ -120,6 +129,25 @@ export default function App({ children }: Props) {
 					size="var(--home-orbit-size)"
 					paused={orbitPaused}
 				/>
+			</div>
+
+			{/* FadeTextRotator - 元の Home.tsx と同じレイアウト構造を再現、キャラ画像より前面 */}
+			<div
+				className="fixed inset-0 w-screen h-screen z-[15] overflow-hidden pointer-events-none"
+				style={{ visibility: isHome ? "visible" : "hidden" }}
+				aria-hidden={!isHome}
+			>
+				<div className="absolute flex flex-col pt-16 inset-0">
+					<div className="flex flex-col mb-6 z-20 pointer-events-auto">
+						<FadeTextRotator
+							asciiMaxFps={ASCII_MAX_FPS}
+							asciiStartDelayMs={startDelayMs}
+							asciiStartOnIdle
+						/>
+					</div>
+					{/* 画像のスペースを確保（実際の画像は children で描画） */}
+					<div className="flex-1" />
+				</div>
 			</div>
 
 			{/* OrbitDock (front layer) - 常にマウント、Home でのみ表示 */}
