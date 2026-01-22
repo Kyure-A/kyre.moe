@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { SITE_LANGS } from "./i18n";
 
 export const OG_IMAGE_SIZE = {
 	width: 1200,
@@ -7,10 +8,20 @@ export const OG_IMAGE_SIZE = {
 
 export const OG_IMAGE_CONTENT_TYPE = "image/png";
 
-type OgImageProps = {
+export type OgImageProps = {
 	title: string;
 	subtitle?: string;
 };
+
+export const ogImageExports = {
+	dynamic: "force-static" as const,
+	size: OG_IMAGE_SIZE,
+	contentType: OG_IMAGE_CONTENT_TYPE,
+};
+
+export function generateLangStaticParams() {
+	return SITE_LANGS.map((lang) => ({ lang }));
+}
 
 export function generateOgImage({ title, subtitle }: OgImageProps) {
 	return new ImageResponse(
