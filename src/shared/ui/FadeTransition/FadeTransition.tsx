@@ -4,6 +4,7 @@ import {
 	type ReactElement,
 	type ReactNode,
 	useEffect,
+	useMemo,
 	useState,
 } from "react";
 
@@ -29,7 +30,10 @@ const FadeTransition = ({
 	const [currentOpacity, setCurrentOpacity] = useState(1);
 	const [nextChild, setNextChild] = useState<ReactElement | null>(null);
 
-	const childrenArray = Children.toArray(children).filter(isValidElement);
+	const childrenArray = useMemo(
+		() => Children.toArray(children).filter(isValidElement),
+		[children],
+	);
 
 	useEffect(() => {
 		if (activeIndex !== currentIndex) {
