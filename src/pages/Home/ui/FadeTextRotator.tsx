@@ -1,6 +1,14 @@
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import ASCIIText from "@/shared/ui/ASCIIText/ASCIIText";
 import FadeTransition from "@/shared/ui/FadeTransition/FadeTransition";
+
+// dynamic import すればコードが独立したチャンクに分離され、初期バンドルサイズが削減されるらしい
+const ASCIIText = dynamic(() => import("@/shared/ui/ASCIIText/ASCIIText"), {
+	ssr: false,
+	loading: () => (
+		<div className="w-full h-full flex items-center justify-center" />
+	),
+});
 
 export const FadeTextRotator = ({
 	texts = ["キュレェ", "Kyure_A"],
