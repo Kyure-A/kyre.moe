@@ -23,6 +23,24 @@ const FadeTextRotator = dynamic(
 	},
 );
 
+const ORBIT_VARS: CSSProperties = {
+	"--home-orbit-size": "clamp(300px, 86vmin, 760px)",
+	"--home-orbit-icon": "clamp(56px, 12vmin, 96px)",
+	"--home-orbit-gap": "clamp(8px, 2.4vmin, 16px)",
+} as CSSProperties;
+
+const HERO_STYLE: CSSProperties = {
+	width: "min(60vw, 1000px)",
+	height: "auto",
+	aspectRatio: "2305 / 4776",
+	display: "block",
+};
+
+const HERO_WIDTH = 2305;
+const HERO_HEIGHT = 4776;
+const SHADER_MAX_FPS = 24;
+const ASCII_MAX_FPS = 24;
+
 export default function Home() {
 	const items = useDockItems();
 	const orbitItems = useMemo(
@@ -37,24 +55,10 @@ export default function Home() {
 	const [orbitDragging, setOrbitDragging] = useState(false);
 	const [isMobile, setIsMobile] = useState(false);
 	const [useWebp, setUseWebp] = useState(process.env.NODE_ENV === "production");
-	const orbitVars = {
-		"--home-orbit-size": "clamp(300px, 86vmin, 760px)",
-		"--home-orbit-icon": "clamp(56px, 12vmin, 96px)",
-		"--home-orbit-gap": "clamp(8px, 2.4vmin, 16px)",
-	} as CSSProperties;
+
 	const orbitPaused = orbitHovered && !orbitDragging;
-	const shaderMaxFps = 24;
 	const shaderResolution = isMobile ? 0.65 : 1;
-	const asciiMaxFps = 24;
 	const startDelayMs = isMobile ? 450 : 200;
-	const heroWidth = 2305;
-	const heroHeight = 4776;
-	const heroStyle: CSSProperties = {
-		width: "min(60vw, 1000px)",
-		height: "auto",
-		aspectRatio: "2305 / 4776",
-		display: "block",
-	};
 
 	useEffect(() => {
 		const mq =
@@ -82,7 +86,7 @@ export default function Home() {
 	return (
 		<div
 			className="relative w-screen h-screen overflow-hidden"
-			style={orbitVars}
+			style={ORBIT_VARS}
 		>
 			<div className="absolute w-screen h-screen z-0">
 				<BackgroundShader
@@ -93,7 +97,7 @@ export default function Home() {
 					color1="#272822"
 					color2="#F92672"
 					color3="#000000"
-					maxFps={shaderMaxFps}
+					maxFps={SHADER_MAX_FPS}
 					resolutionScale={shaderResolution}
 					startDelayMs={startDelayMs}
 					startOnIdle
@@ -113,7 +117,7 @@ export default function Home() {
 			<div className="absolute flex flex-col z-10 pt-16 inset-0 ">
 				<div className="flex flex-col mb-6 z-20">
 					<FadeTextRotator
-						asciiMaxFps={asciiMaxFps}
+						asciiMaxFps={ASCII_MAX_FPS}
 						asciiStartDelayMs={startDelayMs}
 						asciiStartOnIdle
 					/>
@@ -146,12 +150,12 @@ export default function Home() {
 							<img
 								alt="Kyure_A"
 								src={srcPath("/kyure_a.png")}
-								width={heroWidth}
-								height={heroHeight}
+								width={HERO_WIDTH}
+								height={HERO_HEIGHT}
 								loading="eager"
 								decoding="async"
 								fetchPriority="high"
-								style={heroStyle}
+								style={HERO_STYLE}
 							/>
 						</picture>
 					</GlitchImage>
