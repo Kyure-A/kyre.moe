@@ -3,6 +3,7 @@ import {
 	type ReactNode,
 	useCallback,
 	useEffect,
+	useMemo,
 	useRef,
 	useState,
 } from "react";
@@ -148,7 +149,8 @@ const GlitchImage = ({
 	}, [active, interval, startDelayMs, triggerGlitch]);
 
 	// Generate random clip path for partial visibility (horror effect)
-	const getRandomClipPath = (): string => {
+	const clipPath = useMemo((): string => {
+		if (!isGlitching) return "";
 		const segments = 6;
 		const points: string[] = [];
 		const irregularity = normalizedIntensity * 30; // More irregular for horror effect
@@ -162,10 +164,12 @@ const GlitchImage = ({
 		}
 
 		return `polygon(${points.join(", ")})`;
-	};
+	}, [isGlitching, glitchTick, normalizedIntensity]);
 
 	// Generate RGB shift values - more pronounced for horror effect
-	const getRgbShift = (): RgbShift => {
+	const rgbShift = useMemo((): RgbShift => {
+		if (!isGlitching)
+			return { red: "0px 0px", blue: "0px 0px", green: "0px 0px" };
 		const shiftX = Math.random() * normalizedIntensity * 15;
 		const shiftY = Math.random() * normalizedIntensity * 8;
 		return {
@@ -173,10 +177,11 @@ const GlitchImage = ({
 			blue: `${-shiftX}px ${-shiftY}px`,
 			green: `${shiftY}px ${-shiftX / 2}px`,
 		};
-	};
+	}, [isGlitching, glitchTick, normalizedIntensity]);
 
 	// Generate glitch blocks - creates displaced sections of the image
-	const generateGlitchBlocks = (): GlitchBlock[] => {
+	const glitchBlocks = useMemo((): GlitchBlock[] => {
+		if (!isGlitching) return [];
 		const blockCount = Math.floor(2 + normalizedIntensity * 6);
 		const blocks: GlitchBlock[] = [];
 
@@ -195,11 +200,8 @@ const GlitchImage = ({
 		}
 
 		return blocks;
-	};
+	}, [isGlitching, glitchTick, normalizedIntensity]);
 
-	const rgbShift = getRgbShift();
-	const clipPath = getRandomClipPath();
-	const glitchBlocks = generateGlitchBlocks();
 	const prismaticStrength = Math.max(0, Math.min(1, coolNoiseStrength));
 	const maskSize = maskScale === 1 ? "contain" : `${maskScale * 100}% auto`;
 	const maskStyle: CSSProperties | undefined = maskSrc
