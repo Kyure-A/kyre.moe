@@ -1,17 +1,8 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { type CSSProperties, useEffect, useState } from "react";
 import { srcPath } from "@/shared/lib/path";
 import GlitchImage from "@/shared/ui/GlitchImage/GlitchImage";
-
-const FadeTextRotator = dynamic(
-	() => import("@/pages/Home/ui/FadeTextRotator"),
-	{
-		ssr: false,
-		loading: () => <div className="w-full" />,
-	},
-);
 
 const HERO_STYLE: CSSProperties = {
 	width: "min(60vw, 1000px)",
@@ -22,13 +13,10 @@ const HERO_STYLE: CSSProperties = {
 
 const HERO_WIDTH = 2305;
 const HERO_HEIGHT = 4776;
-const ASCII_MAX_FPS = 24;
 
 export default function Home() {
 	const [isMobile, setIsMobile] = useState(false);
 	const [useWebp, setUseWebp] = useState(process.env.NODE_ENV === "production");
-
-	const startDelayMs = isMobile ? 450 : 200;
 
 	useEffect(() => {
 		const mq =
@@ -55,13 +43,11 @@ export default function Home() {
 
 	return (
 		<div className="relative w-screen h-screen overflow-hidden">
-			<div className="absolute flex flex-col z-10 pt-16 inset-0 ">
+			<div className="absolute flex flex-col z-10 pt-16 inset-0">
+				{/* FadeTextRotator は App で同じレイアウトで描画されるため、同じスペースを確保 */}
 				<div className="flex flex-col mb-6 z-20">
-					<FadeTextRotator
-						asciiMaxFps={ASCII_MAX_FPS}
-						asciiStartDelayMs={startDelayMs}
-						asciiStartOnIdle
-					/>
+					{/* 空のスペース - App 側の FadeTextRotator と同じ高さを取る */}
+					<div style={{ height: "auto" }} />
 				</div>
 				<div className="flex flex-col items-center center">
 					<GlitchImage
