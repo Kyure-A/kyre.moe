@@ -46,13 +46,167 @@ interface RgbShift {
 	green: string;
 }
 
+interface GlitchLine {
+	top: number;
+	height: number;
+	offsetX: number;
+	offsetY: number;
+	skew: number;
+	scaleX: number;
+	opacity: number;
+	blur: number;
+	glow: number;
+	colorLine: boolean;
+	blendMode: "screen" | "difference" | "lighten";
+	backgroundImage: string;
+}
+
+interface RandomState {
+	seed: number;
+}
+
+// Pure function: returns next state and random value
+const nextRandom = (state: RandomState): [RandomState, number] => {
+	const nextSeed = (state.seed * 1103515245 + 12345) & 0x7fffffff;
+	return [{ seed: nextSeed }, nextSeed / 0x7fffffff];
+};
+
+// Generate n random values purely
+const generateRandomValues = (
+	initialState: RandomState,
+	count: number,
+): [RandomState, number[]] =>
+	Array.from({ length: count }).reduce<[RandomState, number[]]>(
+		([state, values]) => {
+			const [nextState, value] = nextRandom(state);
+			return [nextState, [...values, value]];
+		},
+		[initialState, []],
+	);
+
+// Generate clip path points purely
+const generateClipPath = (
+	state: RandomState,
+	segments: number,
+	irregularity: number,
+): [RandomState, string] => {
+	const [finalState, points] = Array.from({ length: segments + 1 }).reduce<
+		[RandomState, string[]]
+	>(
+		([currentState, pts], _, i) => {
+			const [s1, xOffset] = nextRandom(currentState);
+			const [s2, yOffset] = nextRandom(s1);
+			const [s3, yPos] = nextRandom(s2);
+			const point = `${(i / segments) * 100 + (xOffset - 0.5) * irregularity}% ${yPos * 100 + (yOffset - 0.5) * irregularity}%`;
+			return [s3, [...pts, point]];
+		},
+		[state, []],
+	);
+	return [finalState, `polygon(${points.join(", ")})`];
+};
+
+// Generate RGB shift purely
+const generateRgbShift = (
+	state: RandomState,
+	intensity: number,
+): [RandomState, RgbShift] => {
+	const [s1, shiftX] = nextRandom(state);
+	const [s2, shiftY] = nextRandom(s1);
+	const scaledX = shiftX * intensity * 15;
+	const scaledY = shiftY * intensity * 8;
+	return [
+		s2,
+		{
+			red: `${scaledX}px ${scaledY}px`,
+			blue: `${-scaledX}px ${-scaledY}px`,
+			green: `${scaledY}px ${-scaledX / 2}px`,
+		},
+	];
+};
+
+// Generate glitch blocks purely
+const generateGlitchBlocks = (
+	state: RandomState,
+	count: number,
+	intensity: number,
+): [RandomState, GlitchBlock[]] =>
+	Array.from({ length: count }).reduce<[RandomState, GlitchBlock[]]>(
+		([currentState, blocks]) => {
+			const [s1, heightVal] = nextRandom(currentState);
+			const [s2, topVal] = nextRandom(s1);
+			const [s3, offsetXVal] = nextRandom(s2);
+			const [s4, offsetYVal] = nextRandom(s3);
+			const block: GlitchBlock = {
+				top: `${topVal * 100}%`,
+				height: `${heightVal * 30 + 5}px`,
+				offsetX: `${(offsetXVal - 0.5) * 2 * intensity * 40}px`,
+				offsetY: `${(offsetYVal - 0.5) * 2 * intensity * 15}px`,
+			};
+			return [s4, [...blocks, block]];
+		},
+		[state, []],
+	);
+
+// Generate glitch lines purely
+const generateGlitchLines = (
+	state: RandomState,
+	count: number,
+	intensity: number,
+): [RandomState, GlitchLine[]] =>
+	Array.from({ length: count }).reduce<[RandomState, GlitchLine[]]>(
+		([currentState, lines]) => {
+			const [s1, topVal] = nextRandom(currentState);
+			const [s2, heightVal] = nextRandom(s1);
+			const [s3, offsetXVal] = nextRandom(s2);
+			const [s4, offsetYVal] = nextRandom(s3);
+			const [s5, skewVal] = nextRandom(s4);
+			const [s6, scaleXVal] = nextRandom(s5);
+			const [s7, opacityVal] = nextRandom(s6);
+			const [s8, blurVal] = nextRandom(s7);
+			const [s9, glowVal] = nextRandom(s8);
+			const [s10, colorLineVal] = nextRandom(s9);
+			const [s11, blendVal] = nextRandom(s10);
+
+			const colorLine = colorLineVal < 0.5;
+			const line: GlitchLine = {
+				top: topVal * 100,
+				height: heightVal * (intensity * 6 + 1) + 1,
+				offsetX: (offsetXVal - 0.5) * intensity * 90,
+				offsetY: (offsetYVal - 0.5) * intensity * 8,
+				skew: (skewVal - 0.5) * intensity * 8,
+				scaleX: 0.6 + scaleXVal * 0.8,
+				opacity: 0.25 + opacityVal * 0.65,
+				blur: blurVal * 0.8,
+				glow: glowVal * 10 * intensity,
+				colorLine,
+				blendMode: colorLine
+					? "screen"
+					: blendVal > 0.5
+						? "difference"
+						: "lighten",
+				backgroundImage: colorLine
+					? "linear-gradient(90deg, rgba(0, 0, 0, 0), rgba(0, 255, 255, 0.85), rgba(255, 0, 255, 0.85), rgba(255, 255, 255, 0.5), rgba(0, 0, 0, 0))"
+					: "linear-gradient(90deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.2))",
+			};
+			return [s11, [...lines, line]];
+		},
+		[state, []],
+	);
+
+// Generate invert clip purely
+const generateInvertClip = (state: RandomState): [RandomState, string] => {
+	const [s1, v1] = nextRandom(state);
+	const [s2, v2] = nextRandom(s1);
+	return [s2, `inset(${v1 * 70}% 0 ${v2 * 70}% 0)`];
+};
+
+const FLICKER_OPACITIES = [1, 0.7, 1, 0.85] as const;
+
 /**
  * GlitchImage Component
  *
  * A component that wraps an image and applies an intense horror-style glitch effect
  * with specified interval and probability.
- * Uses the most extreme glitch effect for maximum horror impact while still keeping
- * the original image recognizable.
  */
 const GlitchImage = ({
 	children,
@@ -68,41 +222,49 @@ const GlitchImage = ({
 	startDelayMs = 1000,
 }: GlitchImageProps): JSX.Element => {
 	const [isGlitching, setIsGlitching] = useState<boolean>(false);
-	const [glitchType, setGlitchType] = useState<number>(3);
-	const [glitchTick, setGlitchTick] = useState<number>(0);
+	const [glitchSeed, setGlitchSeed] = useState<number>(0);
+	const [flickerPhase, setFlickerPhase] = useState<number>(0);
 	const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const intervalRef = useRef<NodeJS.Timeout | null>(null);
+	const rafRef = useRef<number | null>(null);
+	const lastTimeRef = useRef<number>(0);
 
-	// Normalize intensity to a scale (higher than before for horror effect)
 	const normalizedIntensity = Math.max(1, Math.min(10, intensity)) / 10;
 
+	// Use requestAnimationFrame for smoother flicker updates
 	useEffect(() => {
 		if (!isGlitching) return;
+
 		const jitterInterval = Math.max(40, 120 - normalizedIntensity * 60);
-		const jitterId = window.setInterval(() => {
-			setGlitchTick((tick) => (tick + 1) % 1000);
-		}, jitterInterval);
+
+		const tick = (time: number): void => {
+			if (time - lastTimeRef.current >= jitterInterval) {
+				setFlickerPhase((p) => (p + 1) % 4);
+				lastTimeRef.current = time;
+			}
+			rafRef.current = requestAnimationFrame(tick);
+		};
+
+		rafRef.current = requestAnimationFrame(tick);
+
 		return () => {
-			window.clearInterval(jitterId);
+			if (rafRef.current) {
+				cancelAnimationFrame(rafRef.current);
+			}
 		};
 	}, [isGlitching, normalizedIntensity]);
 
-	// Function to apply glitch effect
 	const triggerGlitch = useCallback(() => {
 		if (!active) return;
 
-		// Check probability
 		if (Math.random() * 100 <= probability) {
-			// Always use the most intense glitch type (type 3)
-			setGlitchType(3);
+			setGlitchSeed(Date.now());
 			setIsGlitching(true);
 
-			// Clear any existing timeout
 			if (timeoutRef.current) {
 				clearTimeout(timeoutRef.current);
 			}
 
-			// Set timeout to remove glitch effect
 			timeoutRef.current = setTimeout(() => {
 				setIsGlitching(false);
 				timeoutRef.current = null;
@@ -110,35 +272,19 @@ const GlitchImage = ({
 		}
 	}, [active, probability, glitchDuration]);
 
-	// Setup interval to check for glitch
 	useEffect(() => {
-		let startTimer: NodeJS.Timeout | null = null;
+		if (!active) return;
 
-		if (active) {
-			const schedule = () => {
+		const startTimer = setTimeout(
+			() => {
 				triggerGlitch();
 				intervalRef.current = setInterval(triggerGlitch, interval * 1000);
-			};
-
-			startTimer = setTimeout(schedule, Math.max(0, startDelayMs));
-
-			return () => {
-				if (startTimer) {
-					clearTimeout(startTimer);
-				}
-				if (intervalRef.current) {
-					clearInterval(intervalRef.current);
-				}
-				if (timeoutRef.current) {
-					clearTimeout(timeoutRef.current);
-				}
-			};
-		}
+			},
+			Math.max(0, startDelayMs),
+		);
 
 		return () => {
-			if (startTimer) {
-				clearTimeout(startTimer);
-			}
+			clearTimeout(startTimer);
 			if (intervalRef.current) {
 				clearInterval(intervalRef.current);
 			}
@@ -148,62 +294,47 @@ const GlitchImage = ({
 		};
 	}, [active, interval, startDelayMs, triggerGlitch]);
 
-	// Generate random clip path for partial visibility (horror effect)
-	const clipPath = useMemo((): string => {
-		if (!isGlitching) return "";
-		const segments = 6;
-		const points: string[] = [];
-		const irregularity = normalizedIntensity * 30; // More irregular for horror effect
+	// Pre-compute all random values once per glitch cycle using pure functions
+	const glitchData = useMemo(() => {
+		if (!isGlitching) return null;
 
-		for (let i = 0; i <= segments; i++) {
-			const xOffset = (Math.random() - 0.5) * irregularity;
-			const yOffset = (Math.random() - 0.5) * irregularity;
-			points.push(
-				`${(i / segments) * 100 + xOffset}% ${Math.random() * 100 + yOffset}%`,
-			);
-		}
+		const initialState: RandomState = { seed: glitchSeed };
 
-		return `polygon(${points.join(", ")})`;
-	}, [isGlitching, glitchTick, normalizedIntensity]);
+		const [s1, clipPath] = generateClipPath(
+			initialState,
+			6,
+			normalizedIntensity * 30,
+		);
+		const [s2, rgbShift] = generateRgbShift(s1, normalizedIntensity);
 
-	// Generate RGB shift values - more pronounced for horror effect
-	const rgbShift = useMemo((): RgbShift => {
-		if (!isGlitching)
-			return { red: "0px 0px", blue: "0px 0px", green: "0px 0px" };
-		const shiftX = Math.random() * normalizedIntensity * 15;
-		const shiftY = Math.random() * normalizedIntensity * 8;
-		return {
-			red: `${shiftX}px ${shiftY}px`,
-			blue: `${-shiftX}px ${-shiftY}px`,
-			green: `${shiftY}px ${-shiftX / 2}px`,
-		};
-	}, [isGlitching, glitchTick, normalizedIntensity]);
-
-	// Generate glitch blocks - creates displaced sections of the image
-	const glitchBlocks = useMemo((): GlitchBlock[] => {
-		if (!isGlitching) return [];
 		const blockCount = Math.floor(2 + normalizedIntensity * 6);
-		const blocks: GlitchBlock[] = [];
+		const [s3, glitchBlocks] = generateGlitchBlocks(
+			s2,
+			blockCount,
+			normalizedIntensity,
+		);
 
-		for (let i = 0; i < blockCount; i++) {
-			const height = Math.random() * 30 + 5; // Taller blocks
-			const top = Math.random() * 100;
-			const offsetX = (Math.random() - 0.5) * 2 * normalizedIntensity * 40; // Larger offset
-			const offsetY = (Math.random() - 0.5) * 2 * normalizedIntensity * 15; // Vertical offset
+		const lineCount = Math.floor(6 + normalizedIntensity * 18);
+		const [s4, glitchLines] = generateGlitchLines(
+			s3,
+			lineCount,
+			normalizedIntensity,
+		);
 
-			blocks.push({
-				top: `${top}%`,
-				height: `${height}px`,
-				offsetX: `${offsetX}px`,
-				offsetY: `${offsetY}px`,
-			});
-		}
+		const [, invertClip] = generateInvertClip(s4);
 
-		return blocks;
-	}, [isGlitching, glitchTick, normalizedIntensity]);
+		return {
+			clipPath,
+			rgbShift,
+			glitchBlocks,
+			glitchLines,
+			invertClip,
+		};
+	}, [isGlitching, glitchSeed, normalizedIntensity]);
 
 	const prismaticStrength = Math.max(0, Math.min(1, coolNoiseStrength));
 	const maskSize = maskScale === 1 ? "contain" : `${maskScale * 100}% auto`;
+
 	const maskStyle: CSSProperties | undefined = maskSrc
 		? {
 				WebkitMaskImage: `url(${maskSrc})`,
@@ -217,7 +348,9 @@ const GlitchImage = ({
 				maskSize,
 			}
 		: undefined;
+
 	const maskedStyle: CSSProperties = maskStyle ?? {};
+
 	const ambientMaskStyle: CSSProperties = {
 		WebkitMaskImage:
 			"radial-gradient(circle at center, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.9) 55%, rgba(0, 0, 0, 0) 85%)",
@@ -231,9 +364,8 @@ const GlitchImage = ({
 		maskSize: "cover",
 	};
 
-	// Determine visibility of original image - flicker effect
 	const originalOpacity =
-		isGlitching && glitchType === 3 ? (Math.random() > 0.7 ? "0.7" : "1") : "1";
+		isGlitching && glitchData ? FLICKER_OPACITIES[flickerPhase] : 1;
 
 	return (
 		<div className="relative overflow-hidden">
@@ -246,9 +378,9 @@ const GlitchImage = ({
 			</div>
 
 			{/* Horror glitch effect layers */}
-			{isGlitching && (
+			{isGlitching && glitchData && (
 				<div className="absolute inset-0 pointer-events-none">
-					{/* Ambient dark noise to keep mystery without white-out */}
+					{/* Ambient dark noise */}
 					{ambientNoiseStrength > 0 && (
 						<div
 							className="absolute inset-0 pointer-events-none"
@@ -262,122 +394,92 @@ const GlitchImage = ({
 							}}
 						/>
 					)}
-					{/* Color channel separation - more pronounced */}
+
+					{/* Color channel separation - red */}
 					<div
 						className="absolute inset-0 mix-blend-screen"
 						style={{
 							...maskedStyle,
-							opacity: 0.7, // Higher opacity
+							opacity: 0.7,
 							filter:
 								"brightness(1.5) contrast(1.3) hue-rotate(0deg) saturate(1.5)",
-							transform: `translate(${rgbShift.red})`,
-							clipPath: glitchType === 0 ? clipPath : "none", // Only apply clip path for type 0
+							transform: `translate(${glitchData.rgbShift.red})`,
 						}}
 					>
 						{children}
 					</div>
 
+					{/* Color channel separation - blue */}
 					<div
 						className="absolute inset-0 mix-blend-screen"
 						style={{
 							...maskedStyle,
-							opacity: 0.7, // Higher opacity
+							opacity: 0.7,
 							filter:
 								"brightness(1.5) contrast(1.3) hue-rotate(240deg) saturate(1.5)",
-							transform: `translate(${rgbShift.blue})`,
-							clipPath: glitchType === 0 ? clipPath : "none",
+							transform: `translate(${glitchData.rgbShift.blue})`,
 						}}
 					>
 						{children}
 					</div>
 
 					{/* Inverted section for horror effect */}
-					{(glitchType === 1 || glitchType === 3) && (
+					<div
+						className="absolute inset-0"
+						style={{
+							...maskedStyle,
+							opacity: 0.3 * normalizedIntensity * 10,
+							filter: "invert(1) hue-rotate(180deg) contrast(1.2)",
+							clipPath: glitchData.invertClip,
+						}}
+					>
+						{children}
+					</div>
+
+					{/* Distorted blocks */}
+					{glitchData.glitchBlocks.map((block, index) => (
 						<div
-							className="absolute inset-0"
+							key={`block-${index}`}
+							className="absolute left-0 w-full overflow-hidden"
 							style={{
 								...maskedStyle,
-								opacity: 0.3 * normalizedIntensity * 10,
-								filter: "invert(1) hue-rotate(180deg) contrast(1.2)",
-								clipPath: `inset(${Math.random() * 70}% 0 ${Math.random() * 70}% 0)`,
+								top: block.top,
+								height: block.height,
+								transform: `translate(${block.offsetX}, ${block.offsetY})`,
 							}}
 						>
-							{children}
+							<div style={{ marginTop: `-${block.top}` }}>{children}</div>
 						</div>
-					)}
+					))}
 
-					{/* Distorted blocks - creates "sliced" sections of the image */}
-					{(glitchType === 2 || glitchType === 3) &&
-						glitchBlocks.map((block, index) => (
-							<div
-								key={index}
-								className="absolute left-0 w-full overflow-hidden"
-								style={{
-									...maskedStyle,
-									top: block.top,
-									height: block.height,
-									transform: `translate(${block.offsetX}, ${block.offsetY})`,
-								}}
-							>
-								<div style={{ marginTop: `-${block.top}` }}>{children}</div>
-							</div>
-						))}
-
-					{/* Noise + scanline layers (masked to character) */}
+					{/* Noise + scanline layers */}
 					<div
 						className="absolute inset-0 pointer-events-none"
 						style={maskStyle}
 					>
-						{/* Sharp horizontal glitch lines - brighter for horror */}
-						{Array.from({
-							length: Math.floor(
-								6 + normalizedIntensity * 18 + (glitchTick % 3),
-							),
-						}).map((_, index) => {
-							const top = Math.random() * 100;
-							const height = Math.random() * (normalizedIntensity * 6 + 1) + 1;
-							const offsetX = (Math.random() - 0.5) * normalizedIntensity * 90;
-							const offsetY = (Math.random() - 0.5) * normalizedIntensity * 8;
-							const skew = (Math.random() - 0.5) * normalizedIntensity * 8;
-							const scaleX = 0.6 + Math.random() * 0.8;
-							const opacity =
-								(0.25 + Math.random() * 0.65) *
-								(glitchTick % 2 === 0 ? 0.85 : 1);
-							const blur = Math.random() * 0.8;
-							const glow = Math.random() * 10 * normalizedIntensity;
-							const colorLine = Math.random() < 0.5;
-							const blendMode = colorLine
-								? "screen"
-								: Math.random() > 0.5
-									? "difference"
-									: "lighten";
-							const backgroundImage = colorLine
-								? "linear-gradient(90deg, rgba(0, 0, 0, 0), rgba(0, 255, 255, 0.85), rgba(255, 0, 255, 0.85), rgba(255, 255, 255, 0.5), rgba(0, 0, 0, 0))"
-								: "linear-gradient(90deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.2))";
+						{/* Sharp horizontal glitch lines */}
+						{glitchData.glitchLines.map((line, index) => (
+							<div
+								key={`line-${index}`}
+								className="absolute left-0 right-0"
+								style={{
+									top: `${line.top}%`,
+									height: `${line.height}px`,
+									transform: `translate(${line.offsetX}px, ${line.offsetY}px) skewX(${line.skew}deg) scaleX(${line.scaleX})`,
+									opacity: line.opacity * (flickerPhase % 2 === 0 ? 0.85 : 1),
+									mixBlendMode: line.blendMode,
+									backgroundImage: line.backgroundImage,
+									backgroundSize: "200% 100%",
+									backgroundPosition: `${(flickerPhase * 25 + index * 19) % 100}% 50%`,
+									filter: `blur(${line.blur}px)`,
+									boxShadow: line.colorLine
+										? `0 0 ${line.glow}px rgba(0, 255, 255, 0.7)`
+										: `0 0 ${line.glow}px rgba(255, 255, 255, 0.4)`,
+								}}
+							/>
+						))}
 
-							return (
-								<div
-									key={`line-${index}`}
-									className="absolute left-0 right-0"
-									style={{
-										top: `${top}%`,
-										height: `${height}px`,
-										transform: `translate(${offsetX}px, ${offsetY}px) skewX(${skew}deg) scaleX(${scaleX})`,
-										opacity,
-										mixBlendMode: blendMode,
-										backgroundImage,
-										backgroundSize: "200% 100%",
-										backgroundPosition: `${(glitchTick * 37 + index * 19) % 100}% 50%`,
-										filter: `blur(${blur}px)`,
-										boxShadow: colorLine
-											? `0 0 ${glow}px rgba(0, 255, 255, 0.7)`
-											: `0 0 ${glow}px rgba(255, 255, 255, 0.4)`,
-									}}
-								/>
-							);
-						})}
-
-						{/* Noise overlay - stronger for horror effect */}
+						{/* Noise overlay */}
 						<div
 							className="absolute inset-0 mix-blend-overlay"
 							style={{
@@ -388,7 +490,7 @@ const GlitchImage = ({
 							}}
 						/>
 
-						{/* Prismatic noise - adds punchy color grain */}
+						{/* Prismatic noise */}
 						{prismaticStrength > 0 && (
 							<div
 								className="absolute inset-0 pointer-events-none"
@@ -409,31 +511,31 @@ const GlitchImage = ({
 							className="absolute inset-0 pointer-events-none"
 							style={{
 								backgroundImage: `repeating-linear-gradient(
-                0deg,
-                rgba(0, 0, 0, ${0.22 * normalizedIntensity}),
-                rgba(0, 0, 0, ${0.22 * normalizedIntensity}) 1px,
-                transparent 1px,
-                transparent 3px
-              )`,
-								backgroundPosition: `0 ${((glitchTick * 3) % 6) - 3}px`,
+                  0deg,
+                  rgba(0, 0, 0, ${0.22 * normalizedIntensity}),
+                  rgba(0, 0, 0, ${0.22 * normalizedIntensity}) 1px,
+                  transparent 1px,
+                  transparent 3px
+                )`,
+								backgroundPosition: `0 ${((flickerPhase * 3) % 6) - 3}px`,
 								mixBlendMode: "soft-light",
 								opacity:
 									0.35 +
 									0.2 * normalizedIntensity +
-									(glitchTick % 2 === 0 ? 0.1 : 0),
+									(flickerPhase % 2 === 0 ? 0.1 : 0),
 								filter: `contrast(${1.1 + normalizedIntensity * 0.6})`,
 							}}
 						/>
 
-						{/* Vignette effect for horror mood */}
+						{/* Vignette effect */}
 						<div
 							className="absolute inset-0 pointer-events-none"
 							style={{
 								background: `radial-gradient(
-                ellipse at center,
-                transparent 50%,
-                rgba(0, 0, 0, ${0.4 * normalizedIntensity}) 100%
-              )`,
+                  ellipse at center,
+                  transparent 50%,
+                  rgba(0, 0, 0, ${0.4 * normalizedIntensity}) 100%
+                )`,
 							}}
 						/>
 					</div>
