@@ -15,7 +15,7 @@
 		"@react-spring/web": "^9.7.5",
 		"@vscode/markdown-it-katex": "^1.1.2",
 		"canvas": "^3.2.1",
-		"framer-motion": "^11.18.2",
+
 		"gray-matter": "^4.0.3",
 		"gsap": "^3.12.7",
 		"highlight.js": "^11.11.1",
