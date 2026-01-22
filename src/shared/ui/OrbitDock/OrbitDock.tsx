@@ -19,6 +19,8 @@ export type OrbitDockProps = {
 	onRotate?: (rotation: number) => void;
 	dragEnabled?: boolean;
 	paused?: boolean;
+	hoveredIndex?: number | null;
+	onHoverIndexChange?: (index: number | null) => void;
 	onHoverChange?: (hovered: boolean) => void;
 	onDragChange?: (dragging: boolean) => void;
 };
@@ -38,6 +40,8 @@ export default function OrbitDock({
 	onRotate,
 	dragEnabled = false,
 	paused = false,
+	hoveredIndex,
+	onHoverIndexChange,
 	onHoverChange,
 	onDragChange,
 }: OrbitDockProps) {
@@ -188,27 +192,32 @@ export default function OrbitDock({
 	};
 
 	const handlePointerOver = (event: ReactPointerEvent<HTMLDivElement>) => {
-		if (!onHoverChange || layer !== "front") return;
+		if (layer !== "front") return;
 		const target = event.target as HTMLElement | null;
-		const isItem = target?.closest<HTMLButtonElement>("[data-orbit-index]");
-		if (!isItem) return;
+		const item = target?.closest<HTMLButtonElement>("[data-orbit-index]");
+		if (!item) return;
+		const index = Number(item.dataset.orbitIndex);
+		onHoverIndexChange?.(index);
 		if (!hoverStateRef.current) {
 			hoverStateRef.current = true;
-			onHoverChange(true);
+			onHoverChange?.(true);
 		}
 	};
 
 	const handlePointerOut = (event: ReactPointerEvent<HTMLDivElement>) => {
-		if (!onHoverChange || layer !== "front") return;
+		if (layer !== "front") return;
 		const target = event.target as HTMLElement | null;
 		const leftItem = target?.closest<HTMLButtonElement>("[data-orbit-index]");
 		if (!leftItem) return;
 		const related = event.relatedTarget as HTMLElement | null;
 		const stillOnItem =
 			related?.closest<HTMLButtonElement>("[data-orbit-index]");
-		if (!stillOnItem && hoverStateRef.current) {
-			hoverStateRef.current = false;
-			onHoverChange(false);
+		if (!stillOnItem) {
+			onHoverIndexChange?.(null);
+			if (hoverStateRef.current) {
+				hoverStateRef.current = false;
+				onHoverChange?.(false);
+			}
 		}
 	};
 
@@ -240,12 +249,14 @@ export default function OrbitDock({
 				{items.map((item, index) => {
 					const delay = -(index / items.length) * duration;
 					const label = typeof item.label === "string" ? item.label : undefined;
+					const isHovered = hoveredIndex === index;
 
 					return (
 						<button
 							key={`${label ?? "item"}-${index}`}
 							type="button"
 							data-orbit-index={index}
+							data-hovered={isHovered ? "true" : undefined}
 							className={`orbit-dock__item group pointer-events-auto ${item.className ?? ""}`}
 							style={
 								{
@@ -269,7 +280,9 @@ export default function OrbitDock({
 								item.onClick();
 							}}
 						>
-							<span className="orbit-dock__billboard flex items-center justify-center rounded-full border border-white/20 bg-black/70 text-white/90 shadow-[0_0_18px_rgba(249,38,114,0.22)] transition duration-200 group-hover:border-white/40 group-hover:text-white group-focus-visible:border-white/40 group-focus-visible:text-white">
+							<span
+								className={`orbit-dock__billboard flex items-center justify-center rounded-full border bg-black/70 shadow-[0_0_18px_rgba(249,38,114,0.22)] transition duration-200 group-focus-visible:border-white/40 group-focus-visible:text-white ${isHovered ? "border-white/40 text-white" : "border-white/20 text-white/90"}`}
+							>
 								{item.icon}
 							</span>
 						</button>

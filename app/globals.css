@@ -244,7 +244,7 @@ body {
 }
 
 @media (hover: hover) {
-  .orbit-dock__item:hover .orbit-dock__billboard,
+  .orbit-dock__item[data-hovered] .orbit-dock__billboard,
   .orbit-dock__item:focus-visible .orbit-dock__billboard {
     --orbit-hover-scale: 1.12;
     box-shadow:
