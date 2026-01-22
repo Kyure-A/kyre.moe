@@ -5,7 +5,16 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import * as THREE from "three";
+import type { Camera } from "three/src/cameras/Camera.js";
+import { PerspectiveCamera } from "three/src/cameras/PerspectiveCamera.js";
+import { NearestFilter } from "three/src/constants.js";
+import type { Object3D } from "three/src/core/Object3D.js";
+import { PlaneGeometry } from "three/src/geometries/PlaneGeometry.js";
+import { ShaderMaterial } from "three/src/materials/ShaderMaterial.js";
+import { Mesh } from "three/src/objects/Mesh.js";
+import { WebGLRenderer } from "three/src/renderers/WebGLRenderer.js";
+import { Scene } from "three/src/scenes/Scene.js";
+import { CanvasTexture } from "three/src/textures/CanvasTexture.js";
 
 const vertexShader = `
 varying vec2 vUv;
@@ -38,7 +47,7 @@ uniform sampler2D uTexture;
 void main() {
     float time = uTime;
     vec2 pos = vUv;
-    
+
     float move = sin(time + mouse) * 0.01;
     float r = texture2D(uTexture, pos + cos(time * 2. - time + pos.x) * .01).r;
     float g = texture2D(uTexture, pos + tan(time * .5 + pos.x - time) * .01).g;
@@ -68,7 +77,7 @@ interface AsciiFilterOptions {
 }
 
 class AsciiFilter {
-	renderer: THREE.WebGLRenderer;
+	renderer: WebGLRenderer;
 	domElement: HTMLDivElement;
 	pre: HTMLPreElement;
 	canvas: HTMLCanvasElement;
@@ -86,7 +95,7 @@ class AsciiFilter {
 	rows: number = 0;
 
 	constructor(
-		renderer: THREE.WebGLRenderer,
+		renderer: WebGLRenderer,
 		{ fontSize, fontFamily, charset, invert }: AsciiFilterOptions = {},
 	) {
 		this.renderer = renderer;
@@ -158,7 +167,7 @@ class AsciiFilter {
 		}
 	}
 
-	render(scene: THREE.Scene, camera: THREE.Camera) {
+	render(scene: Scene, camera: Camera) {
 		this.renderer.render(scene, camera);
 
 		const w = this.canvas.width;
@@ -325,15 +334,15 @@ class CanvAscii {
 	enableWaves: boolean;
 	fontFamily: string;
 	maxFps: number;
-	camera: THREE.PerspectiveCamera;
-	scene: THREE.Scene;
+	camera: PerspectiveCamera;
+	scene: Scene;
 	mouse: { x: number; y: number };
 	textCanvas!: CanvasTxt;
-	texture!: THREE.CanvasTexture;
-	geometry!: THREE.PlaneGeometry;
-	material!: THREE.ShaderMaterial;
-	mesh!: THREE.Mesh;
-	renderer!: THREE.WebGLRenderer;
+	texture!: CanvasTexture;
+	geometry!: PlaneGeometry;
+	material!: ShaderMaterial;
+	mesh!: Mesh;
+	renderer!: WebGLRenderer;
 	filter!: AsciiFilter;
 	center!: { x: number; y: number };
 	animationFrameId: number = 0;
@@ -369,15 +378,10 @@ class CanvAscii {
 		this.frameInterval = this.maxFps > 0 ? 1000 / this.maxFps : 0;
 		this.lastFrameTime = 0;
 
-		this.camera = new THREE.PerspectiveCamera(
-			45,
-			this.width / this.height,
-			1,
-			1000,
-		);
+		this.camera = new PerspectiveCamera(45, this.width / this.height, 1, 1000);
 		this.camera.position.z = 30;
 
-		this.scene = new THREE.Scene();
+		this.scene = new Scene();
 		this.mouse = { x: 0, y: 0 };
 
 		this.onMouseMove = this.onMouseMove.bind(this);
@@ -395,8 +399,8 @@ class CanvAscii {
 		this.textCanvas.resize();
 		this.textCanvas.render();
 
-		this.texture = new THREE.CanvasTexture(this.textCanvas.texture);
-		this.texture.minFilter = THREE.NearestFilter;
+		this.texture = new CanvasTexture(this.textCanvas.texture);
+		this.texture.minFilter = NearestFilter;
 		this.texture.needsUpdate = true;
 
 		const textAspect = this.textCanvas.width / this.textCanvas.height;
@@ -404,8 +408,8 @@ class CanvAscii {
 		const planeW = baseH * textAspect;
 		const planeH = baseH;
 
-		this.geometry = new THREE.PlaneGeometry(planeW, planeH, 36, 36);
-		this.material = new THREE.ShaderMaterial({
+		this.geometry = new PlaneGeometry(planeW, planeH, 36, 36);
+		this.material = new ShaderMaterial({
 			vertexShader,
 			fragmentShader,
 			transparent: true,
@@ -417,12 +421,12 @@ class CanvAscii {
 			},
 		});
 
-		this.mesh = new THREE.Mesh(this.geometry, this.material);
+		this.mesh = new Mesh(this.geometry, this.material);
 		this.scene.add(this.mesh);
 	}
 
 	setRenderer() {
-		this.renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
+		this.renderer = new WebGLRenderer({ antialias: false, alpha: true });
 		this.renderer.setPixelRatio(1);
 		this.renderer.setClearColor(0x000000, 0);
 
@@ -482,7 +486,7 @@ class CanvAscii {
 
 	render(timeMs?: number) {
 		const time = (timeMs ?? performance.now()) * 0.001;
-		(this.mesh.material as THREE.ShaderMaterial).uniforms.uTime.value =
+		(this.mesh.material as ShaderMaterial).uniforms.uTime.value =
 			Math.sin(time);
 
 		this.updateRotation();
@@ -498,8 +502,8 @@ class CanvAscii {
 	}
 
 	clear() {
-		this.scene.traverse((object) => {
-			const obj = object as unknown as THREE.Mesh;
+		this.scene.traverse((object: Object3D) => {
+			const obj = object as unknown as Mesh;
 			if (!obj.isMesh) return;
 			[obj.material].flat().forEach((material) => {
 				material.dispose();
