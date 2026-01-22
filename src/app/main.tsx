@@ -61,6 +61,9 @@ export default function App({ children }: Props) {
 	const [orbitRotation, setOrbitRotation] = useState(0);
 	const [orbitHovered, setOrbitHovered] = useState(false);
 	const [orbitDragging, setOrbitDragging] = useState(false);
+	const [orbitHoveredIndex, setOrbitHoveredIndex] = useState<number | null>(
+		null,
+	);
 	const [isMobile, setIsMobile] = useState(false);
 
 	const orbitPaused = orbitHovered && !orbitDragging;
@@ -128,6 +131,7 @@ export default function App({ children }: Props) {
 					rotation={orbitRotation}
 					size="var(--home-orbit-size)"
 					paused={orbitPaused}
+					hoveredIndex={orbitHoveredIndex}
 				/>
 			</div>
 
@@ -166,6 +170,8 @@ export default function App({ children }: Props) {
 					dragEnabled
 					size="var(--home-orbit-size)"
 					paused={orbitPaused}
+					hoveredIndex={orbitHoveredIndex}
+					onHoverIndexChange={setOrbitHoveredIndex}
 					onHoverChange={setOrbitHovered}
 					onDragChange={setOrbitDragging}
 				/>
