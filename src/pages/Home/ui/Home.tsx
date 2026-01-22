@@ -1,19 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { type CSSProperties, useEffect, useMemo, useState } from "react";
-import useDockItems from "@/shared/hooks/useDockItems";
+import { type CSSProperties, useEffect, useState } from "react";
 import { srcPath } from "@/shared/lib/path";
 import GlitchImage from "@/shared/ui/GlitchImage/GlitchImage";
-import OrbitDock from "@/shared/ui/OrbitDock/OrbitDock";
-
-const BackgroundShader = dynamic(
-	() => import("@/shared/ui/Background/Background"),
-	{
-		ssr: false,
-		loading: () => <div className="w-full h-full" />,
-	},
-);
 
 const FadeTextRotator = dynamic(
 	() => import("@/pages/Home/ui/FadeTextRotator"),
@@ -22,12 +12,6 @@ const FadeTextRotator = dynamic(
 		loading: () => <div className="w-full" />,
 	},
 );
-
-const ORBIT_VARS: CSSProperties = {
-	"--home-orbit-size": "clamp(300px, 86vmin, 760px)",
-	"--home-orbit-icon": "clamp(56px, 12vmin, 96px)",
-	"--home-orbit-gap": "clamp(8px, 2.4vmin, 16px)",
-} as CSSProperties;
 
 const HERO_STYLE: CSSProperties = {
 	width: "min(60vw, 1000px)",
@@ -38,26 +22,12 @@ const HERO_STYLE: CSSProperties = {
 
 const HERO_WIDTH = 2305;
 const HERO_HEIGHT = 4776;
-const SHADER_MAX_FPS = 24;
 const ASCII_MAX_FPS = 24;
 
 export default function Home() {
-	const items = useDockItems();
-	const orbitItems = useMemo(
-		() =>
-			items.filter((item) =>
-				typeof item.label === "string" ? item.label !== "Home" : true,
-			),
-		[items],
-	);
-	const [orbitRotation, setOrbitRotation] = useState(0);
-	const [orbitHovered, setOrbitHovered] = useState(false);
-	const [orbitDragging, setOrbitDragging] = useState(false);
 	const [isMobile, setIsMobile] = useState(false);
 	const [useWebp, setUseWebp] = useState(process.env.NODE_ENV === "production");
 
-	const orbitPaused = orbitHovered && !orbitDragging;
-	const shaderResolution = isMobile ? 0.65 : 1;
 	const startDelayMs = isMobile ? 450 : 200;
 
 	useEffect(() => {
@@ -84,36 +54,7 @@ export default function Home() {
 	}, []);
 
 	return (
-		<div
-			className="relative w-screen h-screen overflow-hidden"
-			style={ORBIT_VARS}
-		>
-			<div className="absolute w-screen h-screen z-0">
-				<BackgroundShader
-					pixelFilter={250}
-					fogDensity={0.3}
-					isRotate={false}
-					pulseFrequency={0.05}
-					color1="#272822"
-					color2="#F92672"
-					color3="#000000"
-					maxFps={SHADER_MAX_FPS}
-					resolutionScale={shaderResolution}
-					startDelayMs={startDelayMs}
-					startOnIdle
-				/>
-			</div>
-			<div className="absolute left-1/2 top-1/2 z-[1] -translate-x-1/2 -translate-y-1/2">
-				<OrbitDock
-					items={orbitItems}
-					layer="back"
-					showDecorations
-					speed={9}
-					rotation={orbitRotation}
-					size="var(--home-orbit-size)"
-					paused={orbitPaused}
-				/>
-			</div>
+		<div className="relative w-screen h-screen overflow-hidden">
 			<div className="absolute flex flex-col z-10 pt-16 inset-0 ">
 				<div className="flex flex-col mb-6 z-20">
 					<FadeTextRotator
@@ -160,21 +101,6 @@ export default function Home() {
 						</picture>
 					</GlitchImage>
 				</div>
-			</div>
-			<div className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2">
-				<OrbitDock
-					items={orbitItems}
-					layer="front"
-					showDecorations={false}
-					speed={9}
-					rotation={orbitRotation}
-					onRotate={setOrbitRotation}
-					dragEnabled
-					size="var(--home-orbit-size)"
-					paused={orbitPaused}
-					onHoverChange={setOrbitHovered}
-					onDragChange={setOrbitDragging}
-				/>
 			</div>
 		</div>
 	);
