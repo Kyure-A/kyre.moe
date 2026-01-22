@@ -1,7 +1,7 @@
 "use client";
 
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
-import { useRef, useState } from "react";
+import { memo, useCallback, useRef, useState } from "react";
 import type { DockItemData } from "@/shared/hooks/useDockItems";
 
 export type OrbitDockProps = {
@@ -24,6 +24,65 @@ export type OrbitDockProps = {
 	onHoverChange?: (hovered: boolean) => void;
 	onDragChange?: (dragging: boolean) => void;
 };
+
+type OrbitDockItemProps = {
+	item: DockItemData;
+	index: number;
+	delay: number;
+	isHovered: boolean;
+	onItemClick: (item: DockItemData) => void;
+	suppressClickRef: React.MutableRefObject<boolean>;
+	dragStateRef: React.MutableRefObject<{ dragged: boolean }>;
+};
+
+const OrbitDockItem = memo(function OrbitDockItem({
+	item,
+	index,
+	delay,
+	isHovered,
+	onItemClick,
+	suppressClickRef,
+	dragStateRef,
+}: OrbitDockItemProps) {
+	const label = typeof item.label === "string" ? item.label : undefined;
+
+	return (
+		<button
+			key={`${label ?? "item"}-${index}`}
+			type="button"
+			data-orbit-index={index}
+			data-hovered={isHovered ? "true" : undefined}
+			className={`orbit-dock__item group pointer-events-auto ${item.className ?? ""}`}
+			style={
+				{
+					"--orbit-delay": `${delay}s`,
+				} as CSSProperties
+			}
+			aria-label={label}
+			title={label}
+			onClick={(event) => {
+				if (suppressClickRef.current) {
+					suppressClickRef.current = false;
+					event.preventDefault();
+					event.stopPropagation();
+					return;
+				}
+				if (dragStateRef.current.dragged) {
+					event.preventDefault();
+					event.stopPropagation();
+					return;
+				}
+				onItemClick(item);
+			}}
+		>
+			<span
+				className={`orbit-dock__billboard flex items-center justify-center rounded-full border bg-black/70 shadow-[0_0_18px_rgba(249,38,114,0.22)] transition duration-200 group-focus-visible:border-white/40 group-focus-visible:text-white ${isHovered ? "border-white/40 text-white" : "border-white/20 text-white/90"}`}
+			>
+				{item.icon}
+			</span>
+		</button>
+	);
+});
 
 export default function OrbitDock({
 	items,
@@ -221,6 +280,10 @@ export default function OrbitDock({
 		}
 	};
 
+	const handleItemClick = useCallback((item: DockItemData) => {
+		item.onClick();
+	}, []);
+
 	return (
 		<div
 			ref={rootRef}
@@ -252,40 +315,16 @@ export default function OrbitDock({
 					const isHovered = hoveredIndex === index;
 
 					return (
-						<button
+						<OrbitDockItem
 							key={`${label ?? "item"}-${index}`}
-							type="button"
-							data-orbit-index={index}
-							data-hovered={isHovered ? "true" : undefined}
-							className={`orbit-dock__item group pointer-events-auto ${item.className ?? ""}`}
-							style={
-								{
-									"--orbit-delay": `${delay}s`,
-								} as CSSProperties
-							}
-							aria-label={label}
-							title={label}
-							onClick={(event) => {
-								if (suppressClickRef.current) {
-									suppressClickRef.current = false;
-									event.preventDefault();
-									event.stopPropagation();
-									return;
-								}
-								if (dragState.current.dragged) {
-									event.preventDefault();
-									event.stopPropagation();
-									return;
-								}
-								item.onClick();
-							}}
-						>
-							<span
-								className={`orbit-dock__billboard flex items-center justify-center rounded-full border bg-black/70 shadow-[0_0_18px_rgba(249,38,114,0.22)] transition duration-200 group-focus-visible:border-white/40 group-focus-visible:text-white ${isHovered ? "border-white/40 text-white" : "border-white/20 text-white/90"}`}
-							>
-								{item.icon}
-							</span>
-						</button>
+							item={item}
+							index={index}
+							delay={delay}
+							isHovered={isHovered}
+							onItemClick={handleItemClick}
+							suppressClickRef={suppressClickRef}
+							dragStateRef={dragState}
+						/>
 					);
 				})}
 			</div>
