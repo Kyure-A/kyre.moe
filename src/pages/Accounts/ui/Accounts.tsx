@@ -61,7 +61,7 @@ const ACCOUNT_DATA: AccountData[] = [
 	},
 	{
 		id: "Kyure_A@misskey.io",
-		description: { ja: "xyz 世代", en: "Gen XYZ" },
+		description: { ja: "xyz 世代", en: "Gen .xyz" },
 		platform: "Misskey",
 		accentColor: "#55C500",
 		serviceIcon: <SiMisskey />,
