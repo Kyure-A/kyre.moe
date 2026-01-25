@@ -44,7 +44,7 @@ const LanguageToggle = ({ onChange }: LanguageToggleProps) => {
 		if (typeof window !== "undefined") {
 			window.localStorage.setItem(STORAGE_KEY, newLanguage);
 		}
-		router.push(getNextPath(newLanguage));
+		router.replace(getNextPath(newLanguage));
 		if (onChange) {
 			onChange(newLanguage);
 		}
