@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   markdown-it-link-preview:
-    hash: 2251af30cb0bcf23eb4431c180d1eee06d85cfca3c87c52e5a31b66c389315bb
+    hash: 503ba8f0605306a83346e7f836f71676f38f3ea270f5ec7663f455cfa5dd5933
     path: patches/markdown-it-link-preview.patch
 
 importers:
@@ -51,7 +51,7 @@ importers:
         version: 1.0.1(markdown-it@14.1.0)
       markdown-it-link-preview:
         specifier: ^1.1.4
-        version: 1.1.4(patch_hash=2251af30cb0bcf23eb4431c180d1eee06d85cfca3c87c52e5a31b66c389315bb)(canvas@3.2.1)
+        version: 1.1.4(patch_hash=503ba8f0605306a83346e7f836f71676f38f3ea270f5ec7663f455cfa5dd5933)(canvas@3.2.1)
       markdown-it-magic-link:
         specifier: ^0.1.4
         version: 0.1.4
@@ -3955,7 +3955,7 @@ snapshots:
     dependencies:
       markdown-it: 14.1.0
 
-  markdown-it-link-preview@1.1.4(patch_hash=2251af30cb0bcf23eb4431c180d1eee06d85cfca3c87c52e5a31b66c389315bb)(canvas@3.2.1):
+  markdown-it-link-preview@1.1.4(patch_hash=503ba8f0605306a83346e7f836f71676f38f3ea270f5ec7663f455cfa5dd5933)(canvas@3.2.1):
     dependencies:
       jsdom: 17.0.0(canvas@3.2.1)
       xmlhttprequest: 1.8.0
