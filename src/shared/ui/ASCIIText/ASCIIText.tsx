@@ -100,6 +100,7 @@ class AsciiFilter {
 	) {
 		this.renderer = renderer;
 		this.domElement = document.createElement("div");
+		this.domElement.className = "ascii-text-root";
 		this.domElement.style.position = "absolute";
 		this.domElement.style.top = "0";
 		this.domElement.style.left = "0";
@@ -668,12 +669,7 @@ export default function ASCIIText({
 			}}
 		>
 			<style>{`
-        body {
-          margin: 0;
-          padding: 0;
-        }
-
-        canvas {
+        .ascii-text-root canvas {
           position: absolute;
           left: 0;
           top: 0;
@@ -688,7 +684,7 @@ export default function ASCIIText({
           image-rendering: pixelated;
         }
 
-        pre {
+        .ascii-text-root pre {
           margin: 0;
           user-select: none;
           padding: 0;
