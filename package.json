@@ -15,7 +15,6 @@
 		"@react-spring/web": "^9.7.5",
 		"@vscode/markdown-it-katex": "^1.1.2",
 		"canvas": "^3.2.1",
-
 		"gray-matter": "^4.0.3",
 		"gsap": "^3.12.7",
 		"highlight.js": "^11.11.1",
@@ -52,6 +51,9 @@
 	"pnpm": {
 		"onlyBuiltDependencies": [
 			"canvas"
-		]
+		],
+		"patchedDependencies": {
+			"markdown-it-link-preview": "patches/markdown-it-link-preview.patch"
+		}
 	}
 }
