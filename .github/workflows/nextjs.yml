@@ -59,6 +59,8 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
+      - name: Verify patched dependencies
+        run: node scripts/verify-patches.mjs
       - name: Install Emacs for Org export
         run: |
           sudo apt-get update
