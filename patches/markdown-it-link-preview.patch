@@ -1,5 +1,5 @@
 diff --git a/src/index.js b/src/index.js
-index a9fc10aa050afe86c0cd1137beeb485625a88be8..758bd73147e808946222d36793da50126c240f75 100644
+index a9fc10aa050afe86c0cd1137beeb485625a88be8..5547030dd3215112312fe882dc8ba0fda011f053 100644
 --- a/src/index.js
 +++ b/src/index.js
 @@ -6,6 +6,7 @@ const HTML_REPLACEMENTS = {
@@ -10,3 +10,43 @@ index a9fc10aa050afe86c0cd1137beeb485625a88be8..758bd73147e808946222d36793da5012
  };
  
  function replaceUnsafeChar(ch) {
+@@ -22,6 +23,20 @@ function unescapeHtml(str) {
+ }
+ 
+ function linkPreviewHtml(ogData) {
++  const imageHtml = ogData.image
++    ? '<a ' +
++      'class="link-preview-widget-image" ' +
++      'href="' +
++      escapeHtml(unescapeHtml(ogData.url)) +
++      '" ' +
++      'rel="noopener" ' +
++      'style="background-image: url(\'' +
++      escapeHtml(unescapeHtml(ogData.image)) +
++      '\');" ' +
++      'target="_blank"' +
++      '></a>'
++    : '';
++
+   return (
+     '<div class="link-preview-widget">' +
+     '<a ' +
+@@ -41,17 +56,7 @@ function linkPreviewHtml(ogData) {
+     escapeHtml(unescapeHtml(ogData.site_name)) +
+     '</div>' +
+     '</a>' +
+-    '<a ' +
+-    'class="link-preview-widget-image" ' +
+-    'href="' +
+-    escapeHtml(unescapeHtml(ogData.url)) +
+-    '" ' +
+-    'rel="noopener" ' +
+-    'style="background-image: url(\'' +
+-    escapeHtml(unescapeHtml(ogData.image)) +
+-    '\');" ' +
+-    'target="_blank"' +
+-    '></a>' +
++    imageHtml +
+     '</div>'
+   );
+ }
