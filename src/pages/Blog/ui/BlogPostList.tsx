@@ -23,12 +23,12 @@ export default function BlogPostList({ posts, emptyLabel }: Props) {
 						<div className="group relative block w-full" style={accentStyle}>
 							<Link
 								href={`/${post.lang}/blog/${post.slug}`}
-								className="absolute inset-0 z-0"
+								className="absolute inset-0 z-10"
 								aria-label={post.title}
 							>
 								<span className="sr-only">{post.title}</span>
 							</Link>
-							<div className="relative z-10 flex flex-col gap-2 px-0 py-3 text-gray-100 transition-[padding,background-color,border-radius,color] duration-[400ms] ease-out group-hover:px-4 group-hover:rounded-[10px] group-hover:bg-[var(--accent)] group-hover:text-white">
+							<div className="flex flex-col gap-2 px-0 py-3 text-gray-100 transition-[padding,background-color,border-radius,color] duration-[400ms] ease-out group-hover:px-4 group-hover:rounded-[10px] group-hover:bg-[var(--accent)] group-hover:text-white">
 								<div className="flex flex-wrap items-center gap-3 text-[11px] tracking-[0.08em] text-gray-400 transition-colors duration-[400ms] ease-out group-hover:text-white/80">
 									<span>{formatDate(post.date, post.lang)}</span>
 								</div>
@@ -47,7 +47,7 @@ export default function BlogPostList({ posts, emptyLabel }: Props) {
 									</p>
 								)}
 								{post.tags.length > 0 && (
-									<div className="flex flex-wrap gap-2 text-[11px] tracking-[0.08em] text-gray-500 transition-colors duration-[400ms] ease-out group-hover:text-white/85">
+									<div className="relative z-20 flex flex-wrap gap-2 text-[11px] tracking-[0.08em] text-gray-500 transition-colors duration-[400ms] ease-out group-hover:text-white/85">
 										{post.tags.map((tag) => (
 											<Link
 												key={`${post.slug}-${tag}`}
