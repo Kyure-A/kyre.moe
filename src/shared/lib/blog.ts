@@ -29,3 +29,7 @@ export function formatDate(date: string, lang: SiteLang) {
 		return date;
 	}
 }
+
+export function buildTagPath(tag: string, lang: SiteLang) {
+	return `/${lang}/blog/tag/${encodeURIComponent(tag)}`;
+}

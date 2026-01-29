@@ -1,5 +1,6 @@
+import { Link } from "next-view-transitions";
 import type { BlogPost } from "@/shared/lib/blog";
-import { formatDate } from "@/shared/lib/blog";
+import { buildTagPath, formatDate } from "@/shared/lib/blog";
 import CopyCodeBlock from "@/shared/ui/CopyCodeBlock/CopyCodeBlock";
 import TwitterEmbedEnhancer from "@/shared/ui/TwitterEmbed/TwitterEmbed";
 
@@ -46,13 +47,14 @@ export default function BlogPostView({ post }: Props) {
 				{post.tags.length > 0 && (
 					<div className="mt-4 flex flex-wrap gap-2 text-[11px] tracking-[0.08em] text-gray-500">
 						{post.tags.map((tag) => (
-							<span
+							<Link
 								key={`${post.slug}-${tag}`}
-								className="rounded-full border border-white/10 px-3 py-1"
+								href={buildTagPath(tag, post.lang)}
+								className="rounded-full border border-white/10 px-3 py-1 transition-colors duration-[400ms] ease-out hover:border-white/40 hover:text-gray-200"
 								style={{ viewTransitionName: `blog-tag-${post.slug}-${tag}` }}
 							>
 								#{tag}
-							</span>
+							</Link>
 						))}
 					</div>
 				)}
