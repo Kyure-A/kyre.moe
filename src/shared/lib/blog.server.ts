@@ -175,7 +175,7 @@ function parseFrontmatter(
 			: createExcerpt(content);
 	const date = typeof data.date === "string" ? data.date : "";
 	const tags = Array.isArray(data.tags)
-		? data.tags.map((tag) => String(tag)).filter(Boolean)
+		? data.tags.map((tag) => String(tag).trim()).filter(Boolean)
 		: typeof data.tags === "string"
 			? data.tags
 					.split(",")
@@ -238,6 +238,23 @@ export function getAllPosts(lang?: SiteLang): BlogPostMeta[] {
 		const bTime = b.date ? new Date(b.date).getTime() : 0;
 		return bTime - aTime;
 	});
+}
+
+export function getPostsByTag(tag: string, lang?: SiteLang): BlogPostMeta[] {
+	const normalized = tag.trim();
+	if (!normalized) return [];
+	return getAllPosts(lang).filter((post) => post.tags.includes(normalized));
+}
+
+export function getAllTags(lang?: SiteLang): string[] {
+	const tags = new Set<string>();
+	for (const post of getAllPosts(lang)) {
+		for (const tag of post.tags) {
+			const normalized = tag.trim();
+			if (normalized) tags.add(normalized);
+		}
+	}
+	return Array.from(tags).sort((a, b) => a.localeCompare(b));
 }
 
 function rewriteRelativeImagePaths(content: string, slug: string): string {
