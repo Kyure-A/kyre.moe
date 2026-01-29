@@ -7,7 +7,7 @@
 どうやら [[https://blog.handlena.me/entry/2025/01/development-tools/][blog.handlena.me]] と [[https://blog-dry.com/entry/2026/01/02/145952][Don't Repeat Yourself]] が原点らしい。
 
 ** OS
-以前は NixOS-WSL を使って家のデスクトップで開発をしていたが，MacBook Air M4 32GB を購入してからはもっぱら macOS を使っている。
+以前は [[https://github.com/nix-community/NixOS-WSL][NixOS-WSL]] を使って家のデスクトップで開発をしていたが，MacBook Air M4 32GB を購入してからはもっぱら macOS を使っている。
 Nix の設定が壊れて NixOS-WSL 側で Emacs を起動しても設定が読み込まれなくなっちゃったのも要因ではあるが。
 
 ** エディタ
@@ -19,7 +19,7 @@ Emacs を使っている。以前 [[https://scrapbox.io/kyre/Emacs_%E3%81%A8%E3%
 Windows で Unity 周りを触る時にたま〜に Visual Studio Code を開くがそれくらい。VSCode についても Emacs キーバインドを使っている。
 Emacs については特に PC を深く使えるようになる前から設定していたキーバインドがあり，それに下手に慣れてしまったせいで離れられず困っている。例えば Undo は `C-u`，Redo は `C-r` にしているので困る。
 
-最近は Blender のおかげで `C-z` と `C-Z` で Undo/Redo するのも癖になってきたので，俺の Emacs には Undo と Redo のキーバインドがそれぞれ 3 種類くらいある。
+最近は [[https://github.com/blender/blender][Blender]] のおかげで `C-z` と `C-Z` で Undo/Redo するのも癖になってきたので，俺の Emacs には Undo と Redo のキーバインドがそれぞれ 3 種類くらいある。
 
 Emacs 自体というより，今まで培ってきた設定とキーバインドと Magit が好き。Magit がないともう Git 使えねえ。Magit おすすめです。
 
@@ -37,9 +37,9 @@ Agent Skills の設定には自分で作った `agent-skills-nix` ってやつ�
 [@preview](https://github.com/Kyure-A/agent-skills-nix)
 
 ** ターミナルエミュレータ
-Windows では Windows Terminal を使っている。macOS では Alacrrity。
+Windows では [[https://github.com/microsoft/terminal][Windows Terminal]] を使っている。macOS では [[https://github.com/alacritty/alacritty][Alacrrity]]。
 
-Alacrrity，正直 Ghostty よりアイコンもかわいくないし，果たして他と比べて早いのかもわからないが，わざわざ移行する気にもなれなくてずるずる使っている。
+Alacrrity，正直 [[https://github.com/ghostty-org/ghostty][Ghostty]] よりアイコンもかわいくないし，果たして他と比べて早いのかもわからないが，わざわざ移行する気にもなれなくてずるずる使っている。
 
 ** ターミナルマルチプレクサ
 Zellij なるものが最近は流行りらしいが，Vim に阿ってるらしくて腹立ったので tmux を使っている。
@@ -47,13 +47,13 @@ Zellij なるものが最近は流行りらしいが，Vim に阿ってるらし
 tmux のキーバインドはデフォルトだと `C-b` とかだった気がするが，Emacs っぽくして `C-x` にした。おかげで使いやすくなったし，tmux 上で Emacs を起動すると `C-x` が tmux に吸われてコマンドがなんも入力できない。アホか
 
 ** シェル
-predict-on から離れられない愚かな脳なので，zsh を使っている。Twitter で predict-on に直近で言及しまくっている人間はマジで俺しかいなくて，絶滅危惧種であることを自覚している。
+[[https://github.com/zsh-users/zsh/blob/master/Functions/Zle/predict-on][predict-on]] から離れられない愚かな脳なので，zsh を使っている。Twitter で predict-on に直近で言及しまくっている人間はマジで俺しかいなくて，絶滅危惧種であることを自覚している。
 
 いまは `tab` をわざわざ押してコマンドを選択するのが主流らしいですね？！
 
 ** ランチャー
-Windows はなんか Power Toys にあるやつ。
-macOS は Raycast。な〜んもプラグインとか入れてないです。
+Windows はなんか [[https://github.com/microsoft/PowerToys][Power Toys]] にあるやつ。
+macOS は [[https://raycast.com][Raycast]]。な〜んもプラグインとか入れてないです。
 
 macOS デフォルトのランチャーみたいなやつを Dock から消しているかつ，Spotlight 検索のキーバインドを Raycast の起動にオーバーライドしているせいで，前プロセスを落としたらアプリケーションを起動できなくなって死んだかと思った。
 
@@ -64,26 +64,26 @@ Windows は Noto Sans を大抵のアプリケーションで強要している�
 以前は Vivaldi を使っていたが，Firefox に移行した。ほぼ困っていないが，Google 周りのサイトがたまに壊れていてムカつく。
 
 ** 開発環境のセットアップ
-nix-community/home-manager で管理している。macOS は nix-darwin で管理している。NixOS-WSL についての設定も残っているが，最近はメンテナンスしていないので絶対に壊れているという実感がある。
+[[https://github.com/nix-community/home-manager][home-manager]] で管理している。macOS は [[https://github.com/nix-darwin/nix-darwin][nix-darwin]] で管理している。NixOS-WSL についての設定も残っているが，最近はメンテナンスしていないので壊れていそうだ。
 
 [@preview](https://github.com/Kyure-A/nix-config)
 
 ** タスク管理・ノートテイキング
 ノートテイキングには [[https://scrapbox.io/kyre][Cosense]] を使っている。また，Discord に自分のファイル共有や文章共有用のサーバーがある。あんまりセキュアではないと思うが，まあ転送寺ギガヒコに任せるのも大概だしな。
 
-タスク管理は Habitica を使っている。今までは Todoist や Structured，Trello などをホッピングしてきたが，結局比較的楽しそうな Habitica に落ち着いた。Habitica を使い始める以前はそもそもタスク管理をしない期間が数年くらいあり，思い出した時にやるかみたいな生活をしていたが，流石に社会生活をやっていくに当たってはハンデすぎる。
+タスク管理は [[https://habitica.com/profile/81a1fc81-7eb1-453f-bca0-7ccf9f2ca9ff][Habitica]] を使っている。今までは Todoist や Structured，Trello などをホッピングしてきたが，結局比較的楽しそうな Habitica に落ち着いた。Habitica を使い始める以前はそもそもタスク管理をしない期間が数年くらいあり，思い出した時にやるかみたいな生活をしていたが，流石に社会生活をやっていくに当たってはハンデすぎた。
 
 ** キーボード
-TEX Shura に Holy Panda のパチモンを入れていたが，授業中にコーディングしているとあまりにもうるさいと言われたので Kailh Midnight Silent V2 Switch / Tactile に変えた。
+[[https://tex.com.tw/products/shura][TEX Shura]] に [[https://shop.yushakobo.jp/products/4131][Holy Panda のパチモン]]を入れていたが，授業中にコーディングしていると同級生に「あまりにもうるさい」と言われたので [[https://shop.yushakobo.jp/products/4272][Kailh Midnight Silent V2 Switch / Tactile]] に変えた。
 
-家のキーボードであった NiZ Plum 75 が壊れた上に，わざわざ持ち歩くのも面倒くさくなったので，結局 MacBook の純正キーボードを使ってコードを書いて，ふつうの Windows での作業を TEX Shura でするようになってしまった。
+しかし、家のキーボードであった NiZ Plum 75 が壊れたので TEX Shura を家のキーボードに不本意ながらすることになり、外では MacBook についているキーボードしか使っていない。
 
 ** ポインティングデバイス
-中 2 の頃に Twitter のフォロワーたちが催していたたこ焼きパーティー（俺は遅刻したのでたこ焼きを食うことはできなかった）のビンゴ大会で当たったエレコムのクソ安いマウスをもう 6 年くらい使っている。あまりにもこだわりがない。
+中 2 の頃に Twitter のフォロワーたちが催していたたこ焼きパーティー（俺は遅刻したのでたこ焼きを食うことはできなかった）のビンゴ大会で当たった[[https://www.elecom.co.jp/products/M-FIR08DRBK.html][エレコムのクソ安いマウス]]をもう 6 年くらい使っている。あまりにもこだわりがない。
 
-TEX Shura はトラックポイント目当てで買ったものの，あんまり使ってない。マウスがあるから......
+TEX Shura はトラックポイント目当てで買ったものの，あんまり使ってない。家にはこのマウスがあるから......
 
-MacBook についているトラックパッドが意外と便利なので TEX Shura を持ち歩かなくてもいいなと思っている。
+MacBook についているトラックパッドが意外と便利なので TEX Shura を持ち歩かなくてもそこまで困っていない。
 
 ** まとめ
 割とこだわりよりも惰性で使い続けている道具が多いので，来年には捨てられているといいな（マウスとか特に）
