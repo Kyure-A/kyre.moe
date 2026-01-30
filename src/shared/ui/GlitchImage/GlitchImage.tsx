@@ -34,6 +34,7 @@ interface GlitchImageProps {
 }
 
 interface GlitchBlock {
+  id: string;
   top: string;
   height: string;
   offsetX: string;
@@ -47,6 +48,7 @@ interface RgbShift {
 }
 
 interface GlitchLine {
+  id: string;
   top: number;
   height: number;
   offsetX: number;
@@ -136,7 +138,9 @@ const generateGlitchBlocks = (
       const [s2, topVal] = nextRandom(s1);
       const [s3, offsetXVal] = nextRandom(s2);
       const [s4, offsetYVal] = nextRandom(s3);
+      const blockId = `${topVal.toFixed(4)}-${heightVal.toFixed(4)}-${offsetXVal.toFixed(4)}-${offsetYVal.toFixed(4)}`;
       const block: GlitchBlock = {
+        id: blockId,
         top: `${topVal * 100}%`,
         height: `${heightVal * 30 + 5}px`,
         offsetX: `${(offsetXVal - 0.5) * 2 * intensity * 40}px`,
@@ -168,7 +172,9 @@ const generateGlitchLines = (
       const [s11, blendVal] = nextRandom(s10);
 
       const colorLine = colorLineVal < 0.5;
+      const lineId = `${topVal.toFixed(4)}-${heightVal.toFixed(4)}-${offsetXVal.toFixed(4)}-${offsetYVal.toFixed(4)}-${skewVal.toFixed(4)}-${scaleXVal.toFixed(4)}-${opacityVal.toFixed(4)}-${blurVal.toFixed(4)}-${glowVal.toFixed(4)}-${colorLineVal.toFixed(4)}-${blendVal.toFixed(4)}`;
       const line: GlitchLine = {
+        id: lineId,
         top: topVal * 100,
         height: heightVal * (intensity * 6 + 1) + 1,
         offsetX: (offsetXVal - 0.5) * intensity * 90,
@@ -437,9 +443,9 @@ const GlitchImage = ({
           </div>
 
           {/* Distorted blocks */}
-          {glitchData.glitchBlocks.map((block, index) => (
+          {glitchData.glitchBlocks.map((block) => (
             <div
-              key={`block-${index}`}
+              key={block.id}
               className="absolute left-0 w-full overflow-hidden"
               style={{
                 ...maskedStyle,
@@ -460,7 +466,7 @@ const GlitchImage = ({
             {/* Sharp horizontal glitch lines */}
             {glitchData.glitchLines.map((line, index) => (
               <div
-                key={`line-${index}`}
+                key={line.id}
                 className="absolute left-0 right-0"
                 style={{
                   top: `${line.top}%`,

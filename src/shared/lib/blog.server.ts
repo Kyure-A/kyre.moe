@@ -14,6 +14,9 @@ import magicLink, {
 import taskLists from "markdown-it-task-lists";
 import markdownItTocDoneRight from "markdown-it-toc-done-right";
 import * as path from "node:path";
+import type MarkdownIt from "markdown-it";
+import type StateCore from "markdown-it/lib/rules_core/state_core";
+import type Token from "markdown-it/lib/token";
 import type { BlogPost, BlogPostMeta } from "./blog";
 import { DEFAULT_LANG, isSiteLang, type SiteLang } from "./i18n";
 
@@ -65,10 +68,8 @@ function buildTwitterEmbed(url: URL): string | null {
   return `<div class="markdown-embed markdown-embed-twitter"><blockquote class="twitter-tweet" data-dnt="true" data-theme="dark" data-width="550"><a href="${canonical}"></a></blockquote></div>`;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function embedPlugin(md: any) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  md.core.ruler.after("inline", "embed", (state: any) => {
+function embedPlugin(md: MarkdownIt) {
+  md.core.ruler.after("inline", "embed", (state: StateCore) => {
     const tokens = state.tokens;
     for (let i = 0; i < tokens.length; i++) {
       const token = tokens[i];
@@ -79,10 +80,9 @@ function embedPlugin(md: any) {
       if (inline.type !== "inline" || close.type !== "paragraph_close")
         continue;
 
-      const children = inline.children ?? [];
+      const children: Token[] = inline.children ?? [];
       const meaningful = children.filter(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (child: any) => child.type !== "text" || child.content?.trim(),
+        (child) => child.type !== "text" || child.content?.trim(),
       );
       if (meaningful.length !== 3) continue;
       const [open, , end] = meaningful;
@@ -90,7 +90,7 @@ function embedPlugin(md: any) {
 
       const href =
         open.attrGet?.("href") ??
-        open.attrs?.find((attr: [string, string]) => attr[0] === "href")?.[1];
+        open.attrs?.find(([name]) => name === "href")?.[1];
       if (!href) continue;
 
       let url: URL;
@@ -307,10 +307,8 @@ export function getPostLanguages(slug: string): SiteLang[] {
 md.use(footnote);
 md.use(taskLists, { label: true, labelAfter: false });
 md.use(githubAlerts);
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-md.use(katex as any);
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-md.use(magicLink as any, { handlers: [handlerLink(), handlerGitHubAt()] });
+md.use(katex);
+md.use(magicLink, { handlers: [handlerLink(), handlerGitHubAt()] });
 md.use(linkPreview);
 md.use(embedPlugin);
 md.use(markdownItTocDoneRight);

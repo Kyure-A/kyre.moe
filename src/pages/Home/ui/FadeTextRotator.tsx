@@ -10,6 +10,17 @@ const ASCIIText = dynamic(() => import("@/shared/ui/ASCIIText/ASCIIText"), {
   ),
 });
 
+type FadeTextRotatorProps = {
+  texts?: string[];
+  interval?: number;
+  fadeDuration?: number;
+  asciiFontSize?: number;
+  textFontSize?: number;
+  asciiMaxFps?: number;
+  asciiStartDelayMs?: number;
+  asciiStartOnIdle?: boolean;
+};
+
 export const FadeTextRotator = ({
   texts = ["キュレェ", "Kyure_A"],
   interval = 5000,
@@ -19,7 +30,7 @@ export const FadeTextRotator = ({
   asciiMaxFps = 60,
   asciiStartDelayMs = 0,
   asciiStartOnIdle = false,
-}) => {
+}: FadeTextRotatorProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
@@ -36,9 +47,9 @@ export const FadeTextRotator = ({
       duration={fadeDuration}
       blur={false}
     >
-      {texts.map((text, index) => (
+      {texts.map((text) => (
         <ASCIIText
-          key={index}
+          key={text}
           text={text}
           asciiFontSize={asciiFontSize}
           textFontSize={textFontSize}
