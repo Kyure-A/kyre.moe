@@ -1,6 +1,6 @@
 import "server-only";
 import katex from "@vscode/markdown-it-katex";
-import * as fs from "fs";
+import * as fs from "node:fs";
 import matter from "gray-matter";
 import hljs from "highlight.js";
 import { createMarkdownExit } from "markdown-exit";
@@ -13,7 +13,7 @@ import magicLink, {
 } from "markdown-it-magic-link";
 import taskLists from "markdown-it-task-lists";
 import markdownItTocDoneRight from "markdown-it-toc-done-right";
-import * as path from "path";
+import * as path from "node:path";
 import type { BlogPost, BlogPostMeta } from "./blog";
 import { DEFAULT_LANG, isSiteLang, type SiteLang } from "./i18n";
 

@@ -1,4 +1,4 @@
-import React from "react";
+
 
 export type TimelineItem = {
   date: string;
@@ -14,8 +14,7 @@ type TimelineProps = {
 export default function Timeline({ items = [] }: TimelineProps) {
   return (
     <ol className="relative border-s border-gray-300 dark:border-gray-700 ml-4">
-      {items &&
-        items.map((item, index) => (
+      {items?.map((item, index) => (
           <a href={item.url || "/"} key={index}>
             <li className="mb-10 ms-4">
               {/* dot */}

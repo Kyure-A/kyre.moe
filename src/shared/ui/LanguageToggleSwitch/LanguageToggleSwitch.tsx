@@ -1,5 +1,5 @@
 import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   DEFAULT_LANG,
   getLangFromPath,
