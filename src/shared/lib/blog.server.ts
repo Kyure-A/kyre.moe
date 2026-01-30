@@ -241,10 +241,7 @@ export const getAllPosts = (lang?: SiteLang): BlogPostMeta[] => {
   });
 };
 
-export const getPostsByTag = (
-  tag: string,
-  lang?: SiteLang,
-): BlogPostMeta[] => {
+export const getPostsByTag = (tag: string, lang?: SiteLang): BlogPostMeta[] => {
   const normalized = tag.trim();
   if (!normalized) return [];
   return getAllPosts(lang).filter((post) => post.tags.includes(normalized));
@@ -261,10 +258,7 @@ export const getAllTags = (lang?: SiteLang): string[] => {
   return Array.from(tags).sort((a, b) => a.localeCompare(b));
 };
 
-const rewriteRelativeImagePaths = (
-  content: string,
-  slug: string,
-): string => {
+const rewriteRelativeImagePaths = (content: string, slug: string): string => {
   // ![alt](./path) 形式
   const markdownImageRegex = /!\[([^\]]*)\]\(\.\/([^)]+)\)/g;
   // [text](./path) 形式（画像リンク）
