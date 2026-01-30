@@ -19,6 +19,7 @@ type FadeTextRotatorProps = {
   asciiMaxFps?: number;
   asciiStartDelayMs?: number;
   asciiStartOnIdle?: boolean;
+  active?: boolean;
 };
 
 export const FadeTextRotator = ({
@@ -30,16 +31,18 @@ export const FadeTextRotator = ({
   asciiMaxFps = 60,
   asciiStartDelayMs = 0,
   asciiStartOnIdle = false,
+  active = true,
 }: FadeTextRotatorProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
+    if (!active) return;
     const timer = setInterval(() => {
       setActiveIndex((prevIndex) => (prevIndex + 1) % texts.length);
     }, interval);
 
     return () => clearInterval(timer);
-  }, [interval, texts.length]);
+  }, [active, interval, texts.length]);
 
   return (
     <FadeTransition
@@ -56,6 +59,7 @@ export const FadeTextRotator = ({
           maxFps={asciiMaxFps}
           startDelayMs={asciiStartDelayMs}
           startOnIdle={asciiStartOnIdle}
+          active={active}
         />
       ))}
     </FadeTransition>

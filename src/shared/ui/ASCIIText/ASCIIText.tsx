@@ -349,6 +349,9 @@ class CanvAscii {
   animationFrameId: number = 0;
   frameInterval: number = 0;
   lastFrameTime: number = 0;
+  isRunning: boolean = false;
+  timeOffset: number = 0;
+  pausedAt: number | null = null;
 
   constructor(
     {
@@ -457,7 +460,26 @@ class CanvAscii {
   }
 
   load() {
-    this.animate();
+    this.start();
+  }
+
+  start() {
+    if (this.isRunning) return;
+    if (this.pausedAt !== null) {
+      this.timeOffset += performance.now() - this.pausedAt;
+      this.pausedAt = null;
+    }
+    this.isRunning = true;
+    this.lastFrameTime = 0;
+    this.animationFrameId = requestAnimationFrame(this.animateFrame);
+  }
+
+  stop() {
+    if (this.isRunning && this.pausedAt === null) {
+      this.pausedAt = performance.now();
+    }
+    this.isRunning = false;
+    cancelAnimationFrame(this.animationFrameId);
   }
 
   onMouseMove(evt: MouseEvent | TouchEvent) {
@@ -470,23 +492,20 @@ class CanvAscii {
     this.mouse = { x, y };
   }
 
-  animate() {
-    const animateFrame = (time: number) => {
-      this.animationFrameId = requestAnimationFrame(animateFrame);
-      if (
-        this.frameInterval &&
-        time - this.lastFrameTime < this.frameInterval
-      ) {
-        return;
-      }
-      this.lastFrameTime = time;
-      this.render(time);
-    };
-    this.animationFrameId = requestAnimationFrame(animateFrame);
-  }
+  animateFrame = (time: number) => {
+    if (!this.isRunning) return;
+    if (this.frameInterval && time - this.lastFrameTime < this.frameInterval) {
+      this.animationFrameId = requestAnimationFrame(this.animateFrame);
+      return;
+    }
+    this.lastFrameTime = time;
+    this.render(time);
+    this.animationFrameId = requestAnimationFrame(this.animateFrame);
+  };
 
   render(timeMs?: number) {
-    const time = (timeMs ?? performance.now()) * 0.001;
+    const adjustedTimeMs = (timeMs ?? performance.now()) - this.timeOffset;
+    const time = adjustedTimeMs * 0.001;
     (this.mesh.material as ShaderMaterial).uniforms.uTime.value =
       Math.sin(time);
 
@@ -526,7 +545,7 @@ class CanvAscii {
   }
 
   dispose() {
-    cancelAnimationFrame(this.animationFrameId);
+    this.stop();
     this.filter.dispose();
     this.container.removeChild(this.filter.domElement);
     this.container.removeEventListener("mousemove", this.onMouseMove);
@@ -547,6 +566,7 @@ interface ASCIITextProps {
   maxFps?: number;
   startDelayMs?: number;
   startOnIdle?: boolean;
+  active?: boolean;
 }
 
 const ASCIIText = ({
@@ -560,9 +580,20 @@ const ASCIIText = ({
   maxFps = 60,
   startDelayMs = 0,
   startOnIdle = false,
+  active = true,
 }: ASCIITextProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const asciiRef = useRef<CanvAscii | null>(null);
+  const activeRef = useRef(active);
+
+  useEffect(() => {
+    activeRef.current = active;
+    if (active) {
+      asciiRef.current?.start();
+    } else {
+      asciiRef.current?.stop();
+    }
+  }, [active]);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -606,7 +637,9 @@ const ASCIIText = ({
         width,
         height,
       );
-      asciiRef.current.load();
+      if (activeRef.current) {
+        asciiRef.current.start();
+      }
 
       const ro = new ResizeObserver((entries) => {
         if (!entries[0]) return;
