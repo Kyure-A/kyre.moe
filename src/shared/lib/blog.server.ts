@@ -3,7 +3,11 @@ import katex from "@vscode/markdown-it-katex";
 import * as fs from "node:fs";
 import matter from "gray-matter";
 import hljs from "highlight.js";
-import { createMarkdownExit } from "markdown-exit";
+import {
+  createMarkdownExit,
+  type PluginSimple,
+  type PluginWithOptions,
+} from "markdown-exit";
 import footnote from "markdown-it-footnote";
 import githubAlerts from "markdown-it-github-alerts";
 import linkPreview from "markdown-it-link-preview";
@@ -14,9 +18,6 @@ import magicLink, {
 import taskLists from "markdown-it-task-lists";
 import markdownItTocDoneRight from "markdown-it-toc-done-right";
 import * as path from "node:path";
-import type MarkdownIt from "markdown-it";
-import type StateCore from "markdown-it/lib/rules_core/state_core";
-import type Token from "markdown-it/lib/token";
 import type { BlogPost, BlogPostMeta } from "./blog";
 import { DEFAULT_LANG, isSiteLang, type SiteLang } from "./i18n";
 
@@ -68,8 +69,8 @@ function buildTwitterEmbed(url: URL): string | null {
   return `<div class="markdown-embed markdown-embed-twitter"><blockquote class="twitter-tweet" data-dnt="true" data-theme="dark" data-width="550"><a href="${canonical}"></a></blockquote></div>`;
 }
 
-function embedPlugin(md: MarkdownIt) {
-  md.core.ruler.after("inline", "embed", (state: StateCore) => {
+const embedPlugin: PluginSimple = (md) => {
+  md.core.ruler.after("inline", "embed", (state) => {
     const tokens = state.tokens;
     for (let i = 0; i < tokens.length; i++) {
       const token = tokens[i];
@@ -80,7 +81,7 @@ function embedPlugin(md: MarkdownIt) {
       if (inline.type !== "inline" || close.type !== "paragraph_close")
         continue;
 
-      const children: Token[] = inline.children ?? [];
+      const children = inline.children ?? [];
       const meaningful = children.filter(
         (child) => child.type !== "text" || child.content?.trim(),
       );
@@ -108,7 +109,7 @@ function embedPlugin(md: MarkdownIt) {
       tokens.splice(i, 3, embedToken);
     }
   });
-}
+};
 
 const md = createMarkdownExit({
   html: false,
@@ -304,14 +305,27 @@ export function getPostLanguages(slug: string): SiteLang[] {
   return Array.from(langs);
 }
 
-md.use(footnote);
-md.use(taskLists, { label: true, labelAfter: false });
-md.use(githubAlerts);
-md.use(katex);
-md.use(magicLink, { handlers: [handlerLink(), handlerGitHubAt()] });
-md.use(linkPreview);
+const asPluginSimple = <T>(plugin: T) => plugin as unknown as PluginSimple;
+const asPluginWithOptions = <T, O>(plugin: T) =>
+  plugin as unknown as PluginWithOptions<O>;
+
+md.use(asPluginSimple(footnote));
+md.use(
+  asPluginWithOptions<
+    typeof taskLists,
+    { label?: boolean; labelAfter?: boolean }
+  >(taskLists),
+  { label: true, labelAfter: false },
+);
+md.use(asPluginSimple(githubAlerts));
+md.use(asPluginSimple(katex));
+md.use(
+  asPluginWithOptions<typeof magicLink, { handlers?: unknown[] }>(magicLink),
+  { handlers: [handlerLink(), handlerGitHubAt()] },
+);
+md.use(asPluginSimple(linkPreview));
 md.use(embedPlugin);
-md.use(markdownItTocDoneRight);
+md.use(asPluginSimple(markdownItTocDoneRight));
 md.inline.ruler.after("emphasis", "underline", (state, silent) => {
   const start = state.pos;
   if (state.src.charCodeAt(start) !== 0x5f) return false;
