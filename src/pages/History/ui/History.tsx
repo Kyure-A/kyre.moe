@@ -3,7 +3,7 @@ import type { SiteLang } from "@/shared/lib/i18n";
 
 // FIXME: url と date は共通化する
 
-export default function History({ lang }: { lang: SiteLang }) {
+const History = ({ lang }: { lang: SiteLang }) => {
   const timelineData = TIMELINE_DATA[lang];
   return (
     <div className="max-w-2xl mx-auto p-6 py-20 rounded-lg shadow-sm">
@@ -11,4 +11,6 @@ export default function History({ lang }: { lang: SiteLang }) {
       <Timeline items={timelineData} />
     </div>
   );
-}
+};
+
+export default History;

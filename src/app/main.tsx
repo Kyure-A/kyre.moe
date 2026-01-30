@@ -40,12 +40,12 @@ const ASCII_MAX_FPS = 24;
 
 type Props = { children: ReactNode };
 
-function isHomePath(pathname: string | null): boolean {
+const isHomePath = (pathname: string | null): boolean => {
   if (!pathname) return false;
   return pathname === "/ja" || pathname === "/en" || pathname === "/";
-}
+};
 
-export default function App({ children }: Props) {
+const App = ({ children }: Props) => {
   const pathname = usePathname();
   const isHome = isHomePath(pathname);
 
@@ -182,4 +182,6 @@ export default function App({ children }: Props) {
       </main>
     </>
   );
-}
+};
+
+export default App;

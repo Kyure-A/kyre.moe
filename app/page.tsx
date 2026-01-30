@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootPage() {
+const RootPage = () => {
   return <Home />;
-}
+};
+
+export default RootPage;

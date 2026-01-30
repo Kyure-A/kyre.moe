@@ -25,21 +25,23 @@ const META_COPY: Record<
   },
 };
 
-function decodeTag(value: string) {
+const decodeTag = (value: string) => {
   try {
     return decodeURIComponent(value);
   } catch {
     return value;
   }
-}
+};
 
-export function generateStaticParams() {
+export const generateStaticParams = () => {
   return SITE_LANGS.flatMap((lang) =>
     getAllTags(lang).map((tag) => ({ lang, tag })),
   );
-}
+};
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export const generateMetadata = async (
+  { params }: Props,
+): Promise<Metadata> => {
   const { lang, tag } = await params;
   if (!isSiteLang(lang)) return {};
   const decodedTag = decodeTag(tag);
@@ -69,13 +71,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
     },
   };
-}
+};
 
-export default async function BlogTagPage({ params }: Props) {
+const BlogTagPage = async ({ params }: Props) => {
   const { lang, tag } = await params;
   if (!isSiteLang(lang)) notFound();
   const decodedTag = decodeTag(tag);
   const posts = getPostsByTag(decodedTag, lang);
   if (posts.length === 0) notFound();
   return <BlogTagIndex lang={lang} tag={decodedTag} posts={posts} />;
-}
+};
+
+export default BlogTagPage;

@@ -17,7 +17,7 @@ export type BlogPost = BlogPostMeta & {
   html: string;
 };
 
-export function formatDate(date: string, lang: SiteLang) {
+export const formatDate = (date: string, lang: SiteLang) => {
   if (!date) return "";
   try {
     return new Intl.DateTimeFormat(lang === "ja" ? "ja-JP" : "en-US", {
@@ -28,8 +28,8 @@ export function formatDate(date: string, lang: SiteLang) {
   } catch {
     return date;
   }
-}
+};
 
-export function buildTagPath(tag: string, lang: SiteLang) {
+export const buildTagPath = (tag: string, lang: SiteLang) => {
   return `/${lang}/blog/tag/${encodeURIComponent(tag)}`;
-}
+};

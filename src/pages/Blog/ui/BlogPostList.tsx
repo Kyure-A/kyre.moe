@@ -8,7 +8,7 @@ type Props = {
   emptyLabel: string;
 };
 
-export default function BlogPostList({ posts, emptyLabel }: Props) {
+const BlogPostList = ({ posts, emptyLabel }: Props) => {
   const accentStyle = {
     "--accent": "#F92672",
   } as CSSProperties;
@@ -66,4 +66,6 @@ export default function BlogPostList({ posts, emptyLabel }: Props) {
       )}
     </ul>
   );
-}
+};
+
+export default BlogPostList;

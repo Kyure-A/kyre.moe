@@ -57,15 +57,15 @@ void main() {
 }
 `;
 
-function map(
+const map = (
   n: number,
   start: number,
   stop: number,
   start2: number,
   stop2: number,
-) {
+): number => {
   return ((n - start) / (stop - start)) * (stop2 - start2) + start2;
-}
+};
 
 const PX_RATIO = typeof window !== "undefined" ? window.devicePixelRatio : 1;
 
@@ -549,7 +549,7 @@ interface ASCIITextProps {
   startOnIdle?: boolean;
 }
 
-export default function ASCIIText({
+const ASCIIText = ({
   text = "David!",
   asciiFontSize = 8,
   textFontSize = 200,
@@ -560,7 +560,7 @@ export default function ASCIIText({
   maxFps = 60,
   startDelayMs = 0,
   startOnIdle = false,
-}: ASCIITextProps) {
+}: ASCIITextProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const asciiRef = useRef<CanvAscii | null>(null);
 
@@ -703,4 +703,6 @@ export default function ASCIIText({
       `}</style>
     </div>
   );
-}
+};
+
+export default ASCIIText;

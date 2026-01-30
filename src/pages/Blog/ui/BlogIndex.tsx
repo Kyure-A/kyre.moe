@@ -19,7 +19,7 @@ type Props = {
   posts: BlogPostMeta[];
 };
 
-export default function BlogIndex({ lang, posts }: Props) {
+const BlogIndex = ({ lang, posts }: Props) => {
   const copy = COPY[lang];
 
   return (
@@ -35,4 +35,6 @@ export default function BlogIndex({ lang, posts }: Props) {
       </div>
     </section>
   );
-}
+};
+
+export default BlogIndex;

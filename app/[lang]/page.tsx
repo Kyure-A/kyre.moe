@@ -20,11 +20,13 @@ const META_BY_LANG: Record<SiteLang, { title: string; description: string }> = {
   },
 };
 
-export function generateStaticParams() {
+export const generateStaticParams = () => {
   return SITE_LANGS.map((lang) => ({ lang }));
-}
+};
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export const generateMetadata = async (
+  { params }: Props,
+): Promise<Metadata> => {
   const { lang } = await params;
   if (!isSiteLang(lang)) return {};
   const meta = META_BY_LANG[lang];
@@ -43,10 +45,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: meta.description,
     },
   };
-}
+};
 
-export default async function HomeLangPage({ params }: Props) {
+const HomeLangPage = async ({ params }: Props) => {
   const { lang } = await params;
   if (!isSiteLang(lang)) notFound();
   return <Home />;
-}
+};
+
+export default HomeLangPage;
