@@ -11,13 +11,15 @@ Personal website and blog built with Next.js.
 ** Dev
 
 #+begin_src bash
-pnpm install
-pnpm dev
+  devenv shell
+  pnpm install
+  pnpm dev
 #+end_src
 
 ** Content helpers
 
 #+begin_src bash
-pnpm content:org
-pnpm content:images
+  devenv shell
+  pnpm content:org
+  pnpm content:images
 #+end_src
