@@ -1,9 +1,9 @@
 import { getAllPosts, getPost } from "@/shared/lib/blog.server";
 import { isSiteLang } from "@/shared/lib/i18n";
 import {
-	generateOgImage,
-	OG_IMAGE_CONTENT_TYPE,
-	OG_IMAGE_SIZE,
+  generateOgImage,
+  OG_IMAGE_CONTENT_TYPE,
+  OG_IMAGE_SIZE,
 } from "@/shared/lib/og-image";
 
 export const dynamic = "force-static";
@@ -11,37 +11,37 @@ export const size = OG_IMAGE_SIZE;
 export const contentType = OG_IMAGE_CONTENT_TYPE;
 
 export function generateStaticParams() {
-	return getAllPosts().map((post) => ({
-		lang: post.lang,
-		slug: post.slug,
-	}));
+  return getAllPosts().map((post) => ({
+    lang: post.lang,
+    slug: post.slug,
+  }));
 }
 
 type Props = {
-	params: Promise<{ lang: string; slug: string }>;
+  params: Promise<{ lang: string; slug: string }>;
 };
 
 export default async function Image({ params }: Props) {
-	const { lang, slug } = await params;
+  const { lang, slug } = await params;
 
-	if (!isSiteLang(lang)) {
-		return generateOgImage({
-			title: "Blog",
-			subtitle: "kyre.moe",
-		});
-	}
+  if (!isSiteLang(lang)) {
+    return generateOgImage({
+      title: "Blog",
+      subtitle: "kyre.moe",
+    });
+  }
 
-	const post = await getPost(slug, lang);
+  const post = await getPost(slug, lang);
 
-	if (!post) {
-		return generateOgImage({
-			title: "Blog",
-			subtitle: "kyre.moe",
-		});
-	}
+  if (!post) {
+    return generateOgImage({
+      title: "Blog",
+      subtitle: "kyre.moe",
+    });
+  }
 
-	return generateOgImage({
-		title: post.title,
-		subtitle: post.date || undefined,
-	});
+  return generateOgImage({
+    title: post.title,
+    subtitle: post.date || undefined,
+  });
 }

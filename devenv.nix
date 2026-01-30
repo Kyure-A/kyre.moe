@@ -1,6 +1,7 @@
 { pkgs, ... }:
 {
   packages = with pkgs; [
+    biome
     treefmt
     typescript-language-server
   ];
