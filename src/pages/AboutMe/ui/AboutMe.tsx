@@ -1,4 +1,3 @@
-
 import type { SiteLang } from "@/shared/lib/i18n";
 import AnimatedContent from "@/shared/ui/AnimatedContent/AnimatedContent";
 import List from "@/shared/ui/List/List";
