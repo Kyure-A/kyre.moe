@@ -34,6 +34,11 @@ jobs:
         uses: pnpm/action-setup@v3
         with:
           version: 9
+      - name: Install Nix
+        uses: cachix/install-nix-action@v26
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:
@@ -59,6 +64,8 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
+      - name: Format check (treefmt)
+        run: nix shell nixpkgs#treefmt nixpkgs#biome --command treefmt --ci
       - name: Install Emacs for Org export
         run: |
           sudo apt-get update
