@@ -39,9 +39,9 @@ export const generateStaticParams = () => {
   );
 };
 
-export const generateMetadata = async (
-  { params }: Props,
-): Promise<Metadata> => {
+export const generateMetadata = async ({
+  params,
+}: Props): Promise<Metadata> => {
   const { lang, tag } = await params;
   if (!isSiteLang(lang)) return {};
   const decodedTag = decodeTag(tag);
