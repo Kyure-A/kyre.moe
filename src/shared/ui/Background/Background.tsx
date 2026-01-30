@@ -2,45 +2,45 @@ import { Mesh, Program, Renderer, Triangle } from "ogl";
 import { useEffect, useRef } from "react";
 
 interface MysteriousShaderProps {
-	spinRotation?: number;
-	spinSpeed?: number;
-	offset?: [number, number];
-	color1?: string; // HEX e.g., "#41009c"
-	color2?: string; // HEX e.g., "#8a00c2"
-	color3?: string; // HEX e.g., "#000516"
-	contrast?: number;
-	lighting?: number;
-	spinAmount?: number;
-	pixelFilter?: number;
-	spinEase?: number;
-	isRotate?: boolean;
-	mouseInteraction?: boolean;
-	fogDensity?: number;
-	noiseStrength?: number;
-	pulseFrequency?: number;
-	maxFps?: number;
-	resolutionScale?: number;
-	startDelayMs?: number;
-	startOnIdle?: boolean;
+  spinRotation?: number;
+  spinSpeed?: number;
+  offset?: [number, number];
+  color1?: string; // HEX e.g., "#41009c"
+  color2?: string; // HEX e.g., "#8a00c2"
+  color3?: string; // HEX e.g., "#000516"
+  contrast?: number;
+  lighting?: number;
+  spinAmount?: number;
+  pixelFilter?: number;
+  spinEase?: number;
+  isRotate?: boolean;
+  mouseInteraction?: boolean;
+  fogDensity?: number;
+  noiseStrength?: number;
+  pulseFrequency?: number;
+  maxFps?: number;
+  resolutionScale?: number;
+  startDelayMs?: number;
+  startOnIdle?: boolean;
 }
 
 function hexToVec4(hex: string): [number, number, number, number] {
-	const hexStr = hex.replace("#", "");
-	let r = 0,
-		g = 0,
-		b = 0,
-		a = 1;
-	if (hexStr.length === 6) {
-		r = parseInt(hexStr.slice(0, 2), 16) / 255;
-		g = parseInt(hexStr.slice(2, 4), 16) / 255;
-		b = parseInt(hexStr.slice(4, 6), 16) / 255;
-	} else if (hexStr.length === 8) {
-		r = parseInt(hexStr.slice(0, 2), 16) / 255;
-		g = parseInt(hexStr.slice(2, 4), 16) / 255;
-		b = parseInt(hexStr.slice(4, 6), 16) / 255;
-		a = parseInt(hexStr.slice(6, 8), 16) / 255;
-	}
-	return [r, g, b, a];
+  const hexStr = hex.replace("#", "");
+  let r = 0,
+    g = 0,
+    b = 0,
+    a = 1;
+  if (hexStr.length === 6) {
+    r = parseInt(hexStr.slice(0, 2), 16) / 255;
+    g = parseInt(hexStr.slice(2, 4), 16) / 255;
+    b = parseInt(hexStr.slice(4, 6), 16) / 255;
+  } else if (hexStr.length === 8) {
+    r = parseInt(hexStr.slice(0, 2), 16) / 255;
+    g = parseInt(hexStr.slice(2, 4), 16) / 255;
+    b = parseInt(hexStr.slice(4, 6), 16) / 255;
+    a = parseInt(hexStr.slice(6, 8), 16) / 255;
+  }
+  return [r, g, b, a];
 }
 
 const vertexShader = `
@@ -204,181 +204,181 @@ void main() {
 `;
 
 export default function BackgroundShader({
-	spinRotation = -1.5,
-	spinSpeed = 5.0,
-	offset = [0.0, 0.0],
-	color1 = "#41009c", // 深い紫
-	color2 = "#8a00c2", // 明るい紫
-	color3 = "#000516", // 暗い青紫
-	contrast = 4.0,
-	lighting = 0.5,
-	spinAmount = 0.35,
-	pixelFilter = 820.0,
-	spinEase = 1.2,
-	isRotate = true,
-	mouseInteraction = true,
-	fogDensity = 0.15,
-	noiseStrength = 0.03,
-	pulseFrequency = 0.4,
-	maxFps = 60,
-	resolutionScale = 1,
-	startDelayMs = 0,
-	startOnIdle = false,
+  spinRotation = -1.5,
+  spinSpeed = 5.0,
+  offset = [0.0, 0.0],
+  color1 = "#41009c", // 深い紫
+  color2 = "#8a00c2", // 明るい紫
+  color3 = "#000516", // 暗い青紫
+  contrast = 4.0,
+  lighting = 0.5,
+  spinAmount = 0.35,
+  pixelFilter = 820.0,
+  spinEase = 1.2,
+  isRotate = true,
+  mouseInteraction = true,
+  fogDensity = 0.15,
+  noiseStrength = 0.03,
+  pulseFrequency = 0.4,
+  maxFps = 60,
+  resolutionScale = 1,
+  startDelayMs = 0,
+  startOnIdle = false,
 }: MysteriousShaderProps) {
-	const containerRef = useRef<HTMLDivElement>(null);
-	const offsetX = offset[0];
-	const offsetY = offset[1];
+  const containerRef = useRef<HTMLDivElement>(null);
+  const offsetX = offset[0];
+  const offsetY = offset[1];
 
-	useEffect(() => {
-		if (!containerRef.current) return;
-		let cleanup: (() => void) | null = null;
-		let startTimer: number | null = null;
-		let idleId: number | null = null;
-		const idle =
-			typeof window !== "undefined" && "requestIdleCallback" in window
-				? (window as Window & {
-						requestIdleCallback?: (cb: IdleRequestCallback) => number;
-						cancelIdleCallback?: (id: number) => void;
-					})
-				: null;
+  useEffect(() => {
+    if (!containerRef.current) return;
+    let cleanup: (() => void) | null = null;
+    let startTimer: number | null = null;
+    let idleId: number | null = null;
+    const idle =
+      typeof window !== "undefined" && "requestIdleCallback" in window
+        ? (window as Window & {
+            requestIdleCallback?: (cb: IdleRequestCallback) => number;
+            cancelIdleCallback?: (id: number) => void;
+          })
+        : null;
 
-		const setup = () => {
-			if (!containerRef.current) return;
-			const container = containerRef.current;
-			const baseDpr =
-				typeof window !== "undefined" ? window.devicePixelRatio : 1;
-			const clampDpr = Math.max(0.5, Math.min(2, baseDpr * resolutionScale));
-			const renderer = new Renderer({ dpr: clampDpr });
-			const gl = renderer.gl;
-			gl.clearColor(0, 0, 0, 1);
+    const setup = () => {
+      if (!containerRef.current) return;
+      const container = containerRef.current;
+      const baseDpr =
+        typeof window !== "undefined" ? window.devicePixelRatio : 1;
+      const clampDpr = Math.max(0.5, Math.min(2, baseDpr * resolutionScale));
+      const renderer = new Renderer({ dpr: clampDpr });
+      const gl = renderer.gl;
+      gl.clearColor(0, 0, 0, 1);
 
-			const geometry = new Triangle(gl);
-			const program = new Program(gl, {
-				vertex: vertexShader,
-				fragment: fragmentShader,
-				uniforms: {
-					iTime: { value: 0 },
-					iResolution: {
-						value: [
-							gl.canvas.width,
-							gl.canvas.height,
-							gl.canvas.width / gl.canvas.height,
-						],
-					},
-					uSpinRotation: { value: spinRotation },
-					uSpinSpeed: { value: spinSpeed },
-					uOffset: { value: [offsetX, offsetY] },
-					uColor1: { value: hexToVec4(color1) },
-					uColor2: { value: hexToVec4(color2) },
-					uColor3: { value: hexToVec4(color3) },
-					uContrast: { value: contrast },
-					uLighting: { value: lighting },
-					uSpinAmount: { value: spinAmount },
-					uPixelFilter: { value: pixelFilter },
-					uSpinEase: { value: spinEase },
-					uIsRotate: { value: isRotate },
-					uMouse: { value: [0.5, 0.5] },
-					uFogDensity: { value: fogDensity },
-					uNoiseStrength: { value: noiseStrength },
-					uPulseFrequency: { value: pulseFrequency },
-				},
-			});
+      const geometry = new Triangle(gl);
+      const program = new Program(gl, {
+        vertex: vertexShader,
+        fragment: fragmentShader,
+        uniforms: {
+          iTime: { value: 0 },
+          iResolution: {
+            value: [
+              gl.canvas.width,
+              gl.canvas.height,
+              gl.canvas.width / gl.canvas.height,
+            ],
+          },
+          uSpinRotation: { value: spinRotation },
+          uSpinSpeed: { value: spinSpeed },
+          uOffset: { value: [offsetX, offsetY] },
+          uColor1: { value: hexToVec4(color1) },
+          uColor2: { value: hexToVec4(color2) },
+          uColor3: { value: hexToVec4(color3) },
+          uContrast: { value: contrast },
+          uLighting: { value: lighting },
+          uSpinAmount: { value: spinAmount },
+          uPixelFilter: { value: pixelFilter },
+          uSpinEase: { value: spinEase },
+          uIsRotate: { value: isRotate },
+          uMouse: { value: [0.5, 0.5] },
+          uFogDensity: { value: fogDensity },
+          uNoiseStrength: { value: noiseStrength },
+          uPulseFrequency: { value: pulseFrequency },
+        },
+      });
 
-			function resize() {
-				const nextDpr =
-					typeof window !== "undefined" ? window.devicePixelRatio : 1;
-				renderer.dpr = Math.max(0.5, Math.min(2, nextDpr * resolutionScale));
-				renderer.setSize(container.offsetWidth, container.offsetHeight);
-				program.uniforms.iResolution.value = [
-					gl.canvas.width,
-					gl.canvas.height,
-					gl.canvas.width / gl.canvas.height,
-				];
-			}
-			window.addEventListener("resize", resize);
-			resize();
+      function resize() {
+        const nextDpr =
+          typeof window !== "undefined" ? window.devicePixelRatio : 1;
+        renderer.dpr = Math.max(0.5, Math.min(2, nextDpr * resolutionScale));
+        renderer.setSize(container.offsetWidth, container.offsetHeight);
+        program.uniforms.iResolution.value = [
+          gl.canvas.width,
+          gl.canvas.height,
+          gl.canvas.width / gl.canvas.height,
+        ];
+      }
+      window.addEventListener("resize", resize);
+      resize();
 
-			const mesh = new Mesh(gl, { geometry, program });
-			let animationFrameId: number;
-			let lastFrameTime = 0;
-			const frameInterval = maxFps > 0 ? 1000 / maxFps : 0;
+      const mesh = new Mesh(gl, { geometry, program });
+      let animationFrameId: number;
+      let lastFrameTime = 0;
+      const frameInterval = maxFps > 0 ? 1000 / maxFps : 0;
 
-			function update(time: number) {
-				animationFrameId = requestAnimationFrame(update);
-				if (frameInterval && time - lastFrameTime < frameInterval) return;
-				lastFrameTime = time;
-				program.uniforms.iTime.value = time * 0.001;
-				renderer.render({ scene: mesh });
-			}
-			animationFrameId = requestAnimationFrame(update);
-			container.appendChild(gl.canvas);
+      function update(time: number) {
+        animationFrameId = requestAnimationFrame(update);
+        if (frameInterval && time - lastFrameTime < frameInterval) return;
+        lastFrameTime = time;
+        program.uniforms.iTime.value = time * 0.001;
+        renderer.render({ scene: mesh });
+      }
+      animationFrameId = requestAnimationFrame(update);
+      container.appendChild(gl.canvas);
 
-			function handleMouseMove(e: MouseEvent) {
-				if (!mouseInteraction) return;
-				const rect = container.getBoundingClientRect();
-				const x = (e.clientX - rect.left) / rect.width;
-				const y = 1.0 - (e.clientY - rect.top) / rect.height;
-				program.uniforms.uMouse.value = [x, y];
-			}
-			container.addEventListener("mousemove", handleMouseMove);
+      function handleMouseMove(e: MouseEvent) {
+        if (!mouseInteraction) return;
+        const rect = container.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = 1.0 - (e.clientY - rect.top) / rect.height;
+        program.uniforms.uMouse.value = [x, y];
+      }
+      container.addEventListener("mousemove", handleMouseMove);
 
-			cleanup = () => {
-				cancelAnimationFrame(animationFrameId);
-				window.removeEventListener("resize", resize);
-				container.removeEventListener("mousemove", handleMouseMove);
-				if (gl.canvas.parentElement === container) {
-					container.removeChild(gl.canvas);
-				}
-				gl.getExtension("WEBGL_lose_context")?.loseContext();
-			};
-		};
+      cleanup = () => {
+        cancelAnimationFrame(animationFrameId);
+        window.removeEventListener("resize", resize);
+        container.removeEventListener("mousemove", handleMouseMove);
+        if (gl.canvas.parentElement === container) {
+          container.removeChild(gl.canvas);
+        }
+        gl.getExtension("WEBGL_lose_context")?.loseContext();
+      };
+    };
 
-		const scheduleStart = () => {
-			if (startDelayMs > 0) {
-				startTimer = window.setTimeout(setup, startDelayMs);
-			} else {
-				setup();
-			}
-		};
+    const scheduleStart = () => {
+      if (startDelayMs > 0) {
+        startTimer = window.setTimeout(setup, startDelayMs);
+      } else {
+        setup();
+      }
+    };
 
-		if (startOnIdle && idle?.requestIdleCallback) {
-			idleId = idle.requestIdleCallback(() => scheduleStart());
-		} else {
-			scheduleStart();
-		}
+    if (startOnIdle && idle?.requestIdleCallback) {
+      idleId = idle.requestIdleCallback(() => scheduleStart());
+    } else {
+      scheduleStart();
+    }
 
-		return () => {
-			if (idleId && idle?.cancelIdleCallback) {
-				idle.cancelIdleCallback(idleId);
-			}
-			if (startTimer) {
-				window.clearTimeout(startTimer);
-			}
-			if (cleanup) cleanup();
-		};
-	}, [
-		spinRotation,
-		spinSpeed,
-		offsetX,
-		offsetY,
-		color1,
-		color2,
-		color3,
-		contrast,
-		lighting,
-		spinAmount,
-		pixelFilter,
-		spinEase,
-		isRotate,
-		mouseInteraction,
-		fogDensity,
-		noiseStrength,
-		pulseFrequency,
-		maxFps,
-		resolutionScale,
-		startDelayMs,
-		startOnIdle,
-	]);
+    return () => {
+      if (idleId && idle?.cancelIdleCallback) {
+        idle.cancelIdleCallback(idleId);
+      }
+      if (startTimer) {
+        window.clearTimeout(startTimer);
+      }
+      if (cleanup) cleanup();
+    };
+  }, [
+    spinRotation,
+    spinSpeed,
+    offsetX,
+    offsetY,
+    color1,
+    color2,
+    color3,
+    contrast,
+    lighting,
+    spinAmount,
+    pixelFilter,
+    spinEase,
+    isRotate,
+    mouseInteraction,
+    fogDensity,
+    noiseStrength,
+    pulseFrequency,
+    maxFps,
+    resolutionScale,
+    startDelayMs,
+    startOnIdle,
+  ]);
 
-	return <div ref={containerRef} className="w-full h-full" />;
+  return <div ref={containerRef} className="w-full h-full" />;
 }
