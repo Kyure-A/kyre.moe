@@ -61,7 +61,7 @@ const App = ({ children }: Props) => {
   );
   const isMobile = useIsMobile();
 
-  const orbitPaused = orbitHovered && !orbitDragging;
+  const orbitPaused = !isHome || (orbitHovered && !orbitDragging);
   const shaderResolution = isMobile ? 0.65 : 1;
   const startDelayMs = isMobile ? 450 : 200;
 
@@ -93,6 +93,7 @@ const App = ({ children }: Props) => {
           resolutionScale={shaderResolution}
           startDelayMs={startDelayMs}
           startOnIdle
+          active={isHome}
         />
       </div>
 
@@ -126,6 +127,7 @@ const App = ({ children }: Props) => {
               asciiMaxFps={ASCII_MAX_FPS}
               asciiStartDelayMs={startDelayMs}
               asciiStartOnIdle
+              active={isHome}
             />
           </div>
           {/* 画像のスペースを確保（実際の画像は children で描画） */}

@@ -22,6 +22,7 @@ interface MysteriousShaderProps {
   resolutionScale?: number;
   startDelayMs?: number;
   startOnIdle?: boolean;
+  active?: boolean;
 }
 
 const hexToVec4 = (hex: string): [number, number, number, number] => {
@@ -224,10 +225,51 @@ const BackgroundShader = ({
   resolutionScale = 1,
   startDelayMs = 0,
   startOnIdle = false,
+  active = true,
 }: MysteriousShaderProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const rendererRef = useRef<Renderer | null>(null);
+  const programRef = useRef<Program | null>(null);
+  const meshRef = useRef<Mesh | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const updateRef = useRef<((time: number) => void) | null>(null);
+  const lastFrameTimeRef = useRef(0);
+  const frameIntervalRef = useRef(maxFps > 0 ? 1000 / maxFps : 0);
+  const activeRef = useRef(active);
+  const mouseInteractionRef = useRef(mouseInteraction);
+  const timeOffsetRef = useRef(0);
+  const pausedAtRef = useRef<number | null>(null);
   const offsetX = offset[0];
   const offsetY = offset[1];
+
+  useEffect(() => {
+    activeRef.current = active;
+    if (!active) {
+      if (pausedAtRef.current === null) {
+        pausedAtRef.current = performance.now();
+      }
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+      return;
+    }
+    if (pausedAtRef.current !== null) {
+      timeOffsetRef.current += performance.now() - pausedAtRef.current;
+      pausedAtRef.current = null;
+    }
+    if (updateRef.current && rafRef.current === null) {
+      rafRef.current = requestAnimationFrame(updateRef.current);
+    }
+  }, [active]);
+
+  useEffect(() => {
+    frameIntervalRef.current = maxFps > 0 ? 1000 / maxFps : 0;
+  }, [maxFps]);
+
+  useEffect(() => {
+    mouseInteractionRef.current = mouseInteraction;
+  }, [mouseInteraction]);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -299,22 +341,35 @@ const BackgroundShader = ({
       resize();
 
       const mesh = new Mesh(gl, { geometry, program });
-      let animationFrameId: number;
-      let lastFrameTime = 0;
-      const frameInterval = maxFps > 0 ? 1000 / maxFps : 0;
+      rendererRef.current = renderer;
+      programRef.current = program;
+      meshRef.current = mesh;
+      lastFrameTimeRef.current = 0;
 
       const update = (time: number) => {
-        animationFrameId = requestAnimationFrame(update);
-        if (frameInterval && time - lastFrameTime < frameInterval) return;
-        lastFrameTime = time;
-        program.uniforms.iTime.value = time * 0.001;
+        if (!activeRef.current) {
+          rafRef.current = null;
+          return;
+        }
+        const frameInterval = frameIntervalRef.current;
+        if (frameInterval && time - lastFrameTimeRef.current < frameInterval) {
+          rafRef.current = requestAnimationFrame(update);
+          return;
+        }
+        lastFrameTimeRef.current = time;
+        const adjustedTime = time - timeOffsetRef.current;
+        program.uniforms.iTime.value = adjustedTime * 0.001;
         renderer.render({ scene: mesh });
+        rafRef.current = requestAnimationFrame(update);
       };
-      animationFrameId = requestAnimationFrame(update);
+      updateRef.current = update;
+      if (activeRef.current) {
+        rafRef.current = requestAnimationFrame(update);
+      }
       container.appendChild(gl.canvas);
 
       const handleMouseMove = (e: MouseEvent) => {
-        if (!mouseInteraction) return;
+        if (!mouseInteractionRef.current) return;
         const rect = container.getBoundingClientRect();
         const x = (e.clientX - rect.left) / rect.width;
         const y = 1.0 - (e.clientY - rect.top) / rect.height;
@@ -323,7 +378,16 @@ const BackgroundShader = ({
       container.addEventListener("mousemove", handleMouseMove);
 
       cleanup = () => {
-        cancelAnimationFrame(animationFrameId);
+        if (rafRef.current !== null) {
+          cancelAnimationFrame(rafRef.current);
+          rafRef.current = null;
+        }
+        updateRef.current = null;
+        rendererRef.current = null;
+        programRef.current = null;
+        meshRef.current = null;
+        timeOffsetRef.current = 0;
+        pausedAtRef.current = null;
         window.removeEventListener("resize", resize);
         container.removeEventListener("mousemove", handleMouseMove);
         if (gl.canvas.parentElement === container) {
@@ -370,11 +434,9 @@ const BackgroundShader = ({
     pixelFilter,
     spinEase,
     isRotate,
-    mouseInteraction,
     fogDensity,
     noiseStrength,
     pulseFrequency,
-    maxFps,
     resolutionScale,
     startDelayMs,
     startOnIdle,
