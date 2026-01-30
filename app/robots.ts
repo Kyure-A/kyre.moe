@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 export const dynamic = "force-static";
 
-export default function robots(): MetadataRoute.Robots {
+const robots = (): MetadataRoute.Robots => {
   return {
     rules: {
       userAgent: "*",
@@ -10,4 +10,6 @@ export default function robots(): MetadataRoute.Robots {
     },
     sitemap: "https://kyre.moe/sitemap.xml",
   };
-}
+};
+
+export default robots;

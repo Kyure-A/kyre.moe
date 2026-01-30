@@ -14,7 +14,7 @@ declare global {
   }
 }
 
-function loadTwitterWidgets() {
+const loadTwitterWidgets = () => {
   if (typeof window === "undefined") return;
   if (document.querySelector(`script[src="${TWITTER_SCRIPT_SRC}"]`)) {
     window.twttr?.widgets?.load();
@@ -26,13 +26,15 @@ function loadTwitterWidgets() {
   script.async = true;
   script.onload = () => window.twttr?.widgets?.load();
   document.body.appendChild(script);
-}
+};
 
-export default function TwitterEmbedEnhancer() {
+const TwitterEmbedEnhancer = () => {
   useEffect(() => {
     if (!document.querySelector(".twitter-tweet")) return;
     loadTwitterWidgets();
   }, []);
 
   return null;
-}
+};
+
+export default TwitterEmbedEnhancer;

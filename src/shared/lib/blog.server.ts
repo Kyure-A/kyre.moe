@@ -39,7 +39,7 @@ const YOUTUBE_HOSTS = new Set([
   "youtu.be",
 ]);
 
-function buildYouTubeEmbed(url: URL): string | null {
+const buildYouTubeEmbed = (url: URL): string | null => {
   if (!YOUTUBE_HOSTS.has(url.hostname)) return null;
 
   let videoId: string | null = null;
@@ -53,9 +53,9 @@ function buildYouTubeEmbed(url: URL): string | null {
   if (!videoId || !/^[\w-]{11}$/.test(videoId)) return null;
 
   return `<div class="markdown-embed markdown-embed-youtube"><div class="markdown-embed-inner"><iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe></div></div>`;
-}
+};
 
-function buildTwitterEmbed(url: URL): string | null {
+const buildTwitterEmbed = (url: URL): string | null => {
   if (!TWITTER_HOSTS.has(url.hostname)) return null;
   const parts = url.pathname.split("/").filter(Boolean);
   const statusIndex = parts.findIndex(
@@ -67,7 +67,7 @@ function buildTwitterEmbed(url: URL): string | null {
   const user = parts[statusIndex - 1] ?? "i";
   const canonical = `https://twitter.com/${user}/status/${id}`;
   return `<div class="markdown-embed markdown-embed-twitter"><blockquote class="twitter-tweet" data-dnt="true" data-theme="dark" data-width="550"><a href="${canonical}"></a></blockquote></div>`;
-}
+};
 
 const embedPlugin: PluginSimple = (md) => {
   md.core.ruler.after("inline", "embed", (state) => {
@@ -133,15 +133,15 @@ const md = createMarkdownExit({
   },
 });
 
-function safeReadDir(dirPath: string) {
+const safeReadDir = (dirPath: string) => {
   try {
     return fs.readdirSync(dirPath, { withFileTypes: true });
   } catch {
     return [];
   }
-}
+};
 
-function createExcerpt(source: string, maxLength = 180) {
+const createExcerpt = (source: string, maxLength = 180) => {
   const stripped = source
     .replace(/```[\s\S]*?```/g, " ")
     .replace(/`[^`]*`/g, " ")
@@ -153,20 +153,20 @@ function createExcerpt(source: string, maxLength = 180) {
   return stripped.length > maxLength
     ? `${stripped.slice(0, maxLength).trim()}…`
     : stripped;
-}
+};
 
-function resolveLangFromFile(fileName: string): SiteLang | null {
+const resolveLangFromFile = (fileName: string): SiteLang | null => {
   const base = path.parse(fileName).name;
   if (isSiteLang(base)) return base;
   if (base === "index") return DEFAULT_LANG;
   return null;
-}
+};
 
-function parseFrontmatter(
+const parseFrontmatter = (
   slug: string,
   lang: SiteLang,
   filePath: string,
-): { meta: BlogPostMeta; content: string } {
+): { meta: BlogPostMeta; content: string } => {
   const raw = fs.readFileSync(filePath, "utf-8");
   const { data, content } = matter(raw);
   const title = typeof data.title === "string" ? data.title : slug;
@@ -202,17 +202,17 @@ function parseFrontmatter(
     },
     content,
   };
-}
+};
 
-function getPostFilePath(slug: string, lang: SiteLang): string | null {
+const getPostFilePath = (slug: string, lang: SiteLang): string | null => {
   const dirPath = path.join(BLOG_DIR, slug);
   const ext = MARKDOWN_EXTENSIONS.find((item) =>
     fs.existsSync(path.join(dirPath, `${lang}${item}`)),
   );
   return ext ? path.join(dirPath, `${lang}${ext}`) : null;
-}
+};
 
-export function getAllPosts(lang?: SiteLang): BlogPostMeta[] {
+export const getAllPosts = (lang?: SiteLang): BlogPostMeta[] => {
   const entries = safeReadDir(BLOG_DIR).filter((entry) => entry.isDirectory());
   const posts = entries.flatMap((entry) => {
     const slug = entry.name;
@@ -239,15 +239,18 @@ export function getAllPosts(lang?: SiteLang): BlogPostMeta[] {
     const bTime = b.date ? new Date(b.date).getTime() : 0;
     return bTime - aTime;
   });
-}
+};
 
-export function getPostsByTag(tag: string, lang?: SiteLang): BlogPostMeta[] {
+export const getPostsByTag = (
+  tag: string,
+  lang?: SiteLang,
+): BlogPostMeta[] => {
   const normalized = tag.trim();
   if (!normalized) return [];
   return getAllPosts(lang).filter((post) => post.tags.includes(normalized));
-}
+};
 
-export function getAllTags(lang?: SiteLang): string[] {
+export const getAllTags = (lang?: SiteLang): string[] => {
   const tags = new Set<string>();
   for (const post of getAllPosts(lang)) {
     for (const tag of post.tags) {
@@ -256,9 +259,12 @@ export function getAllTags(lang?: SiteLang): string[] {
     }
   }
   return Array.from(tags).sort((a, b) => a.localeCompare(b));
-}
+};
 
-function rewriteRelativeImagePaths(content: string, slug: string): string {
+const rewriteRelativeImagePaths = (
+  content: string,
+  slug: string,
+): string => {
   // ![alt](./path) 形式
   const markdownImageRegex = /!\[([^\]]*)\]\(\.\/([^)]+)\)/g;
   // [text](./path) 形式（画像リンク）
@@ -275,12 +281,12 @@ function rewriteRelativeImagePaths(content: string, slug: string): string {
   );
 
   return result;
-}
+};
 
-export async function getPost(
+export const getPost = async (
   slug: string,
   lang: SiteLang,
-): Promise<BlogPost | null> {
+): Promise<BlogPost | null> => {
   const filePath = getPostFilePath(slug, lang);
   if (!filePath) return null;
   const { meta, content } = parseFrontmatter(slug, lang, filePath);
@@ -288,9 +294,9 @@ export async function getPost(
   const rewrittenContent = rewriteRelativeImagePaths(content, slug);
   const html = await md.renderAsync(rewrittenContent);
   return { ...meta, content: rewrittenContent, html };
-}
+};
 
-export function getPostLanguages(slug: string): SiteLang[] {
+export const getPostLanguages = (slug: string): SiteLang[] => {
   const dirPath = path.join(BLOG_DIR, slug);
   const files = safeReadDir(dirPath).filter((file) => file.isFile());
   const langs = new Set(
@@ -303,7 +309,7 @@ export function getPostLanguages(slug: string): SiteLang[] {
       .filter((fileLang): fileLang is SiteLang => Boolean(fileLang)),
   );
   return Array.from(langs);
-}
+};
 
 const asPluginSimple = <T>(plugin: T) => plugin as unknown as PluginSimple;
 const asPluginWithOptions = <T, O>(plugin: T) =>

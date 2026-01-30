@@ -14,14 +14,16 @@ type Props = {
   params: Promise<Params>;
 };
 
-export function generateStaticParams() {
+export const generateStaticParams = () => {
   return getAllPosts().map((post) => ({
     lang: post.lang,
     slug: post.slug,
   }));
-}
+};
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export const generateMetadata = async (
+  { params }: Props,
+): Promise<Metadata> => {
   const { lang, slug } = await params;
   if (!isSiteLang(lang)) return {};
   const post = await getPost(slug, lang);
@@ -57,12 +59,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images,
     },
   };
-}
+};
 
-export default async function BlogPostPage({ params }: Props) {
+const BlogPostPage = async ({ params }: Props) => {
   const { lang, slug } = await params;
   if (!isSiteLang(lang)) notFound();
   const post = await getPost(slug, lang);
   if (!post) notFound();
   return <BlogPostView post={post} />;
-}
+};
+
+export default BlogPostPage;

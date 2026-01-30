@@ -9,7 +9,7 @@ type Props = {
   post: BlogPost;
 };
 
-export default function BlogPostView({ post }: Props) {
+const BlogPostView = ({ post }: Props) => {
   const showCanonical = (() => {
     if (!post.canonical || post.canonical.startsWith("/")) return false;
     try {
@@ -95,4 +95,6 @@ export default function BlogPostView({ post }: Props) {
       )}
     </section>
   );
-}
+};
+
+export default BlogPostView;

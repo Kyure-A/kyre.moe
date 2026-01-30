@@ -19,11 +19,11 @@ export const ogImageExports = {
   contentType: OG_IMAGE_CONTENT_TYPE,
 };
 
-export function generateLangStaticParams() {
+export const generateLangStaticParams = () => {
   return SITE_LANGS.map((lang) => ({ lang }));
-}
+};
 
-export function generateOgImage({ title, subtitle }: OgImageProps) {
+export const generateOgImage = ({ title, subtitle }: OgImageProps) => {
   return new ImageResponse(
     <div
       style={{
@@ -114,4 +114,4 @@ export function generateOgImage({ title, subtitle }: OgImageProps) {
       ...OG_IMAGE_SIZE,
     },
   );
-}
+};

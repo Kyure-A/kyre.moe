@@ -48,7 +48,7 @@ const ABOUTME_DATA: Record<SiteLang, Section[]> = {
   ],
 };
 
-function Section({ section, index }: SectionProps) {
+const Section = ({ section, index }: SectionProps) => {
   return (
     <>
       {/* 見出し側（3カラム） */}
@@ -72,9 +72,9 @@ function Section({ section, index }: SectionProps) {
       </AnimatedContent>
     </>
   );
-}
+};
 
-export default function AboutMe({ lang }: { lang: SiteLang }) {
+const AboutMe = ({ lang }: { lang: SiteLang }) => {
   const data = ABOUTME_DATA[lang];
   return (
     <section className="py-24 px-6 max-w-6xl mx-auto">
@@ -85,4 +85,6 @@ export default function AboutMe({ lang }: { lang: SiteLang }) {
       </div>
     </section>
   );
-}
+};
+
+export default AboutMe;

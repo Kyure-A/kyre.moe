@@ -127,7 +127,7 @@ const ACCOUNT_DATA: AccountData[] = [
   },
 ];
 
-export default function Accounts({ lang }: { lang: SiteLang }) {
+const Accounts = ({ lang }: { lang: SiteLang }) => {
   const accounts = ACCOUNT_DATA.map((account) => ({
     ...account,
     description: account.description?.[lang] ?? "",
@@ -149,4 +149,6 @@ export default function Accounts({ lang }: { lang: SiteLang }) {
       })}
     </ul>
   );
-}
+};
+
+export default Accounts;

@@ -35,7 +35,7 @@ const COPY: Record<
   },
 };
 
-export default function BlogTagList({ lang, tags }: Props) {
+const BlogTagList = ({ lang, tags }: Props) => {
   const copy = COPY[lang];
 
   return (
@@ -67,4 +67,6 @@ export default function BlogTagList({ lang, tags }: Props) {
       )}
     </section>
   );
-}
+};
+
+export default BlogTagList;

@@ -32,7 +32,7 @@ const COPY: Record<
   },
 };
 
-export default function BlogTagIndex({ lang, tag, posts }: Props) {
+const BlogTagIndex = ({ lang, tag, posts }: Props) => {
   const copy = COPY[lang];
 
   return (
@@ -55,4 +55,6 @@ export default function BlogTagIndex({ lang, tag, posts }: Props) {
       <BlogPostList posts={posts} emptyLabel={copy.empty} />
     </section>
   );
-}
+};
+
+export default BlogTagIndex;

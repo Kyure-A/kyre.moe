@@ -10,18 +10,18 @@ export const dynamic = "force-static";
 export const size = OG_IMAGE_SIZE;
 export const contentType = OG_IMAGE_CONTENT_TYPE;
 
-export function generateStaticParams() {
+export const generateStaticParams = () => {
   return getAllPosts().map((post) => ({
     lang: post.lang,
     slug: post.slug,
   }));
-}
+};
 
 type Props = {
   params: Promise<{ lang: string; slug: string }>;
 };
 
-export default async function Image({ params }: Props) {
+const Image = async ({ params }: Props) => {
   const { lang, slug } = await params;
 
   if (!isSiteLang(lang)) {
@@ -44,4 +44,6 @@ export default async function Image({ params }: Props) {
     title: post.title,
     subtitle: post.date || undefined,
   });
-}
+};
+
+export default Image;

@@ -9,7 +9,7 @@ type TimelineProps = {
   items?: TimelineItem[];
 };
 
-export default function Timeline({ items = [] }: TimelineProps) {
+const Timeline = ({ items = [] }: TimelineProps) => {
   return (
     <ol className="relative border-s border-gray-300 dark:border-gray-700 ml-4">
       {items.map((item) => {
@@ -35,4 +35,6 @@ export default function Timeline({ items = [] }: TimelineProps) {
       })}
     </ol>
   );
-}
+};
+
+export default Timeline;
