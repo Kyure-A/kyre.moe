@@ -31,10 +31,10 @@
   --font-mono: var(--font-geist-mono);
 }
 
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
 
 body {
   background: var(--background);
@@ -45,8 +45,10 @@ body {
 .orbit-dock {
   --orbit-size: min(76vmin, 760px);
   --orbit-radius: calc(
-    var(--orbit-size) / 2 - (var(--orbit-icon-size) / 2) -
-      var(--orbit-icon-gap)
+    var(--orbit-size) /
+    2 -
+    (var(--orbit-icon-size) / 2) -
+    var(--orbit-icon-gap)
   );
   --orbit-speed: 34s;
   --orbit-start: -90deg;
@@ -77,15 +79,14 @@ body {
   position: absolute;
   inset: 4%;
   border-radius: 999px;
-  background:
-    radial-gradient(
-      circle,
-      transparent 55%,
-      rgba(237, 237, 237, 0.1) 57%,
-      rgba(249, 38, 114, 0.18) 60%,
-      rgba(237, 237, 237, 0.05) 63%,
-      transparent 66%
-    );
+  background: radial-gradient(
+    circle,
+    transparent 55%,
+    rgba(237, 237, 237, 0.1) 57%,
+    rgba(249, 38, 114, 0.18) 60%,
+    rgba(237, 237, 237, 0.05) 63%,
+    transparent 66%
+  );
   box-shadow:
     0 0 30px rgba(249, 38, 114, 0.18),
     inset 0 0 18px rgba(249, 38, 114, 0.12);
@@ -142,10 +143,8 @@ body {
       translateX(var(--orbit-radius)) rotate(calc(-1 * var(--orbit-start)));
   }
   to {
-    transform: translate(-50%, -50%)
-      rotate(calc(360deg + var(--orbit-start)))
-      translateX(var(--orbit-radius))
-      rotate(calc(-360deg - var(--orbit-start)));
+    transform: translate(-50%, -50%) rotate(calc(360deg + var(--orbit-start)))
+      translateX(var(--orbit-radius)) rotate(calc(-360deg - var(--orbit-start)));
   }
 }
 
@@ -204,19 +203,16 @@ body {
 
 .orbit-dock[data-layer="front"] .orbit-dock__items {
   clip-path: inset(
-    calc(50% - var(--orbit-clip-seam))
-    calc(-1 * var(--orbit-clip-overscan))
-    calc(-1 * var(--orbit-clip-overscan))
-    calc(-1 * var(--orbit-clip-overscan))
+    calc(50% - var(--orbit-clip-seam)) calc(-1 * var(--orbit-clip-overscan))
+      calc(-1 * var(--orbit-clip-overscan))
+      calc(-1 * var(--orbit-clip-overscan))
   );
 }
 
 .orbit-dock[data-layer="back"] .orbit-dock__items {
   clip-path: inset(
-    calc(-1 * var(--orbit-clip-overscan))
-    calc(-1 * var(--orbit-clip-overscan))
-    calc(50% - var(--orbit-clip-seam))
-    calc(-1 * var(--orbit-clip-overscan))
+    calc(-1 * var(--orbit-clip-overscan)) calc(-1 * var(--orbit-clip-overscan))
+      calc(50% - var(--orbit-clip-seam)) calc(-1 * var(--orbit-clip-overscan))
   );
 }
 
@@ -300,7 +296,9 @@ body {
   color: #f92672;
   text-decoration: none;
   border-bottom: 1px solid rgba(249, 38, 114, 0.4);
-  transition: border-color 0.2s ease, color 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .blog-content a:hover {
@@ -428,8 +426,9 @@ body {
 }
 
 .blog-content code {
-  font-family: var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular, Menlo,
-    Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family:
+    var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 0.88em;
   background: #272822;
   color: #f8f8f2;
@@ -472,7 +471,9 @@ body {
   display: inline-grid;
   place-items: center;
   padding: 0;
-  transition: border-color 0.2s ease, color 0.2s ease,
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
     background-color 0.2s ease;
 }
 
@@ -566,7 +567,9 @@ body {
   background: rgba(255, 255, 255, 0.04);
   overflow: hidden;
   text-decoration: none;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .blog-content .link-preview-widget:hover {
@@ -641,4 +644,3 @@ body {
     height: 140px;
   }
 }
-
