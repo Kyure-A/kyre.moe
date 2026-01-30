@@ -2,13 +2,8 @@
 
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
-import {
-  type CSSProperties,
-  type ReactNode,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { type CSSProperties, type ReactNode, useMemo, useState } from "react";
+import useIsMobile from "@/shared/hooks/useIsMobile";
 import useDockItems from "@/shared/hooks/useDockItems";
 import HeaderControls from "@/shared/ui/HeaderControls/HeaderControls";
 import OrbitDock from "@/shared/ui/OrbitDock/OrbitDock";
@@ -64,27 +59,11 @@ const App = ({ children }: Props) => {
   const [orbitHoveredIndex, setOrbitHoveredIndex] = useState<number | null>(
     null,
   );
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useIsMobile();
 
   const orbitPaused = orbitHovered && !orbitDragging;
   const shaderResolution = isMobile ? 0.65 : 1;
   const startDelayMs = isMobile ? 450 : 200;
-
-  useEffect(() => {
-    const mq =
-      typeof window !== "undefined"
-        ? window.matchMedia("(max-width: 768px)")
-        : null;
-    if (!mq) return;
-    const handleChange = () => setIsMobile(mq.matches);
-    handleChange();
-    if (mq.addEventListener) {
-      mq.addEventListener("change", handleChange);
-      return () => mq.removeEventListener("change", handleChange);
-    }
-    mq.addListener(handleChange);
-    return () => mq.removeListener(handleChange);
-  }, []);
 
   // Home でのみ表示、ただしマウントは常に維持してアニメーション状態を保持
   const homeLayerStyle: CSSProperties = {
