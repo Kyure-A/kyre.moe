@@ -1,5 +1,6 @@
 import { Link } from "next-view-transitions";
 import BlogPostList from "@/pages/Blog/ui/BlogPostList";
+import BlogSection from "@/pages/Blog/ui/BlogSection";
 import type { BlogPostMeta } from "@/shared/lib/blog";
 import type { SiteLang } from "@/shared/lib/i18n";
 
@@ -36,7 +37,7 @@ const BlogTagIndex = ({ lang, tag, posts }: Props) => {
   const copy = COPY[lang];
 
   return (
-    <section className="w-full py-24 max-w-4xl mx-auto px-4 sm:px-6">
+    <BlogSection>
       <header className="mb-10">
         <p className="text-[11px] tracking-[0.08em] text-gray-500">
           {copy.label}
@@ -53,7 +54,7 @@ const BlogTagIndex = ({ lang, tag, posts }: Props) => {
         </Link>
       </header>
       <BlogPostList posts={posts} emptyLabel={copy.empty} />
-    </section>
+    </BlogSection>
   );
 };
 
