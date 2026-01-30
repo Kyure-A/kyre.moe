@@ -4,6 +4,11 @@
       "tailwindDirectives": true
     }
   },
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
   "formatter": {
     "indentStyle": "space",
     "indentWidth": 2
