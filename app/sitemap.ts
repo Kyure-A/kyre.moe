@@ -7,7 +7,7 @@ export const dynamic = "force-static";
 
 const BASE_URL = "https://kyre.moe";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+const sitemap = (): MetadataRoute.Sitemap => {
   const staticRoutes = SITE_LANGS.flatMap((lang) =>
     ["", "/about", "/accounts", "/history", "/blog", "/blog/tag"].map(
       (path) => ({
@@ -30,4 +30,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   );
 
   return [...staticRoutes, ...posts, ...tags];
-}
+};
+
+export default sitemap;

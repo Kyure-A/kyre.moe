@@ -24,7 +24,7 @@ interface MysteriousShaderProps {
   startOnIdle?: boolean;
 }
 
-function hexToVec4(hex: string): [number, number, number, number] {
+const hexToVec4 = (hex: string): [number, number, number, number] => {
   const hexStr = hex.replace("#", "");
   let r = 0,
     g = 0,
@@ -41,7 +41,7 @@ function hexToVec4(hex: string): [number, number, number, number] {
     a = parseInt(hexStr.slice(6, 8), 16) / 255;
   }
   return [r, g, b, a];
-}
+};
 
 const vertexShader = `
 attribute vec2 uv;
@@ -203,7 +203,7 @@ void main() {
 }
 `;
 
-export default function BackgroundShader({
+const BackgroundShader = ({
   spinRotation = -1.5,
   spinSpeed = 5.0,
   offset = [0.0, 0.0],
@@ -224,7 +224,7 @@ export default function BackgroundShader({
   resolutionScale = 1,
   startDelayMs = 0,
   startOnIdle = false,
-}: MysteriousShaderProps) {
+}: MysteriousShaderProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const offsetX = offset[0];
   const offsetY = offset[1];
@@ -284,7 +284,7 @@ export default function BackgroundShader({
         },
       });
 
-      function resize() {
+      const resize = () => {
         const nextDpr =
           typeof window !== "undefined" ? window.devicePixelRatio : 1;
         renderer.dpr = Math.max(0.5, Math.min(2, nextDpr * resolutionScale));
@@ -294,7 +294,7 @@ export default function BackgroundShader({
           gl.canvas.height,
           gl.canvas.width / gl.canvas.height,
         ];
-      }
+      };
       window.addEventListener("resize", resize);
       resize();
 
@@ -303,23 +303,23 @@ export default function BackgroundShader({
       let lastFrameTime = 0;
       const frameInterval = maxFps > 0 ? 1000 / maxFps : 0;
 
-      function update(time: number) {
+      const update = (time: number) => {
         animationFrameId = requestAnimationFrame(update);
         if (frameInterval && time - lastFrameTime < frameInterval) return;
         lastFrameTime = time;
         program.uniforms.iTime.value = time * 0.001;
         renderer.render({ scene: mesh });
-      }
+      };
       animationFrameId = requestAnimationFrame(update);
       container.appendChild(gl.canvas);
 
-      function handleMouseMove(e: MouseEvent) {
+      const handleMouseMove = (e: MouseEvent) => {
         if (!mouseInteraction) return;
         const rect = container.getBoundingClientRect();
         const x = (e.clientX - rect.left) / rect.width;
         const y = 1.0 - (e.clientY - rect.top) / rect.height;
         program.uniforms.uMouse.value = [x, y];
-      }
+      };
       container.addEventListener("mousemove", handleMouseMove);
 
       cleanup = () => {
@@ -381,4 +381,6 @@ export default function BackgroundShader({
   ]);
 
   return <div ref={containerRef} className="w-full h-full" />;
-}
+};
+
+export default BackgroundShader;

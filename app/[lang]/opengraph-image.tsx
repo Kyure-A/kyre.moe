@@ -7,9 +7,11 @@ import {
 export const { dynamic, size, contentType } = ogImageExports;
 export const generateStaticParams = generateLangStaticParams;
 
-export default function Image() {
+const Image = () => {
   return generateOgImage({
     title: "Kyure_A / キュレェ",
     subtitle: "Portfolio",
   });
-}
+};
+
+export default Image;

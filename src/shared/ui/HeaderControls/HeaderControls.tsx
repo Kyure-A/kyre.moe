@@ -5,7 +5,7 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { DEFAULT_LANG, getLangFromPath } from "@/shared/lib/i18n";
 import LanguageToggle from "@/shared/ui/LanguageToggleSwitch/LanguageToggleSwitch";
 
-export default function HeaderControls() {
+const HeaderControls = () => {
   const router = useRouter();
   const pathname = usePathname();
   const lang = getLangFromPath(pathname) ?? DEFAULT_LANG;
@@ -40,4 +40,6 @@ export default function HeaderControls() {
       <LanguageToggle onChange={() => {}} />
     </header>
   );
-}
+};
+
+export default HeaderControls;

@@ -14,7 +14,7 @@ export type DockItemData = {
   className?: string;
 };
 
-export default function useDockItems(): DockItemData[] {
+const useDockItems = (): DockItemData[] => {
   const router = useRouter();
   const pathname = usePathname();
   const lang = getLangFromPath(pathname) ?? DEFAULT_LANG;
@@ -50,4 +50,6 @@ export default function useDockItems(): DockItemData[] {
     ],
     [basePath, router],
   );
-}
+};
+
+export default useDockItems;

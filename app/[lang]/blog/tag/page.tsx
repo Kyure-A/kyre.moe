@@ -21,11 +21,13 @@ const META_BY_LANG: Record<SiteLang, { title: string; description: string }> = {
   },
 };
 
-export function generateStaticParams() {
+export const generateStaticParams = () => {
   return SITE_LANGS.map((lang) => ({ lang }));
-}
+};
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export const generateMetadata = async (
+  { params }: Props,
+): Promise<Metadata> => {
   const { lang } = await params;
   if (!isSiteLang(lang)) return {};
   const meta = META_BY_LANG[lang];
@@ -44,9 +46,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: meta.description,
     },
   };
-}
+};
 
-function buildTagItems(posts: ReturnType<typeof getAllPosts>) {
+const buildTagItems = (posts: ReturnType<typeof getAllPosts>) => {
   const counts = new Map<string, number>();
   for (const post of posts) {
     for (const tag of post.tags) {
@@ -57,12 +59,14 @@ function buildTagItems(posts: ReturnType<typeof getAllPosts>) {
   return Array.from(counts.entries())
     .map(([tag, count]) => ({ tag, count }))
     .sort((a, b) => a.tag.localeCompare(b.tag));
-}
+};
 
-export default async function BlogTagListPage({ params }: Props) {
+const BlogTagListPage = async ({ params }: Props) => {
   const { lang } = await params;
   if (!isSiteLang(lang)) notFound();
   const posts = getAllPosts(lang);
   const tags = buildTagItems(posts);
   return <BlogTagList lang={lang} tags={tags} />;
-}
+};
+
+export default BlogTagListPage;

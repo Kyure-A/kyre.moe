@@ -8,7 +8,7 @@ type ListProps = {
  * Usage:
  *   <List items={['foo', 'bar']} />
  */
-export default function List({ items, className = "" }: ListProps) {
+const List = ({ items, className = "" }: ListProps) => {
   return (
     <ul className={`list-disc pl-5 space-y-1 ${className}`}>
       {items.map((item) => (
@@ -16,4 +16,6 @@ export default function List({ items, className = "" }: ListProps) {
       ))}
     </ul>
   );
-}
+};
+
+export default List;

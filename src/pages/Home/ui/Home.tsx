@@ -14,7 +14,7 @@ const HERO_STYLE: CSSProperties = {
 const HERO_WIDTH = 2305;
 const HERO_HEIGHT = 4776;
 
-export default function Home() {
+const Home = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [useWebp, setUseWebp] = useState(process.env.NODE_ENV === "production");
 
@@ -90,4 +90,6 @@ export default function Home() {
       </div>
     </div>
   );
-}
+};
+
+export default Home;

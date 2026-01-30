@@ -30,11 +30,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+const RootLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>) => {
   return (
     <ViewTransitions>
       <html lang="en" className={ibmPlexMono.variable}>
@@ -44,4 +44,6 @@ export default function RootLayout({
       </html>
     </ViewTransitions>
   );
-}
+};
+
+export default RootLayout;
