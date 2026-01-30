@@ -73,19 +73,6 @@ const nextRandom = (state: RandomState): [RandomState, number] => {
   return [{ seed: nextSeed }, nextSeed / 0x7fffffff];
 };
 
-// Generate n random values purely
-const _generateRandomValues = (
-  initialState: RandomState,
-  count: number,
-): [RandomState, number[]] =>
-  Array.from({ length: count }).reduce<[RandomState, number[]]>(
-    ([state, values]) => {
-      const [nextState, value] = nextRandom(state);
-      return [nextState, [...values, value]];
-    },
-    [initialState, []],
-  );
-
 // Generate clip path points purely
 const generateClipPath = (
   state: RandomState,
