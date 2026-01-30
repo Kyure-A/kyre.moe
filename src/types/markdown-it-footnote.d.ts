@@ -1,5 +1,5 @@
 declare module "markdown-it-footnote" {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const footnote: (md: any) => void;
+  import type MarkdownIt from "markdown-it";
+  const footnote: (md: MarkdownIt) => void;
   export default footnote;
 }

@@ -1,7 +1,7 @@
 declare module "markdown-it-task-lists" {
+  import type MarkdownIt from "markdown-it";
   const taskLists: (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    md: any,
+    md: MarkdownIt,
     options?: { label?: boolean; labelAfter?: boolean },
   ) => void;
   export default taskLists;

@@ -1,5 +1,5 @@
 declare module "markdown-it-link-preview" {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const linkPreview: (md: any) => void;
+  import type MarkdownIt from "markdown-it";
+  const linkPreview: (md: MarkdownIt) => void;
   export default linkPreview;
 }

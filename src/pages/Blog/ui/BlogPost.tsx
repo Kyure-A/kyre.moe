@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Link } from "next-view-transitions";
 import type { BlogPost } from "@/shared/lib/blog";
 import { buildTagPath, formatDate } from "@/shared/lib/blog";
@@ -60,9 +61,12 @@ export default function BlogPostView({ post }: Props) {
         )}
         {post.cover && (
           <div className="mt-8 overflow-hidden rounded-2xl">
-            <img
+            <Image
               src={post.cover}
-              alt=""
+              alt={post.title}
+              width={1600}
+              height={900}
+              sizes="(min-width: 768px) 768px, 100vw"
               className="h-auto w-full object-cover"
               loading="lazy"
             />
@@ -72,6 +76,7 @@ export default function BlogPostView({ post }: Props) {
 
       <article
         className="blog-content mt-10"
+        /* biome-ignore lint/security/noDangerouslySetInnerHtml: HTML is generated server-side with raw HTML disabled */
         dangerouslySetInnerHTML={{ __html: post.html }}
       />
 

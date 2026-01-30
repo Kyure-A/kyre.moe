@@ -1,7 +1,5 @@
-import type React from "react";
-
 type ListProps = {
-  items: React.ReactNode[];
+  items: string[];
   className?: string;
 };
 
@@ -13,8 +11,8 @@ type ListProps = {
 export default function List({ items, className = "" }: ListProps) {
   return (
     <ul className={`list-disc pl-5 space-y-1 ${className}`}>
-      {items.map((item, i) => (
-        <li key={i}>{item}</li>
+      {items.map((item) => (
+        <li key={item}>{item}</li>
       ))}
     </ul>
   );

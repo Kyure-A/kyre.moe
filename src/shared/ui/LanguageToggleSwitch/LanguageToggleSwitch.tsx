@@ -53,6 +53,7 @@ const LanguageToggle = ({ onChange }: LanguageToggleProps) => {
   return (
     <div className="flex items-center">
       <button
+        type="button"
         onClick={handleToggle}
         className={`relative inline-flex h-10 w-20 items-center justify-center rounded-full shadow-md transition-all duration-500 overflow-hidden bg-stone-800`}
         aria-pressed={language === "en"}

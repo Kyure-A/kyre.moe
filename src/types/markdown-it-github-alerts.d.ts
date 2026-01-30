@@ -1,5 +1,5 @@
 declare module "markdown-it-github-alerts" {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const alerts: (md: any) => void;
+  import type MarkdownIt from "markdown-it";
+  const alerts: (md: MarkdownIt) => void;
   export default alerts;
 }
