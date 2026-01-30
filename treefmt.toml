@@ -1,0 +1,22 @@
+excludes = [
+  "node_modules/**",
+  "out/**",
+  ".next/**",
+  "dist/**"
+]
+
+[formatter.biome]
+command = "biome"
+options = ["format", "--write"]
+includes = [
+  "**/*.js",
+  "**/*.jsx",
+  "**/*.ts",
+  "**/*.tsx",
+  "**/*.cjs",
+  "**/*.mjs",
+  "**/*.json",
+  "**/*.jsonc",
+  "**/*.css",
+  "**/*.scss"
+]
