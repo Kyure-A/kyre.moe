@@ -11,9 +11,7 @@ export const isSiteLang = (value: string): value is SiteLang => {
   return SITE_LANGS.includes(value as SiteLang);
 };
 
-export const getLangFromPath = (
-  pathname?: string | null,
-): SiteLang | null => {
+export const getLangFromPath = (pathname?: string | null): SiteLang | null => {
   if (!pathname) return null;
   const match = pathname.match(LANG_EXTRACT_REGEX);
   return match ? (match[1] as SiteLang) : null;

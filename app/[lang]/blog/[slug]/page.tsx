@@ -21,9 +21,9 @@ export const generateStaticParams = () => {
   }));
 };
 
-export const generateMetadata = async (
-  { params }: Props,
-): Promise<Metadata> => {
+export const generateMetadata = async ({
+  params,
+}: Props): Promise<Metadata> => {
   const { lang, slug } = await params;
   if (!isSiteLang(lang)) return {};
   const post = await getPost(slug, lang);
