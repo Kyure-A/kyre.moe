@@ -72,7 +72,7 @@ const nextRandom = (state: RandomState): [RandomState, number] => {
 };
 
 // Generate n random values purely
-const generateRandomValues = (
+const _generateRandomValues = (
   initialState: RandomState,
   count: number,
 ): [RandomState, number[]] =>
