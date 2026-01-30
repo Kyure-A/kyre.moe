@@ -1,6 +1,7 @@
 "use client";
 
 import { type CSSProperties, useEffect, useState } from "react";
+import useIsMobile from "@/shared/hooks/useIsMobile";
 import { srcPath } from "@/shared/lib/path";
 import GlitchImage from "@/shared/ui/GlitchImage/GlitchImage";
 
@@ -15,24 +16,8 @@ const HERO_WIDTH = 2305;
 const HERO_HEIGHT = 4776;
 
 const Home = () => {
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useIsMobile();
   const [useWebp, setUseWebp] = useState(process.env.NODE_ENV === "production");
-
-  useEffect(() => {
-    const mq =
-      typeof window !== "undefined"
-        ? window.matchMedia("(max-width: 768px)")
-        : null;
-    if (!mq) return;
-    const handleChange = () => setIsMobile(mq.matches);
-    handleChange();
-    if (mq.addEventListener) {
-      mq.addEventListener("change", handleChange);
-      return () => mq.removeEventListener("change", handleChange);
-    }
-    mq.addListener(handleChange);
-    return () => mq.removeListener(handleChange);
-  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
