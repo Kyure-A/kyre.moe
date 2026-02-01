@@ -3,6 +3,7 @@ import { Link } from "next-view-transitions";
 import type { BlogPost } from "@/shared/lib/blog";
 import { buildTagPath, formatDate } from "@/shared/lib/blog";
 import CopyCodeBlock from "@/shared/ui/CopyCodeBlock/CopyCodeBlock";
+import HatenaStar from "@/shared/ui/HatenaStar/HatenaStar";
 import TwitterEmbedEnhancer from "@/shared/ui/TwitterEmbed/TwitterEmbed";
 
 type Props = {
@@ -10,6 +11,7 @@ type Props = {
 };
 
 const BlogPostView = ({ post }: Props) => {
+  const SITE_URL = "https://kyre.moe";
   const showCanonical = (() => {
     if (!post.canonical || post.canonical.startsWith("/")) return false;
     try {
@@ -19,11 +21,20 @@ const BlogPostView = ({ post }: Props) => {
       return false;
     }
   })();
+  const hatenaStarUri = (() => {
+    if (!post.canonical) return `${SITE_URL}/${post.lang}/blog/${post.slug}`;
+    if (post.canonical.startsWith("/")) return `${SITE_URL}${post.canonical}`;
+    return post.canonical;
+  })();
 
   return (
-    <section className="w-full py-24 max-w-3xl mx-auto px-4 sm:px-6">
+    <section
+      className="w-full py-24 max-w-3xl mx-auto px-4 sm:px-6"
+      data-hatena-entry
+    >
       <CopyCodeBlock />
       <TwitterEmbedEnhancer />
+      <HatenaStar entryKey={post.slug} />
       <header className="mt-8">
         <p
           className="text-[11px] tracking-[0.08em] text-gray-500"
@@ -34,9 +45,19 @@ const BlogPostView = ({ post }: Props) => {
         <h1
           className="mt-4 text-3xl font-semibold tracking-tight text-gray-100 md:text-4xl"
           style={{ viewTransitionName: `blog-title-${post.slug}` }}
+          data-hatena-title
         >
           {post.title}
         </h1>
+        <a
+          href={hatenaStarUri}
+          className="hidden"
+          aria-hidden="true"
+          tabIndex={-1}
+          data-hatena-uri
+        >
+          {post.title}
+        </a>
         {post.description && (
           <p
             className="mt-4 text-sm leading-relaxed text-gray-400 md:text-base"
@@ -59,6 +80,9 @@ const BlogPostView = ({ post }: Props) => {
             ))}
           </div>
         )}
+        <div className="mt-4 flex items-center gap-2 text-xs text-gray-400">
+          <div className="hatena-star-container" data-hatena-container />
+        </div>
         {post.cover && (
           <div className="mt-8 overflow-hidden rounded-2xl">
             <Image

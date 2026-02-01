@@ -265,6 +265,21 @@ body {
   overflow-wrap: anywhere;
 }
 
+.hatena-star-container {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  gap: 0.3rem;
+}
+
+.hatena-star-container a {
+  text-decoration: none;
+}
+
+.hatena-star-container img {
+  vertical-align: middle;
+}
+
 .blog-content h1,
 .blog-content h2,
 .blog-content h3,
