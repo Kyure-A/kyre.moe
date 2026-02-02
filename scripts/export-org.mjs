@@ -74,6 +74,91 @@ function buildFrontmatter(meta) {
   return lines.join("\n");
 }
 
+function unescapeUnderscoreInBackticks(source) {
+  const initialState = {
+    result: "",
+    inFence: false,
+    fenceChar: "",
+    fenceLen: 0,
+    inInline: false,
+    inlineLen: 0,
+    lineStart: 0,
+    cursor: 0,
+  };
+
+  const finalState = Array.from(source).reduce((state, ch, index) => {
+    if (index < state.cursor) return state;
+
+    if (ch === "\n") {
+      return {
+        ...state,
+        result: `${state.result}\n`,
+        lineStart: index + 1,
+        cursor: index + 1,
+      };
+    }
+
+    if (!state.inInline && (ch === "`" || ch === "~")) {
+      const runMatch =
+        ch === "`"
+          ? source.slice(index).match(/^`+/)
+          : source.slice(index).match(/^~+/);
+      const runLen = runMatch ? runMatch[0].length : 0;
+      if (runLen >= 3) {
+        const before = source.slice(state.lineStart, index);
+        if (/^[ \t]*$/.test(before)) {
+          const isClosing =
+            state.inFence && ch === state.fenceChar && runLen >= state.fenceLen;
+          const nextFenceState = isClosing
+            ? { inFence: false, fenceChar: "", fenceLen: 0 }
+            : state.inFence
+              ? {}
+              : { inFence: true, fenceChar: ch, fenceLen: runLen };
+          return {
+            ...state,
+            ...nextFenceState,
+            result: state.result + source.slice(index, index + runLen),
+            cursor: index + runLen,
+          };
+        }
+      }
+    }
+
+    if (!state.inFence && ch === "`") {
+      const runMatch = source.slice(index).match(/^`+/);
+      const runLen = runMatch ? runMatch[0].length : 0;
+      const shouldClose = state.inInline && runLen === state.inlineLen;
+      const nextInlineState = state.inInline
+        ? shouldClose
+          ? { inInline: false, inlineLen: 0 }
+          : {}
+        : { inInline: true, inlineLen: runLen };
+      return {
+        ...state,
+        ...nextInlineState,
+        result: state.result + source.slice(index, index + runLen),
+        cursor: index + runLen,
+      };
+    }
+
+    if (!state.inFence && state.inInline && ch === "\\" && source[index + 1] === "_") {
+      return {
+        ...state,
+        result: `${state.result}_`,
+        cursor: index + 2,
+      };
+    }
+
+    return {
+      ...state,
+      result: state.result + ch,
+      cursor: index + 1,
+    };
+  }, initialState);
+
+  return finalState.result;
+}
+
 function exportOrgToMarkdown(filePath) {
   const tempOut = path.join(
     os.tmpdir(),
@@ -99,7 +184,9 @@ function exportOrgToMarkdown(filePath) {
 			:translate-alist '((src-block . kyre-md-src-block)
 				(underline . kyre-md-underline)
 				(strike-through . kyre-md-strike-through)))
-		(setq org-export-with-toc nil org-export-with-title nil)
+		(setq org-export-with-toc nil
+				org-export-with-title nil
+				org-export-with-sub-superscripts nil)
 		(org-export-to-file 'md-fenced ${escapeString(tempOut)}))`;
   execFileSync("emacs", ["--batch", filePath, "--eval", elisp], {
     stdio: "inherit",
@@ -125,9 +212,10 @@ orgFiles
   .map((filePath) => {
     const source = fs.readFileSync(filePath, "utf-8");
     const meta = parseOrgMeta(source);
-    let outputMarkdown = exportOrgToMarkdown(filePath);
+    const outputMarkdown = unescapeUnderscoreInBackticks(
+      exportOrgToMarkdown(filePath).replace(/\\`/g, "`"),
+    );
     // ox-md escapes backticks, unescape them for inline code
-    outputMarkdown = outputMarkdown.replace(/\\`/g, "`");
     const frontmatter = buildFrontmatter(meta);
     const outputPath = filePath.replace(/\.org$/i, ".md");
     return { frontmatter, outputMarkdown, outputPath };
