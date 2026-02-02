@@ -1,7 +1,7 @@
 #+TITLE: Hello World
 #+DATE: 2026-01-15
 #+DESCRIPTION: 新しくブログを作りました
-#+TAGS: note
+#+TAGS: notification
 #+DRAFT: false
 
 ** はじめに
