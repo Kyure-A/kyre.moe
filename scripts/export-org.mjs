@@ -141,7 +141,12 @@ function unescapeUnderscoreInBackticks(source) {
       };
     }
 
-    if (!state.inFence && state.inInline && ch === "\\" && source[index + 1] === "_") {
+    if (
+      !state.inFence &&
+      state.inInline &&
+      ch === "\\" &&
+      source[index + 1] === "_"
+    ) {
       return {
         ...state,
         result: `${state.result}_`,

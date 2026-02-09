@@ -52,7 +52,10 @@ const buildYouTubeEmbed = (url: URL): string | null => {
 
   if (!videoId || !/^[\w-]{11}$/.test(videoId)) return null;
 
-  return `<div class="markdown-embed markdown-embed-youtube"><div class="markdown-embed-inner"><iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe></div></div>`;
+  const watchUrl = `https://www.youtube.com/watch?v=${videoId}`;
+  const thumbnailUrl = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+
+  return `<div class="markdown-embed markdown-embed-youtube"><div class="markdown-embed-inner"><a class="markdown-youtube-placeholder" href="${watchUrl}" data-youtube-video-id="${videoId}" aria-label="Play YouTube video"><img class="markdown-youtube-thumbnail" src="${thumbnailUrl}" alt="" loading="lazy" decoding="async" /><span class="markdown-youtube-play" aria-hidden="true"></span></a></div></div>`;
 };
 
 const buildTwitterEmbed = (url: URL): string | null => {
