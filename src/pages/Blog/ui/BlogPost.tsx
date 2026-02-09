@@ -4,6 +4,7 @@ import type { BlogPost } from "@/shared/lib/blog";
 import { buildTagPath, formatDate } from "@/shared/lib/blog";
 import CopyCodeBlock from "@/shared/ui/CopyCodeBlock/CopyCodeBlock";
 import TwitterEmbedEnhancer from "@/shared/ui/TwitterEmbed/TwitterEmbed";
+import YouTubeEmbedEnhancer from "@/shared/ui/YouTubeEmbed/YouTubeEmbed";
 
 type Props = {
   post: BlogPost;
@@ -24,6 +25,7 @@ const BlogPostView = ({ post }: Props) => {
     <section className="w-full py-24 max-w-3xl mx-auto px-4 sm:px-6">
       <CopyCodeBlock />
       <TwitterEmbedEnhancer />
+      <YouTubeEmbedEnhancer />
       <header className="mt-8">
         <p
           className="text-[11px] tracking-[0.08em] text-gray-500"
