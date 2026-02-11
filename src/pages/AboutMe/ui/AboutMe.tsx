@@ -48,6 +48,11 @@ const ABOUTME_DATA: Record<SiteLang, Section[]> = {
   ],
 };
 
+const PAGE_TITLE: Record<SiteLang, string> = {
+  ja: "自己紹介",
+  en: "About me",
+};
+
 const Section = ({ section, index }: SectionProps) => {
   return (
     <>
@@ -56,7 +61,7 @@ const Section = ({ section, index }: SectionProps) => {
         delay={index * 100}
         className="md:col-span-3 font-mono text-gray-400 text-right md:text-left"
       >
-        <h3>{section.label}</h3>
+        <h2>{section.label}</h2>
       </AnimatedContent>
 
       {/* 本文側（9カラム） */}
@@ -78,6 +83,7 @@ const AboutMe = ({ lang }: { lang: SiteLang }) => {
   const data = ABOUTME_DATA[lang];
   return (
     <section className="py-24 px-6 max-w-6xl mx-auto">
+      <h1 className="sr-only">{PAGE_TITLE[lang]}</h1>
       <div className="grid md:grid-cols-12 gap-y-12">
         {data.map((section, idx) => (
           <Section section={section} index={idx} key={section.label} />

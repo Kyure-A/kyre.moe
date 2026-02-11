@@ -4,14 +4,16 @@ import BlogSection from "@/pages/Blog/ui/BlogSection";
 import type { BlogPostMeta } from "@/shared/lib/blog";
 import type { SiteLang } from "@/shared/lib/i18n";
 
-const COPY: Record<SiteLang, { empty: string; tags: string }> = {
+const COPY: Record<SiteLang, { empty: string; tags: string; title: string }> = {
   ja: {
     empty: "まだ記事がありません。",
     tags: "タグ一覧",
+    title: "ブログ",
   },
   en: {
     empty: "No posts yet.",
     tags: "Tags",
+    title: "Blog",
   },
 };
 
@@ -25,6 +27,7 @@ const BlogIndex = ({ lang, posts }: Props) => {
 
   return (
     <BlogSection>
+      <h1 className="sr-only">{copy.title}</h1>
       <BlogPostList posts={posts} emptyLabel={copy.empty} />
       <div className="mt-8 flex items-center justify-end text-[11px] tracking-[0.08em] text-gray-500">
         <Link
