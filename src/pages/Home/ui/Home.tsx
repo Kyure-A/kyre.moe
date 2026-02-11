@@ -7,7 +7,9 @@ import {
   useRef,
   useState,
 } from "react";
+import { usePathname } from "next/navigation";
 import useIsMobile from "@/shared/hooks/useIsMobile";
+import { DEFAULT_LANG, getLangFromPath } from "@/shared/lib/i18n";
 import { srcPath } from "@/shared/lib/path";
 import GlitchImage from "@/shared/ui/GlitchImage/GlitchImage";
 
@@ -23,6 +25,8 @@ const HERO_HEIGHT = 4776;
 
 const Home = () => {
   const isMobile = useIsMobile();
+  const pathname = usePathname();
+  const lang = getLangFromPath(pathname) ?? DEFAULT_LANG;
   const [useWebp, setUseWebp] = useState(process.env.NODE_ENV === "production");
   const [glitchReady, setGlitchReady] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -101,6 +105,7 @@ const Home = () => {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden">
+      <h1 className="sr-only">{lang === "ja" ? "ホーム" : "Home"}</h1>
       <div className="absolute flex flex-col z-10 pt-16 inset-0">
         {/* FadeTextRotator は App で同じレイアウトで描画されるため、同じスペースを確保 */}
         <div className="flex flex-col mb-6 z-20">
