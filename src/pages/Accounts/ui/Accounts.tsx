@@ -127,27 +127,35 @@ const ACCOUNT_DATA: AccountData[] = [
   },
 ];
 
+const PAGE_TITLE: Record<SiteLang, string> = {
+  ja: "アカウント一覧",
+  en: "Accounts",
+};
+
 const Accounts = ({ lang }: { lang: SiteLang }) => {
   const accounts = ACCOUNT_DATA.map((account) => ({
     ...account,
     description: account.description?.[lang] ?? "",
   }));
   return (
-    <ul className="py-24 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 list-none max-w-6xl mx-auto px-4 sm:px-6">
-      {accounts.map((account) => {
-        return (
-          <Account
-            key={account.serviceUrl}
-            id={account.id}
-            description={account.description}
-            platform={account.platform}
-            accentColor={account.accentColor}
-            serviceIcon={account.serviceIcon}
-            serviceUrl={account.serviceUrl}
-          />
-        );
-      })}
-    </ul>
+    <>
+      <h1 className="sr-only">{PAGE_TITLE[lang]}</h1>
+      <ul className="py-24 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 list-none max-w-6xl mx-auto px-4 sm:px-6">
+        {accounts.map((account) => {
+          return (
+            <Account
+              key={account.serviceUrl}
+              id={account.id}
+              description={account.description}
+              platform={account.platform}
+              accentColor={account.accentColor}
+              serviceIcon={account.serviceIcon}
+              serviceUrl={account.serviceUrl}
+            />
+          );
+        })}
+      </ul>
+    </>
   );
 };
 
