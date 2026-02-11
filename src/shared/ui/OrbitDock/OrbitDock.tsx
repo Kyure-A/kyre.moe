@@ -30,6 +30,7 @@ type OrbitDockItemProps = {
   index: number;
   delay: number;
   isHovered: boolean;
+  interactive: boolean;
   onItemClick: (item: DockItemData) => void;
   suppressClickRef: React.MutableRefObject<boolean>;
   dragStateRef: React.MutableRefObject<{ dragged: boolean }>;
@@ -41,15 +42,39 @@ const OrbitDockItem = memo(
     index,
     delay,
     isHovered,
+    interactive,
     onItemClick,
     suppressClickRef,
     dragStateRef,
   }: OrbitDockItemProps) => {
-    const label = typeof item.label === "string" ? item.label : undefined;
+    const label = item.label;
+    const itemBody = (
+      <span
+        className={`orbit-dock__billboard flex items-center justify-center rounded-full border bg-black/70 shadow-[0_0_18px_rgba(249,38,114,0.22)] transition duration-200 group-focus-visible:border-white/40 group-focus-visible:text-white ${isHovered ? "border-white/40 text-white" : "border-white/20 text-white/90"}`}
+      >
+        {item.icon}
+      </span>
+    );
+
+    if (!interactive) {
+      return (
+        <div
+          data-hovered={isHovered ? "true" : undefined}
+          className={`orbit-dock__item group pointer-events-auto ${item.className ?? ""}`}
+          style={
+            {
+              "--orbit-delay": `${delay}s`,
+            } as CSSProperties
+          }
+          aria-hidden="true"
+        >
+          {itemBody}
+        </div>
+      );
+    }
 
     return (
       <button
-        key={`${label ?? "item"}-${index}`}
         type="button"
         data-orbit-index={index}
         data-hovered={isHovered ? "true" : undefined}
@@ -76,11 +101,7 @@ const OrbitDockItem = memo(
           onItemClick(item);
         }}
       >
-        <span
-          className={`orbit-dock__billboard flex items-center justify-center rounded-full border bg-black/70 shadow-[0_0_18px_rgba(249,38,114,0.22)] transition duration-200 group-focus-visible:border-white/40 group-focus-visible:text-white ${isHovered ? "border-white/40 text-white" : "border-white/20 text-white/90"}`}
-        >
-          {item.icon}
-        </span>
+        {itemBody}
       </button>
     );
   },
@@ -287,6 +308,7 @@ const OrbitDock = ({
   const handleItemClick = useCallback((item: DockItemData) => {
     item.onClick();
   }, []);
+  const interactive = layer === "front";
 
   return (
     <div
@@ -298,7 +320,7 @@ const OrbitDock = ({
       data-dragging={isDragging ? "true" : "false"}
       data-pressing={isPressing ? "true" : "false"}
       data-paused={paused && !isDragging ? "true" : "false"}
-      aria-hidden={layer === "back"}
+      aria-hidden={layer === "back" ? true : undefined}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
@@ -312,19 +334,19 @@ const OrbitDock = ({
           <div className="orbit-dock__scan" />
         </div>
       )}
-      <div className="orbit-dock__items" aria-hidden="false">
+      <div className="orbit-dock__items">
         {items.map((item, index) => {
           const delay = -(index / items.length) * duration;
-          const label = typeof item.label === "string" ? item.label : undefined;
           const isHovered = hoveredIndex === index;
 
           return (
             <OrbitDockItem
-              key={`${label ?? "item"}-${index}`}
+              key={`${item.label}-${index}`}
               item={item}
               index={index}
               delay={delay}
               isHovered={isHovered}
+              interactive={interactive}
               onItemClick={handleItemClick}
               suppressClickRef={suppressClickRef}
               dragStateRef={dragState}
