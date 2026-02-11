@@ -46,10 +46,7 @@ const App = ({ children }: Props) => {
 
   const items = useDockItems();
   const orbitItems = useMemo(
-    () =>
-      items.filter((item) =>
-        typeof item.label === "string" ? item.label !== "Home" : true,
-      ),
+    () => items.filter((item) => item.label !== "Home"),
     [items],
   );
 

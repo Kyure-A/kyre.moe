@@ -9,7 +9,7 @@ import { DEFAULT_LANG, getLangFromPath } from "@/shared/lib/i18n";
 
 export type DockItemData = {
   icon: React.ReactNode;
-  label: React.ReactNode;
+  label: string;
   onClick: () => void;
   className?: string;
 };
