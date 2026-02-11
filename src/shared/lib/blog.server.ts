@@ -69,7 +69,7 @@ const buildTwitterEmbed = (url: URL): string | null => {
   if (!id || !/^\d+$/.test(id)) return null;
   const user = parts[statusIndex - 1] ?? "i";
   const canonical = `https://twitter.com/${user}/status/${id}`;
-  return `<div class="markdown-embed markdown-embed-twitter"><blockquote class="twitter-tweet" data-dnt="true" data-theme="dark" data-width="550"><a href="${canonical}"></a></blockquote></div>`;
+  return `<div class="markdown-embed markdown-embed-twitter"><blockquote class="twitter-tweet" data-dnt="true" data-theme="dark" data-width="550"><a href="${canonical}" aria-label="View this post on X"></a></blockquote></div>`;
 };
 
 const embedPlugin: PluginSimple = (md) => {
