@@ -2,7 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { DEFAULT_LANG, getLangFromPath, type SiteLang } from "@/shared/lib/i18n";
+import {
+  DEFAULT_LANG,
+  getLangFromPath,
+  type SiteLang,
+} from "@/shared/lib/i18n";
 
 const COPY: Record<
   SiteLang,
