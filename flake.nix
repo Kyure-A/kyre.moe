@@ -3,36 +3,29 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    agent-skills.url = "github:Kyure-A/agent-skills-nix";
   };
 
   outputs =
     { nixpkgs, ... }:
     let
-      systems = [
-        "x86_64-linux"
-        "aarch64-linux"
-        "x86_64-darwin"
-        "aarch64-darwin"
-      ];
-      forEachSystem = nixpkgs.lib.genAttrs systems;
+      eachSystem =
+        f:
+        nixpkgs.lib.genAttrs nixpkgs.lib.systems.flakeExposed (
+          system: f nixpkgs.legacyPackages.${system}
+        );
     in
     {
-      devShells = forEachSystem (
-        system:
-        let
-          pkgs = import nixpkgs { inherit system; };
-        in
-        {
-          default = pkgs.mkShell {
-            packages = with pkgs; [
-              nodejs_20
-              pnpm_9
-              biome
-              treefmt
-              typescript-language-server
-            ];
-          };
-        }
-      );
+      devShells = eachSystem (pkgs: {
+        default = pkgs.mkShell {
+          packages = with pkgs; [
+            nodejs_20
+            pnpm_9
+            biome
+            treefmt
+            typescript-language-server
+          ];
+        };
+      });
     };
 }
