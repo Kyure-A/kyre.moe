@@ -54,3 +54,7 @@ devenv.local.yaml
 
 # pre-commit
 .pre-commit-config.yaml
+
+# agent-skills local install
+.claude/skills/
+.codex/skills/
