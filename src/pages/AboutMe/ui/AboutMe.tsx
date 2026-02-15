@@ -59,7 +59,7 @@ const Section = ({ section, index }: SectionProps) => {
       {/* 見出し側（3カラム） */}
       <AnimatedContent
         delay={index * 100}
-        className="md:col-span-3 font-mono text-gray-400 text-right md:text-left"
+        className="md:col-span-3 font-mono text-[var(--text-secondary)] text-right md:text-left"
       >
         <h2>{section.label}</h2>
       </AnimatedContent>
@@ -67,7 +67,7 @@ const Section = ({ section, index }: SectionProps) => {
       {/* 本文側（9カラム） */}
       <AnimatedContent
         delay={index * 100}
-        className="md:col-span-9 prose prose-invert max-w-none"
+        className="md:col-span-9 max-w-none text-[var(--text-primary)]"
       >
         {"bullets" in section ? (
           <List items={section.bullets} />

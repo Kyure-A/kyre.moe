@@ -28,32 +28,32 @@ const BlogPostView = ({ post }: Props) => {
       <YouTubeEmbedEnhancer />
       <header className="mt-8">
         <p
-          className="text-[11px] tracking-[0.08em] text-gray-500"
+          className="text-[11px] tracking-[0.08em] text-[var(--text-tertiary)]"
           style={{ viewTransitionName: `blog-date-${post.slug}` }}
         >
           {formatDate(post.date, post.lang)}
         </p>
         <h1
-          className="mt-4 text-3xl font-semibold tracking-tight text-gray-100 md:text-4xl"
+          className="mt-4 text-3xl font-semibold tracking-tight text-[var(--text-primary)] md:text-4xl"
           style={{ viewTransitionName: `blog-title-${post.slug}` }}
         >
           {post.title}
         </h1>
         {post.description && (
           <p
-            className="mt-4 text-sm leading-relaxed text-gray-400 md:text-base"
+            className="mt-4 text-sm leading-relaxed text-[var(--text-secondary)] md:text-base"
             style={{ viewTransitionName: `blog-desc-${post.slug}` }}
           >
             {post.description}
           </p>
         )}
         {post.tags.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2 text-[11px] tracking-[0.08em] text-gray-500">
+          <div className="mt-4 flex flex-wrap gap-2 text-[11px] tracking-[0.08em] text-[var(--text-tertiary)]">
             {post.tags.map((tag) => (
               <Link
                 key={`${post.slug}-${tag}`}
                 href={buildTagPath(tag, post.lang)}
-                className="rounded-full border border-white/10 px-3 py-1 transition-colors duration-[400ms] ease-out hover:border-white/40 hover:text-gray-200"
+                className="rounded-full border border-[var(--border-subtle)] px-3 py-1 transition-colors duration-[400ms] ease-out hover:border-[var(--border-subtle-strong)] hover:text-[var(--text-primary)]"
                 style={{ viewTransitionName: `blog-tag-${post.slug}-${tag}` }}
               >
                 #{tag}
@@ -83,11 +83,11 @@ const BlogPostView = ({ post }: Props) => {
       />
 
       {showCanonical && (
-        <div className="mt-8 text-xs tracking-[0.08em] text-gray-500">
+        <div className="mt-8 text-xs tracking-[0.08em] text-[var(--text-tertiary)]">
           Original:&nbsp;
           <a
             href={post.canonical}
-            className="text-gray-300 underline decoration-white/30 underline-offset-4"
+            className="text-[var(--text-secondary)] underline decoration-[var(--border-subtle-strong)] underline-offset-4"
             target="_blank"
             rel="noreferrer"
           >

@@ -50,7 +50,7 @@ const OrbitDockItem = memo(
     const label = item.label;
     const itemBody = (
       <span
-        className={`orbit-dock__billboard flex items-center justify-center rounded-full border bg-black/70 shadow-[0_0_18px_rgba(249,38,114,0.22)] transition duration-200 group-focus-visible:border-white/40 group-focus-visible:text-white ${isHovered ? "border-white/40 text-white" : "border-white/20 text-white/90"}`}
+        className={`orbit-dock__billboard flex items-center justify-center rounded-full border border-[var(--orbit-pill-border)] bg-[var(--orbit-pill-bg)] text-[var(--orbit-pill-text)] shadow-[var(--orbit-pill-shadow)] transition duration-200 group-focus-visible:border-[var(--orbit-pill-border-strong)] group-focus-visible:text-[var(--orbit-pill-text-strong)] ${isHovered ? "border-[var(--orbit-pill-border-strong)] text-[var(--orbit-pill-text-strong)]" : ""}`}
       >
         {item.icon}
       </span>
