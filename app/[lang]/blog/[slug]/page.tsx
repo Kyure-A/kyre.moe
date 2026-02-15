@@ -36,7 +36,8 @@ export const generateMetadata = async ({
     }
   }
   const canonical = post.canonical ?? `/${post.lang}/blog/${post.slug}`;
-  const images = post.cover ? [post.cover] : undefined;
+  const fallbackOgImage = `/${post.lang}/blog/${post.slug}/opengraph-image`;
+  const images = [post.cover ?? fallbackOgImage];
 
   return {
     title: post.title,
@@ -55,7 +56,7 @@ export const generateMetadata = async ({
       url: `/${post.lang}/blog/${post.slug}`,
     },
     twitter: {
-      card: post.cover ? "summary_large_image" : "summary",
+      card: "summary_large_image",
       images,
     },
   };

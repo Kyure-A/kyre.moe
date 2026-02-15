@@ -51,6 +51,7 @@ export const generateMetadata = async ({
   const meta = META_COPY[lang];
   const title = meta.title(decodedTag);
   const description = meta.description(decodedTag);
+  const ogImage = `/${lang}/blog/tag/${encodeURIComponent(decodedTag)}/opengraph-image`;
   const languages: Record<string, string> = {};
 
   for (const siteLang of SITE_LANGS) {
@@ -69,6 +70,13 @@ export const generateMetadata = async ({
     openGraph: {
       title,
       description,
+      images: [ogImage],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImage],
     },
   };
 };
