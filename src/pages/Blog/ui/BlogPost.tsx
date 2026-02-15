@@ -53,7 +53,7 @@ const BlogPostView = ({ post }: Props) => {
               <Link
                 key={`${post.slug}-${tag}`}
                 href={buildTagPath(tag, post.lang)}
-                className="rounded-full border border-[var(--border-subtle)] px-3 py-1 transition-colors duration-[400ms] ease-out hover:border-[var(--border-subtle-strong)] hover:text-[var(--text-primary)]"
+                className="rounded-[11px] border border-[var(--border-subtle)] px-3 py-1 transition-colors duration-[400ms] ease-out hover:border-[var(--border-subtle-strong)] hover:text-[var(--text-primary)]"
                 style={{ viewTransitionName: `blog-tag-${post.slug}-${tag}` }}
               >
                 #{tag}
