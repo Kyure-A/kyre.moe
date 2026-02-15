@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useTheme } from "@/shared/ui/ThemeProvider/ThemeProvider";
 
 const TWITTER_SCRIPT_SRC = "https://platform.twitter.com/widgets.js";
 
@@ -29,10 +30,20 @@ const loadTwitterWidgets = () => {
 };
 
 const TwitterEmbedEnhancer = () => {
+  const { theme } = useTheme();
+
   useEffect(() => {
-    if (!document.querySelector(".twitter-tweet")) return;
+    const embeds = Array.from(
+      document.querySelectorAll<HTMLElement>(".twitter-tweet"),
+    );
+    if (embeds.length === 0) return;
+
+    for (const embed of embeds) {
+      embed.setAttribute("data-theme", theme);
+    }
+
     loadTwitterWidgets();
-  }, []);
+  }, [theme]);
 
   return null;
 };

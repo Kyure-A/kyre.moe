@@ -11,21 +11,23 @@ type TimelineProps = {
 
 const Timeline = ({ items = [] }: TimelineProps) => {
   return (
-    <ol className="relative border-s border-gray-300 dark:border-gray-700 ml-4">
+    <ol className="relative ml-4 border-s border-[var(--timeline-line)]">
       {items.map((item) => {
         const key = `${item.date}-${item.title}-${item.url ?? "timeline"}`;
         const content = (
           <>
             {/* dot */}
-            <div className="absolute w-3 h-3 bg-white rounded-full mt-1.5 -start-1.5 border border-white" />
+            <div className="absolute -start-1.5 mt-1.5 h-3 w-3 rounded-full border border-[var(--timeline-dot-border)] bg-[var(--timeline-dot-bg)]" />
 
-            <time className="mb-1 text-sm font-normal leading-none text-gray-400">
+            <time className="mb-1 text-sm font-normal leading-none text-[var(--timeline-date)]">
               {item.date}
             </time>
 
-            <h2 className="text-lg font-semibold text-white">{item.title}</h2>
+            <h2 className="text-lg font-semibold text-[var(--timeline-title)]">
+              {item.title}
+            </h2>
 
-            <p className="mb-4 text-sm font-normal text-gray-400">
+            <p className="mb-4 text-sm font-normal text-[var(--timeline-description)]">
               {item.description}
             </p>
           </>

@@ -39,16 +39,18 @@ const BlogTagIndex = ({ lang, tag, posts }: Props) => {
   return (
     <BlogSection>
       <header className="mb-10">
-        <p className="text-[11px] tracking-[0.08em] text-gray-500">
+        <p className="text-[11px] tracking-[0.08em] text-[var(--text-tertiary)]">
           {copy.label}
         </p>
-        <h1 className="mt-3 text-2xl font-semibold text-gray-100 md:text-3xl">
+        <h1 className="mt-3 text-2xl font-semibold text-[var(--text-primary)] md:text-3xl">
           #{tag}
         </h1>
-        <p className="mt-2 text-sm text-gray-400">{copy.count(posts.length)}</p>
+        <p className="mt-2 text-sm text-[var(--text-secondary)]">
+          {copy.count(posts.length)}
+        </p>
         <Link
           href={`/${lang}/blog/tag`}
-          className="mt-5 inline-flex items-center gap-2 text-[11px] tracking-[0.08em] text-gray-500 transition-colors duration-[300ms] ease-out hover:text-gray-200"
+          className="mt-5 inline-flex items-center gap-2 text-[11px] tracking-[0.08em] text-[var(--text-tertiary)] transition-colors duration-[300ms] ease-out hover:text-[var(--text-primary)]"
         >
           ← {copy.back}
         </Link>

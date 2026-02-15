@@ -29,10 +29,10 @@ const BlogIndex = ({ lang, posts }: Props) => {
     <BlogSection>
       <h1 className="sr-only">{copy.title}</h1>
       <BlogPostList posts={posts} emptyLabel={copy.empty} />
-      <div className="mt-8 flex items-center justify-end text-[11px] tracking-[0.08em] text-gray-500">
+      <div className="mt-8 flex items-center justify-end text-[11px] tracking-[0.08em] text-[var(--text-tertiary)]">
         <Link
           href={`/${lang}/blog/tag`}
-          className="inline-flex items-center gap-2 transition-colors duration-[300ms] ease-out hover:text-gray-200"
+          className="inline-flex items-center gap-2 transition-colors duration-[300ms] ease-out hover:text-[var(--text-primary)]"
         >
           {copy.tags} →
         </Link>

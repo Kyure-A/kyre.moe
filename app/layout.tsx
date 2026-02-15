@@ -3,6 +3,8 @@ import { IBM_Plex_Mono } from "next/font/google";
 import { ViewTransitions } from "next-view-transitions";
 import "./globals.css";
 import App from "@/app/main";
+import ThemeProvider from "@/shared/ui/ThemeProvider/ThemeProvider";
+import ThemeScript from "@/shared/ui/ThemeProvider/ThemeScript";
 
 const ibmPlexMono = IBM_Plex_Mono({
   subsets: ["latin"],
@@ -38,8 +40,13 @@ const RootLayout = ({
   return (
     <ViewTransitions>
       <html lang="en" className={ibmPlexMono.variable}>
+        <head>
+          <ThemeScript />
+        </head>
         <body suppressHydrationWarning={true}>
-          <App>{children}</App>
+          <ThemeProvider>
+            <App>{children}</App>
+          </ThemeProvider>
         </body>
       </html>
     </ViewTransitions>
