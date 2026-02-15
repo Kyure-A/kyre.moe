@@ -74,7 +74,7 @@ const App = ({ children }: Props) => {
 
       {/* BackgroundShader - 常にマウント、Home でのみ表示 */}
       <div
-        className="fixed inset-0 w-screen h-screen z-0"
+        className="home-shader fixed inset-0 w-screen h-screen z-0"
         style={homeLayerStyle}
         aria-hidden={!isHome}
       >

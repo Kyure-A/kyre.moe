@@ -55,7 +55,7 @@ const LanguageToggle = ({ onChange }: LanguageToggleProps) => {
       <button
         type="button"
         onClick={handleToggle}
-        className={`relative inline-flex h-10 w-20 items-center justify-center rounded-full shadow-md transition-all duration-500 overflow-hidden bg-stone-800`}
+        className="relative inline-flex h-10 w-20 items-center justify-center overflow-hidden rounded-full border border-[var(--control-border)] bg-[var(--control-bg)] shadow-md transition-all duration-500"
         aria-pressed={language === "en"}
       >
         <span className="sr-only">
@@ -64,7 +64,7 @@ const LanguageToggle = ({ onChange }: LanguageToggleProps) => {
 
         {/* 背景のアクセント（装飾要素） */}
         <span
-          className={`absolute w-24 h-24 rounded-full bg-white opacity-5 transition-all duration-500 ${
+          className={`absolute h-24 w-24 rounded-full bg-[var(--control-orb)] transition-all duration-500 ${
             language === "ja" ? "-top-16 -left-10" : "-top-16 -right-10"
           }`}
         />
@@ -73,8 +73,8 @@ const LanguageToggle = ({ onChange }: LanguageToggleProps) => {
         <span
           className={`absolute left-3 text-xs font-bold z-10 transition-all duration-500 ${
             language === "ja"
-              ? "text-gray-800 scale-110"
-              : "text-white/10 scale-90"
+              ? "text-[var(--control-label-active)] scale-110"
+              : "text-[var(--control-label-muted)] scale-90"
           }`}
         >
           Ja
@@ -83,8 +83,8 @@ const LanguageToggle = ({ onChange }: LanguageToggleProps) => {
         <span
           className={`absolute right-3 text-xs font-bold z-10 transition-all duration-500 ${
             language === "en"
-              ? "text-gray-800 scale-110"
-              : "text-white/10 scale-90"
+              ? "text-[var(--control-label-active)] scale-110"
+              : "text-[var(--control-label-muted)] scale-90"
           }`}
         >
           En
@@ -92,14 +92,12 @@ const LanguageToggle = ({ onChange }: LanguageToggleProps) => {
 
         {/* トグルの丸 */}
         <span
-          className={`absolute h-8 w-8 transform rounded-full bg-white shadow-lg transition-all duration-500 ease-in-out ${
+          className={`absolute h-8 w-8 transform rounded-full bg-[var(--control-knob)] shadow-lg transition-all duration-500 ease-in-out ${
             language === "en" ? "translate-x-5" : "-translate-x-5"
           }`}
         >
           {/* 丸の中のアクセント */}
-          <span
-            className={`absolute inset-0 rounded-full m-1 transition-all duration-500 bg-gray-100`}
-          />
+          <span className="absolute inset-0 m-1 rounded-full bg-[var(--control-knob-inner)] transition-all duration-500" />
         </span>
       </button>
     </div>

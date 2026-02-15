@@ -42,26 +42,30 @@ const BlogTagList = ({ lang, tags }: Props) => {
   return (
     <BlogSection>
       <header className="mb-10">
-        <p className="text-[11px] tracking-[0.08em] text-gray-500">
+        <p className="text-[11px] tracking-[0.08em] text-[var(--text-tertiary)]">
           {copy.label}
         </p>
-        <h1 className="mt-3 text-2xl font-semibold text-gray-100 md:text-3xl">
+        <h1 className="mt-3 text-2xl font-semibold text-[var(--text-primary)] md:text-3xl">
           {copy.title}
         </h1>
-        <p className="mt-2 text-sm text-gray-400">{copy.count(tags.length)}</p>
+        <p className="mt-2 text-sm text-[var(--text-secondary)]">
+          {copy.count(tags.length)}
+        </p>
       </header>
       {tags.length === 0 ? (
-        <p className="text-sm text-gray-500">{copy.empty}</p>
+        <p className="text-sm text-[var(--text-tertiary)]">{copy.empty}</p>
       ) : (
-        <div className="flex flex-wrap gap-2 text-[11px] tracking-[0.08em] text-gray-500">
+        <div className="flex flex-wrap gap-2 text-[11px] tracking-[0.08em] text-[var(--text-tertiary)]">
           {tags.map((item) => (
             <Link
               key={item.tag}
               href={buildTagPath(item.tag, lang)}
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-1 transition-colors duration-[300ms] ease-out hover:border-white/40 hover:text-gray-200"
+              className="inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] px-3 py-1 transition-colors duration-[300ms] ease-out hover:border-[var(--border-subtle-strong)] hover:text-[var(--text-primary)]"
             >
               <span>#{item.tag}</span>
-              <span className="text-gray-500/80">{item.count}</span>
+              <span className="text-[var(--text-tertiary)]/80">
+                {item.count}
+              </span>
             </Link>
           ))}
         </div>
