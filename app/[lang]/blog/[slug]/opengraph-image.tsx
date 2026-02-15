@@ -43,6 +43,7 @@ const Image = async ({ params }: Props) => {
   return generateOgImage({
     title: post.title,
     subtitle: post.date || undefined,
+    tags: post.tags,
   });
 };
 

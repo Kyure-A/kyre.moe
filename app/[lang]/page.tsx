@@ -30,6 +30,7 @@ export const generateMetadata = async ({
   const { lang } = await params;
   if (!isSiteLang(lang)) return {};
   const meta = META_BY_LANG[lang];
+  const ogImage = `/${lang}/opengraph-image`;
   return {
     title: meta.title,
     description: meta.description,
@@ -43,6 +44,13 @@ export const generateMetadata = async ({
     openGraph: {
       title: meta.title,
       description: meta.description,
+      images: [ogImage],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: meta.title,
+      description: meta.description,
+      images: [ogImage],
     },
   };
 };
