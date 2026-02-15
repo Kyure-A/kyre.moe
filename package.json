@@ -8,6 +8,7 @@
 		"start": "next start",
 		"content:org": "node scripts/export-org.mjs",
 		"content:images": "node scripts/copy-blog-images.mjs",
+		"fix:ogp-export": "node scripts/fix-ogp-export.mjs",
 		"lint": "next lint"
 	},
 	"dependencies": {
