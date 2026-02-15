@@ -258,7 +258,8 @@ export const generateOgImage = ({ title, subtitle, tags }: OgImageProps) => {
                   width: "40px",
                   height: "40px",
                   borderRadius: "9999px",
-                  background: "linear-gradient(145deg, #f92672 0%, #ff83ab 100%)",
+                  background:
+                    "linear-gradient(145deg, #f92672 0%, #ff83ab 100%)",
                 }}
               />
             )}
