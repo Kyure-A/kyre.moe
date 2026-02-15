@@ -28,13 +28,13 @@
         };
       };
 
-      catalog = agentLib.discoverCatalog sources;
-      allowlist = agentLib.allowlistFor {
-        inherit catalog sources;
-        enableAll = true;
-      };
-      selection = agentLib.selectSkills {
-        inherit catalog allowlist sources;
+      selection = agentLib.selectSkills rec {
+        inherit sources;
+        catalog = agentLib.discoverCatalog sources;
+        allowlist = agentLib.allowlistFor {
+          inherit catalog sources;
+          enableAll = true;
+        };
         skills = {};
       };
       localTargets = {
@@ -79,7 +79,7 @@
             type = "app";
             program = "${installLocal}/bin/skills-install-local";
             meta = {
-              description = "Install agent skills to local targets (for example .claude/skills)";
+              description = "Install agent skills to local targets";
             };
           };
         }
