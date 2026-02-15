@@ -19,6 +19,22 @@
         "type": "github"
       }
     },
+    "anthropic-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1770412772,
+        "narHash": "sha256-9FGubcwHcGBJcKl02aJ+YsTMiwDOdgU/FHALjARG51c=",
+        "owner": "anthropics",
+        "repo": "skills",
+        "rev": "1ed29a03dc852d30fa6ef2ca53a67dc2c2c2c563",
+        "type": "github"
+      },
+      "original": {
+        "owner": "anthropics",
+        "repo": "skills",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -91,8 +107,26 @@
     "root": {
       "inputs": {
         "agent-skills": "agent-skills",
+        "anthropic-skills": "anthropic-skills",
         "next-skills": "next-skills",
-        "nixpkgs": "nixpkgs_2"
+        "nixpkgs": "nixpkgs_2",
+        "ui-skills": "ui-skills"
+      }
+    },
+    "ui-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1769765439,
+        "narHash": "sha256-dzOMQUlr9iqlWDPVU186TMSt2iIlmWKPqC/KQuIN9Xs=",
+        "owner": "ibelick",
+        "repo": "ui-skills",
+        "rev": "b6bb121725c9f75426392394f306b0d34d9090fa",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ibelick",
+        "repo": "ui-skills",
+        "type": "github"
       }
     }
   },

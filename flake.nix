@@ -4,14 +4,22 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     agent-skills.url = "github:Kyure-A/agent-skills-nix";
+    anthropic-skills = {
+      url = "github:anthropics/skills";
+      flake = false;
+    };
     next-skills = {
       url = "github:vercel-labs/next-skills";
+      flake = false;
+    };
+    ui-skills = {
+      url = "github:ibelick/ui-skills";
       flake = false;
     };
   };
 
   outputs =
-    { nixpkgs, agent-skills, next-skills, ... }:
+    { nixpkgs, agent-skills, anthropic-skills, next-skills, ui-skills, ... }:
     let
       eachSystem =
         f:
@@ -22,8 +30,16 @@
       agentLib = agent-skills.lib.agent-skills;
 
       sources = {
+        anthropic-skills = {
+          path = anthropic-skills;
+          subdir = "skills";
+        };
         next-skills = {
           path = next-skills;
+          subdir = "skills";
+        };
+        ui-skills = {
+          path = ui-skills;
           subdir = "skills";
         };
       };
@@ -33,7 +49,13 @@
         catalog = agentLib.discoverCatalog sources;
         allowlist = agentLib.allowlistFor {
           inherit catalog sources;
-          enableAll = true;
+          enable = [
+            "frontend-design"
+          ];
+          enableAll = [
+            "next"
+            "ui"
+          ];
         };
         skills = {};
       };
