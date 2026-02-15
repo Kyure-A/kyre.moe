@@ -26,9 +26,11 @@ export const metadata: Metadata = {
     url: "https://kyre.moe",
     siteName: "Kyure_A",
     type: "website",
+    images: ["/ja/opengraph-image"],
   },
   twitter: {
     card: "summary_large_image",
+    images: ["/ja/opengraph-image"],
   },
 };
 

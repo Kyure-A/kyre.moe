@@ -87,10 +87,22 @@ jobs:
           cwebp -q 100 -alpha_q 100 -resize 0 640 public/kyure_a.png -o public/kyure_a-640.webp
           cwebp -q 100 -alpha_q 100 -resize 1000 0 public/kyure_a.png -o public/kyure_a-1000.webp
           cwebp -q 100 -alpha_q 100 -resize 1600 0 public/kyure_a.png -o public/kyure_a-1600.webp
+      - name: Download Noto Sans JP for OGP
+        id: og-font
+        run: |
+          set -euo pipefail
+          mkdir -p public/fonts
+
+          FONT_PATH="public/fonts/NotoSansCJKjp-Regular.otf"
+          curl -fL --retry 3 --retry-delay 2 \
+            -o "$FONT_PATH" \
+            "https://raw.githubusercontent.com/notofonts/noto-cjk/main/Sans/OTF/Japanese/NotoSansCJKjp-Regular.otf"
+          echo "path=$FONT_PATH" >> "$GITHUB_OUTPUT"
       - name: Build with Next.js
         env:
           CI: false
           ESLINT_NO_DEV_ERRORS: true
+          OG_IMAGE_FONT_PATH: ${{ steps.og-font.outputs.path }}
         run: pnpm next build --no-lint
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
