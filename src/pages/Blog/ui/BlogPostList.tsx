@@ -54,7 +54,7 @@ const BlogPostList = ({ posts, emptyLabel }: Props) => {
                       <Link
                         key={`${post.slug}-${tag}`}
                         href={buildTagPath(tag, post.lang)}
-                        className="rounded-full border border-[var(--border-subtle)] px-3 py-1 transition-colors duration-[400ms] ease-out group-hover:border-white/40 hover:border-[var(--border-subtle-strong)]"
+                        className="rounded-[11px] border border-[var(--border-subtle)] px-3 py-1 transition-colors duration-[400ms] ease-out group-hover:border-white/40 hover:border-[var(--border-subtle-strong)]"
                       >
                         #{tag}
                       </Link>

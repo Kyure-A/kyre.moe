@@ -60,7 +60,7 @@ const BlogTagList = ({ lang, tags }: Props) => {
             <Link
               key={item.tag}
               href={buildTagPath(item.tag, lang)}
-              className="inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] px-3 py-1 transition-colors duration-[300ms] ease-out hover:border-[var(--border-subtle-strong)] hover:text-[var(--text-primary)]"
+              className="inline-flex items-center gap-2 rounded-[11px] border border-[var(--border-subtle)] px-3 py-1 transition-colors duration-[300ms] ease-out hover:border-[var(--border-subtle-strong)] hover:text-[var(--text-primary)]"
             >
               <span>#{item.tag}</span>
               <span className="text-[var(--text-tertiary)]/80">
