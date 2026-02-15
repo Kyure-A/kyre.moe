@@ -104,6 +104,8 @@ jobs:
           ESLINT_NO_DEV_ERRORS: true
           OG_IMAGE_FONT_PATH: ${{ steps.og-font.outputs.path }}
         run: pnpm next build --no-lint
+      - name: Rewrite OGP image URLs for static hosting
+        run: pnpm fix:ogp-export
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
