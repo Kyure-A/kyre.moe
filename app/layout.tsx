@@ -41,7 +41,11 @@ const RootLayout = ({
 }>) => {
   return (
     <ViewTransitions>
-      <html lang="en" className={ibmPlexMono.variable}>
+      <html
+        lang="en"
+        className={ibmPlexMono.variable}
+        suppressHydrationWarning={true}
+      >
         <head>
           <ThemeScript />
         </head>
