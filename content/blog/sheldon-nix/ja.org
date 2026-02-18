@@ -213,6 +213,9 @@ imports = [
 
 ありがとうございました。
 
+** 余談
+この記事がヒットしそうな検索ワードとして `Nix Sheldon` とかそういうのがありそうですが、世の中には [[https://www.eastern.edu/sheldon-nix][Sheldon Nix]] さんがいるらしいです。すごい名前。
+
 ** Reference
 この記事で紹介した設定は俺の Nix 設定 ([[https://github.com/Kyure-A/nix-config][Kyure-A/nix-config]]) で実際に使っているものです。
 

@@ -216,6 +216,9 @@ This way, adding, removing, or updating plugin versions is self-contained within
 
 Thank you for reading!
 
+** Aside
+If you search for something like "Nix Sheldon" to find this article, you might also stumble upon [[https://www.eastern.edu/sheldon-nix][Sheldon Nix]], who is apparently a real person. What a name.
+
 ** Reference
 The configurations introduced in this article are from my Nix configuration ([[https://github.com/Kyure-A/nix-config][Kyure-A/nix-config]]).
 
