@@ -11,7 +11,7 @@
 
 これを Nix 環境で使いたいとき、愚直にやるならば home-manager で plugins.toml を管理すればいいわけですが、home-manager を使って管理できるようになったのでご紹介します。
 
-この変更は home-manager に私が送った [[https://github.com/nix-community/home-manager/pull/5672][PR]] を引き継いでくれた [[https://github.com/elanora96][elanora96]] さんによって upstream に merge されています。オープンソースソフトウェアにおける暖かさ・自由さを知った一件でした。
+この変更は home-manager に俺が送った [[https://github.com/nix-community/home-manager/pull/5672][PR]] を引き継いでくれた [[https://github.com/elanora96][elanora96]] さんによって upstream に merge されています。オープンソースソフトウェアにおける暖かさ・自由さを知った一件でした。
 
 ** Sheldon を使うメリット
 *** Zsh に依存していない
@@ -135,7 +135,7 @@ in
 `mkBefore` で `.zshrc` の先頭に配置して、`zsh-defer` → `sheldon source` の順を保証しています。これをミスすると defer されたプラグインが全部 `command not found` になるので注意してください（一敗）
 
 *** `github` ソースから flake inputs への移行
-ここまでの例では Sheldon の `github` ソースと `local` ソースを並列に紹介してきましたが、実際に私が最初に書いていた設定は `github` ソースを使ったものでした。
+ここまでの例では Sheldon の `github` ソースと `local` ソースを並列に紹介してきましたが、実際に俺が最初に書いていた設定は `github` ソースを使ったものでした。
 
 #+begin_src nix
 plugins.zsh-syntax-highlighting = {
@@ -214,7 +214,7 @@ imports = [
 ありがとうございました。
 
 ** Reference
-この記事で紹介した設定は私の Nix 設定 ([[https://github.com/Kyure-A/nix-config][Kyure-A/nix-config]]) で実際に使っているものです。
+この記事で紹介した設定は俺の Nix 設定 ([[https://github.com/Kyure-A/nix-config][Kyure-A/nix-config]]) で実際に使っているものです。
 
 - [[https://github.com/Kyure-A/nix-config/tree/master/inputs/sheldon][inputs/sheldon/]] - Sheldon の子 flake（プラグイン定義・モジュール本体）
 - [[https://github.com/Kyure-A/nix-config/blob/master/inputs/sheldon/flake.nix][inputs/sheldon/flake.nix]] - プラグインの flake inputs
