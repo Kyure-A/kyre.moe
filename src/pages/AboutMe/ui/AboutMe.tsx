@@ -1,5 +1,4 @@
 import type { SiteLang } from "@/shared/lib/i18n";
-import AnimatedContent from "@/shared/ui/AnimatedContent/AnimatedContent";
 import List from "@/shared/ui/List/List";
 
 type Section =
@@ -8,7 +7,6 @@ type Section =
 
 type SectionProps = {
   section: Section;
-  index: number;
 };
 
 const ABOUTME_DATA: Record<SiteLang, Section[]> = {
@@ -53,28 +51,20 @@ const PAGE_TITLE: Record<SiteLang, string> = {
   en: "About me",
 };
 
-const Section = ({ section, index }: SectionProps) => {
+const Section = ({ section }: SectionProps) => {
   return (
     <>
-      {/* 見出し側（3カラム） */}
-      <AnimatedContent
-        delay={index * 100}
-        className="md:col-span-3 font-mono text-[var(--text-secondary)] text-right md:text-left"
-      >
-        <h2>{section.label}</h2>
-      </AnimatedContent>
+      <h2 className="md:col-span-3 font-mono text-[var(--text-secondary)] text-right md:text-left">
+        {section.label}
+      </h2>
 
-      {/* 本文側（9カラム） */}
-      <AnimatedContent
-        delay={index * 100}
-        className="md:col-span-9 max-w-none text-[var(--text-primary)]"
-      >
+      <div className="md:col-span-9 max-w-none text-[var(--text-primary)]">
         {"bullets" in section ? (
           <List items={section.bullets} />
         ) : (
           <p>{section.text}</p>
         )}
-      </AnimatedContent>
+      </div>
     </>
   );
 };
@@ -85,8 +75,8 @@ const AboutMe = ({ lang }: { lang: SiteLang }) => {
     <section className="py-24 px-6 max-w-6xl mx-auto">
       <h1 className="sr-only">{PAGE_TITLE[lang]}</h1>
       <div className="grid md:grid-cols-12 gap-y-12">
-        {data.map((section, idx) => (
-          <Section section={section} index={idx} key={section.label} />
+        {data.map((section) => (
+          <Section section={section} key={section.label} />
         ))}
       </div>
     </section>
