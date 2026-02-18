@@ -1,7 +1,7 @@
 #+TITLE: Nix で Sheldon を使う
 #+DATE: 2026-02-19
 #+DESCRIPTION: Sheldon は Zsh / Bash プラグインマネージャーです
-#+TAGS: Sheldon Zsh
+#+TAGS: Sheldon Zsh Nix
 #+DRAFT: false
 
 ** はじめに
