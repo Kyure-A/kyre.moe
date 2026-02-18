@@ -1,7 +1,7 @@
 #+TITLE: Using Sheldon with Nix
 #+DATE: 2026-02-19
 #+DESCRIPTION: Sheldon is a Zsh / Bash plugin manager
-#+TAGS: Sheldon Zsh
+#+TAGS: Sheldon Zsh Nix
 #+DRAFT: false
 
 > [!NOTE]
