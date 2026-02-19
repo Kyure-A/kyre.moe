@@ -117,7 +117,7 @@ export const generateOgImage = ({ title, subtitle, tags }: OgImageProps) => {
           height: "420px",
           borderRadius: "9999px",
           background:
-            "radial-gradient(circle, rgba(249,38,114,0.24) 0%, rgba(249,38,114,0) 72%)",
+            "radial-gradient(circle, rgba(102,217,239,0.24) 0%, rgba(102,217,239,0) 72%)",
           opacity: 0.8,
         }}
       />
@@ -147,7 +147,7 @@ export const generateOgImage = ({ title, subtitle, tags }: OgImageProps) => {
             "linear-gradient(165deg, rgba(255,255,255,0.88) 0%, rgba(245,245,243,0.9) 100%)",
           padding: "44px 52px",
           boxShadow:
-            "0 28px 64px rgba(15, 23, 42, 0.16), 0 0 24px rgba(249, 38, 114, 0.1)",
+            "0 28px 64px rgba(15, 23, 42, 0.16), 0 0 24px rgba(102, 217, 239, 0.1)",
           zIndex: 2,
         }}
       >
@@ -259,7 +259,7 @@ export const generateOgImage = ({ title, subtitle, tags }: OgImageProps) => {
                   height: "40px",
                   borderRadius: "9999px",
                   background:
-                    "linear-gradient(145deg, #f92672 0%, #ff83ab 100%)",
+                    "linear-gradient(145deg, #66d9ef 0%, #a6e7f7 100%)",
                 }}
               />
             )}

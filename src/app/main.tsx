@@ -3,8 +3,8 @@
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { type CSSProperties, type ReactNode, useMemo, useState } from "react";
-import useIsMobile from "@/shared/hooks/useIsMobile";
 import useDockItems from "@/shared/hooks/useDockItems";
+import useIsMobile from "@/shared/hooks/useIsMobile";
 import HeaderControls from "@/shared/ui/HeaderControls/HeaderControls";
 import OrbitDock from "@/shared/ui/OrbitDock/OrbitDock";
 
@@ -84,7 +84,7 @@ const App = ({ children }: Props) => {
           isRotate={false}
           pulseFrequency={0.05}
           color1="#272822"
-          color2="#F92672"
+          color2="#66d9ef"
           color3="#000000"
           maxFps={SHADER_MAX_FPS}
           resolutionScale={shaderResolution}
