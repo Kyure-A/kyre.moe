@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import { usePathname } from "next/navigation";
-import useIsMobile from "@/shared/hooks/useIsMobile";
+import useRuntimeProfile from "@/shared/hooks/useRuntimeProfile";
 import { DEFAULT_LANG, getLangFromPath } from "@/shared/lib/i18n";
 import { srcPath } from "@/shared/lib/path";
 import GlitchImage from "@/shared/ui/GlitchImage/GlitchImage";
@@ -24,7 +24,7 @@ const HERO_WIDTH = 2305;
 const HERO_HEIGHT = 4776;
 
 const Home = () => {
-  const isMobile = useIsMobile();
+  const { lowPerformanceMode } = useRuntimeProfile();
   const pathname = usePathname();
   const lang = getLangFromPath(pathname) ?? DEFAULT_LANG;
   const [useWebp, setUseWebp] = useState(process.env.NODE_ENV === "production");
@@ -114,13 +114,7 @@ const Home = () => {
         </div>
         <div className="flex flex-col items-center center">
           <GlitchImage
-            maskSrc={srcPath(
-              useWebp
-                ? isMobile
-                  ? "/kyure_a-640.webp"
-                  : "/kyure_a-1000.webp"
-                : "/kyure_a.png",
-            )}
+            maskSrc={srcPath("/kyure_a.png")}
             startDelayMs={1000}
             maskScale={1}
             ambientNoiseStrength={0.12}
@@ -128,7 +122,7 @@ const Home = () => {
             interval={1}
             probability={30}
             intensity={5}
-            active={glitchReady}
+            active={glitchReady && !lowPerformanceMode}
           >
             <picture>
               {useWebp && (
