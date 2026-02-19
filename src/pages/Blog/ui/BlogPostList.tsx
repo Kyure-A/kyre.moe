@@ -10,7 +10,7 @@ type Props = {
 
 const BlogPostList = ({ posts, emptyLabel }: Props) => {
   const accentStyle = {
-    "--accent": "#F92672",
+    "--accent": "#66d9ef",
   } as CSSProperties;
 
   return (
@@ -30,31 +30,31 @@ const BlogPostList = ({ posts, emptyLabel }: Props) => {
               >
                 <span className="sr-only">{post.title}</span>
               </Link>
-              <div className="flex flex-col gap-2 px-0 py-3 text-[var(--text-primary)] transition-[padding,background-color,border-radius,color] duration-[400ms] ease-out group-hover:px-4 group-hover:rounded-[10px] group-hover:bg-[var(--accent)] group-hover:text-white">
-                <div className="flex flex-wrap items-center gap-3 text-[11px] tracking-[0.08em] text-[var(--text-secondary)] transition-colors duration-[400ms] ease-out group-hover:text-white/80">
+              <div className="flex flex-col gap-2 px-0 py-3 text-[var(--text-primary)] transition-[padding,background-color,border-radius,color] duration-[400ms] ease-out group-hover:px-4 group-hover:rounded-[10px] group-hover:bg-[var(--accent)] group-hover:text-[#0a3d4e]">
+                <div className="flex flex-wrap items-center gap-3 text-[11px] tracking-[0.08em] text-[var(--text-secondary)] transition-colors duration-[400ms] ease-out group-hover:text-[#1a1a1a]/70">
                   <span>{formatDate(post.date, post.lang)}</span>
                 </div>
                 <h2
-                  className="text-lg font-semibold leading-snug text-[var(--text-primary)] transition-colors duration-[400ms] ease-out group-hover:text-white md:text-xl"
+                  className="text-lg font-semibold leading-snug text-[var(--text-primary)] transition-colors duration-[400ms] ease-out group-hover:text-[#0a3d4e] md:text-xl"
                   style={{ viewTransitionName: `blog-title-${post.slug}` }}
                 >
                   {post.title}
                 </h2>
                 {post.description && (
                   <p
-                    className="text-sm leading-relaxed text-[var(--text-secondary)] transition-colors duration-[400ms] ease-out group-hover:text-white/85"
+                    className="text-sm leading-relaxed text-[var(--text-secondary)] transition-colors duration-[400ms] ease-out group-hover:text-[#1a1a1a]/75"
                     style={{ viewTransitionName: `blog-desc-${post.slug}` }}
                   >
                     {post.description}
                   </p>
                 )}
                 {post.tags.length > 0 && (
-                  <div className="relative z-20 flex flex-wrap gap-2 text-[11px] tracking-[0.08em] text-[var(--text-tertiary)] transition-colors duration-[400ms] ease-out group-hover:text-white/85">
+                  <div className="relative z-20 flex flex-wrap gap-2 text-[11px] tracking-[0.08em] text-[var(--text-tertiary)] transition-colors duration-[400ms] ease-out group-hover:text-[#1a1a1a]/75">
                     {post.tags.map((tag) => (
                       <Link
                         key={`${post.slug}-${tag}`}
                         href={buildTagPath(tag, post.lang)}
-                        className="rounded-[11px] border border-[var(--border-subtle)] px-3 py-1 transition-colors duration-[400ms] ease-out group-hover:border-white/40 hover:border-[var(--border-subtle-strong)]"
+                        className="rounded-[11px] border border-[var(--border-subtle)] px-3 py-1 transition-colors duration-[400ms] ease-out group-hover:border-[#1a1a1a]/30 hover:border-[var(--border-subtle-strong)]"
                       >
                         #{tag}
                       </Link>
