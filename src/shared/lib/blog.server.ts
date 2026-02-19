@@ -1,6 +1,7 @@
 import "server-only";
-import katex from "@vscode/markdown-it-katex";
 import * as fs from "node:fs";
+import * as path from "node:path";
+import katex from "@vscode/markdown-it-katex";
 import matter from "gray-matter";
 import hljs from "highlight.js";
 import {
@@ -8,6 +9,7 @@ import {
   type PluginSimple,
   type PluginWithOptions,
 } from "markdown-exit";
+import markdownItBudoux from "markdown-it-budoux";
 import footnote from "markdown-it-footnote";
 import githubAlerts from "markdown-it-github-alerts";
 import linkPreview from "markdown-it-link-preview";
@@ -17,7 +19,6 @@ import magicLink, {
 } from "markdown-it-magic-link";
 import taskLists from "markdown-it-task-lists";
 import markdownItTocDoneRight from "markdown-it-toc-done-right";
-import * as path from "node:path";
 import type { BlogPost, BlogPostMeta } from "./blog";
 import { DEFAULT_LANG, isSiteLang, type SiteLang } from "./i18n";
 
@@ -329,6 +330,7 @@ md.use(
 md.use(asPluginSimple(linkPreview));
 md.use(embedPlugin);
 md.use(asPluginSimple(markdownItTocDoneRight));
+md.use(asPluginSimple(markdownItBudoux({ language: "ja" })));
 md.inline.ruler.after("emphasis", "underline", (state, silent) => {
   const start = state.pos;
   if (state.src.charCodeAt(start) !== 0x5f) return false;
