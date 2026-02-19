@@ -155,6 +155,8 @@ const OrbitDock = ({
   const tiltXRad = (tiltX * Math.PI) / 180;
   const ellipseScale = Math.max(0.2, Math.cos(tiltXRad));
   const normalizedRotation = ((rotationValue % 360) + 360) % 360;
+  // Keep scale peak aligned with visual front after manual rotation.
+  const scalePhaseValue = `${-(normalizedRotation / 360) * duration}s`;
 
   const rootStyle = {
     "--orbit-size": sizeValue ?? "min(76vmin, 760px)",
@@ -166,7 +168,8 @@ const OrbitDock = ({
     "--orbit-tilt-x": `${tiltX}deg`,
     "--orbit-tilt-z": `${tiltZ}deg`,
     "--orbit-tilt-z-inv": `${-tiltZ}deg`,
-    "--orbit-phase": "0s",
+    "--orbit-spin-phase": "0s",
+    "--orbit-scale-phase": scalePhaseValue,
     "--orbit-ellipse-y": `${ellipseScale}`,
     "--orbit-ellipse-inv": `${1 / ellipseScale}`,
   } as CSSProperties;

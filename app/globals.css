@@ -183,7 +183,8 @@ body {
   );
   --orbit-speed: 34s;
   --orbit-start: -90deg;
-  --orbit-phase: 0s;
+  --orbit-spin-phase: 0s;
+  --orbit-scale-phase: 0s;
   --orbit-tilt-x: 64deg;
   --orbit-tilt-z: -20deg;
   --orbit-tilt-z-inv: 20deg;
@@ -263,7 +264,7 @@ body {
   left: 50%;
   transform-style: preserve-3d;
   animation: orbit-spin var(--orbit-speed) linear infinite;
-  animation-delay: calc(var(--orbit-delay, 0s) + var(--orbit-phase, 0s));
+  animation-delay: calc(var(--orbit-delay, 0s) + var(--orbit-spin-phase, 0s));
 }
 
 @keyframes orbit-spin {
@@ -291,7 +292,7 @@ body {
   transform: scaleY(var(--orbit-ellipse-inv)) rotateZ(var(--orbit-tilt-z-inv));
   will-change: transform;
   animation: orbit-scale var(--orbit-speed) linear infinite;
-  animation-delay: calc(var(--orbit-delay, 0s) + var(--orbit-phase, 0s));
+  animation-delay: calc(var(--orbit-delay, 0s) + var(--orbit-scale-phase, 0s));
 }
 
 .orbit-dock[data-layer="back"] .orbit-dock__item {
