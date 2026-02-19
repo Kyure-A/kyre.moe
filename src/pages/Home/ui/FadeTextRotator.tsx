@@ -19,6 +19,7 @@ type FadeTextRotatorProps = {
   asciiMaxFps?: number;
   asciiStartDelayMs?: number;
   asciiStartOnIdle?: boolean;
+  asciiEnabled?: boolean;
   active?: boolean;
 };
 
@@ -31,6 +32,7 @@ export const FadeTextRotator = ({
   asciiMaxFps = 60,
   asciiStartDelayMs = 0,
   asciiStartOnIdle = false,
+  asciiEnabled = true,
   active = true,
 }: FadeTextRotatorProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -50,18 +52,27 @@ export const FadeTextRotator = ({
       duration={fadeDuration}
       blur={false}
     >
-      {texts.map((text) => (
-        <ASCIIText
-          key={text}
-          text={text}
-          asciiFontSize={asciiFontSize}
-          textFontSize={textFontSize}
-          maxFps={asciiMaxFps}
-          startDelayMs={asciiStartDelayMs}
-          startOnIdle={asciiStartOnIdle}
-          active={active}
-        />
-      ))}
+      {texts.map((text) =>
+        asciiEnabled ? (
+          <ASCIIText
+            key={text}
+            text={text}
+            asciiFontSize={asciiFontSize}
+            textFontSize={textFontSize}
+            maxFps={asciiMaxFps}
+            startDelayMs={asciiStartDelayMs}
+            startOnIdle={asciiStartOnIdle}
+            active={active}
+          />
+        ) : (
+          <div
+            key={text}
+            className="w-full h-full flex items-center justify-center text-[20px] text-[var(--text-primary)]"
+          >
+            {text}
+          </div>
+        ),
+      )}
     </FadeTransition>
   );
 };

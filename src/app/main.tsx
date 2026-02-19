@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { type CSSProperties, type ReactNode, useMemo, useState } from "react";
 import useDockItems from "@/shared/hooks/useDockItems";
 import useIsMobile from "@/shared/hooks/useIsMobile";
+import useRuntimeProfile from "@/shared/hooks/useRuntimeProfile";
 import HeaderControls from "@/shared/ui/HeaderControls/HeaderControls";
 import OrbitDock from "@/shared/ui/OrbitDock/OrbitDock";
 
@@ -57,12 +58,28 @@ const App = ({ children }: Props) => {
     null,
   );
   const isMobile = useIsMobile();
+  const { lowPerformanceMode } = useRuntimeProfile();
 
-  const orbitPaused = !isHome || (orbitHovered && !orbitDragging);
-  const shaderResolution = isMobile ? 0.65 : 1;
-  const startDelayMs = isMobile ? 450 : 200;
+  const orbitPaused =
+    lowPerformanceMode || !isHome || (orbitHovered && !orbitDragging);
+  const shaderResolution = lowPerformanceMode
+    ? isMobile
+      ? 0.4
+      : 0.35
+    : isMobile
+      ? 0.65
+      : 1;
+  const startDelayMs = lowPerformanceMode
+    ? isMobile
+      ? 700
+      : 500
+    : isMobile
+      ? 450
+      : 200;
+  const shaderMaxFps = lowPerformanceMode ? 12 : SHADER_MAX_FPS;
+  const asciiMaxFps = lowPerformanceMode ? 12 : ASCII_MAX_FPS;
 
-  // Home でのみ表示、ただしマウントは常に維持してアニメーション状態を保持
+  // Home の表示/非表示を切り替える共通スタイル
   const homeLayerStyle: CSSProperties = {
     visibility: isHome ? "visible" : "hidden",
     pointerEvents: isHome ? "auto" : "none",
@@ -72,45 +89,49 @@ const App = ({ children }: Props) => {
     <>
       <HeaderControls />
 
-      {/* BackgroundShader - 常にマウント、Home でのみ表示 */}
-      <div
-        className="home-shader fixed inset-0 w-screen h-screen z-0"
-        style={homeLayerStyle}
-        aria-hidden={!isHome}
-      >
-        <BackgroundShader
-          pixelFilter={250}
-          fogDensity={0.3}
-          isRotate={false}
-          pulseFrequency={0.05}
-          color1="#272822"
-          color2="#66d9ef"
-          color3="#000000"
-          maxFps={SHADER_MAX_FPS}
-          resolutionScale={shaderResolution}
-          startDelayMs={startDelayMs}
-          startOnIdle
-          active={isHome}
-        />
-      </div>
+      {/* BackgroundShader - Windows Firefox は負荷が高いため非表示 */}
+      {!lowPerformanceMode && (
+        <div
+          className="home-shader fixed inset-0 w-screen h-screen z-0"
+          style={homeLayerStyle}
+          aria-hidden={!isHome}
+        >
+          <BackgroundShader
+            pixelFilter={250}
+            fogDensity={0.3}
+            isRotate={false}
+            pulseFrequency={0.05}
+            color1="#272822"
+            color2="#66d9ef"
+            color3="#000000"
+            maxFps={shaderMaxFps}
+            resolutionScale={shaderResolution}
+            startDelayMs={startDelayMs}
+            startOnIdle
+            active={isHome}
+          />
+        </div>
+      )}
 
-      {/* OrbitDock (back layer) - 常にマウント、Home でのみ表示 */}
-      <div
-        className="fixed left-1/2 top-1/2 z-[1] -translate-x-1/2 -translate-y-1/2"
-        style={{ ...ORBIT_VARS, ...homeLayerStyle }}
-        aria-hidden={!isHome}
-      >
-        <OrbitDock
-          items={orbitItems}
-          layer="back"
-          showDecorations
-          speed={9}
-          rotation={orbitRotation}
-          size="var(--home-orbit-size)"
-          paused={orbitPaused}
-          hoveredIndex={orbitHoveredIndex}
-        />
-      </div>
+      {/* OrbitDock (back layer) - 低スペック時は省略 */}
+      {!lowPerformanceMode && (
+        <div
+          className="fixed left-1/2 top-1/2 z-[1] -translate-x-1/2 -translate-y-1/2"
+          style={{ ...ORBIT_VARS, ...homeLayerStyle }}
+          aria-hidden={!isHome}
+        >
+          <OrbitDock
+            items={orbitItems}
+            layer="back"
+            showDecorations
+            speed={9}
+            rotation={orbitRotation}
+            size="var(--home-orbit-size)"
+            paused={orbitPaused}
+            hoveredIndex={orbitHoveredIndex}
+          />
+        </div>
+      )}
 
       {/* FadeTextRotator - 元の Home.tsx と同じレイアウト構造を再現、キャラ画像より前面 */}
       <div
@@ -121,9 +142,10 @@ const App = ({ children }: Props) => {
         <div className="absolute flex flex-col pt-16 inset-0">
           <div className="flex flex-col mb-6 z-20 pointer-events-auto">
             <FadeTextRotator
-              asciiMaxFps={ASCII_MAX_FPS}
+              asciiMaxFps={asciiMaxFps}
               asciiStartDelayMs={startDelayMs}
               asciiStartOnIdle
+              asciiEnabled={!lowPerformanceMode}
               active={isHome}
             />
           </div>
