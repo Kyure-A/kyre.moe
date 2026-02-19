@@ -23,6 +23,8 @@ const meta = {
   component: GlitchImageStory,
   tags: ["autodocs"],
   args: {
+    maskSrc: "/kyure_a.png",
+    maskScale: 1,
     interval: 1,
     probability: 80,
     glitchDuration: 600,
@@ -45,5 +47,11 @@ export const StrongEffect: Story = {
     intensity: 9,
     ambientNoiseStrength: 0.2,
     coolNoiseStrength: 0.6,
+  },
+};
+
+export const Unmasked: Story = {
+  args: {
+    maskSrc: undefined,
   },
 };
