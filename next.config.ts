@@ -13,17 +13,22 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, webpack }) => {
     if (isServer) {
-      // budoux uses a "browser" field to map win.js -> win-browser.js,
-      // which references `window`. Disable browser field resolution
-      // on the server to use the Node.js/JSDOM version instead.
-      config.resolve = {
-        ...config.resolve,
-        aliasFields: (config.resolve?.aliasFields ?? []).filter(
-          (field: string) => field !== "browser",
+      // budoux's "browser" field maps win.js -> win-browser.js which
+      // references the global `window`. On the server we replace it
+      // with the Node.js/JSDOM-based win.js.
+      config.plugins.push(
+        new webpack.NormalModuleReplacementPlugin(
+          /budoux[/\\](?:dist|module)[/\\]win-browser\.js$/,
+          (resource: { request: string }) => {
+            resource.request = resource.request.replace(
+              /win-browser\.js$/,
+              "win.js",
+            );
+          },
         ),
-      };
+      );
     }
     return config;
   },
