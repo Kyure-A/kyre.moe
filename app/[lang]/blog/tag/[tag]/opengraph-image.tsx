@@ -1,4 +1,4 @@
-import { getAllTags } from "@/shared/lib/blog.server";
+import { getAllTagItems, getTagItem } from "@/shared/lib/blog.server";
 import { isSiteLang, SITE_LANGS, type SiteLang } from "@/shared/lib/i18n";
 import {
   generateOgImage,
@@ -34,7 +34,7 @@ const decodeTag = (value: string) => {
 
 export const generateStaticParams = () => {
   return SITE_LANGS.flatMap((lang) =>
-    getAllTags(lang).map((tag) => ({ lang, tag })),
+    getAllTagItems(lang).map((tag) => ({ lang, tag: tag.slug })),
   );
 };
 
@@ -53,8 +53,8 @@ const Image = async ({ params }: Props) => {
   }
 
   const decodedTag = decodeTag(tag);
-  const hasTag = getAllTags(lang).includes(decodedTag);
-  if (!hasTag) {
+  const tagItem = getTagItem(decodedTag, lang);
+  if (!tagItem) {
     return generateOgImage({
       title: TEXT_BY_LANG[lang].subtitle,
       subtitle: "kyre.moe",
@@ -63,9 +63,9 @@ const Image = async ({ params }: Props) => {
 
   const text = TEXT_BY_LANG[lang];
   return generateOgImage({
-    title: text.title(decodedTag),
+    title: text.title(tagItem.label),
     subtitle: text.subtitle,
-    tags: [decodedTag],
+    tags: [tagItem.label],
   });
 };
 
