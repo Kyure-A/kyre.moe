@@ -19,7 +19,13 @@ import magicLink, {
 } from "markdown-it-magic-link";
 import taskLists from "markdown-it-task-lists";
 import markdownItTocDoneRight from "markdown-it-toc-done-right";
-import type { BlogPost, BlogPostMeta } from "./blog";
+import {
+  getTagSlug,
+  normalizeTagLabel,
+  type BlogPost,
+  type BlogPostMeta,
+  type BlogTagItem,
+} from "./blog";
 import { DEFAULT_LANG, isSiteLang, type SiteLang } from "./i18n";
 
 const BLOG_DIR = path.join(process.cwd(), "content", "blog");
@@ -216,9 +222,49 @@ const getPostFilePath = (slug: string, lang: SiteLang): string | null => {
   return ext ? path.join(dirPath, `${lang}${ext}`) : null;
 };
 
-export const getAllPosts = (lang?: SiteLang): BlogPostMeta[] => {
+const comparePostsByDateDesc = (a: BlogPostMeta, b: BlogPostMeta) => {
+  const aTime = a.date ? new Date(a.date).getTime() : 0;
+  const bTime = b.date ? new Date(b.date).getTime() : 0;
+  return bTime - aTime;
+};
+
+const pickPreferredTagLabel = (current: string, candidate: string) => {
+  return candidate < current ? candidate : current;
+};
+
+const buildCanonicalTagLabelMap = (posts: BlogPostMeta[]) => {
+  const labels = new Map<string, string>();
+
+  for (const post of posts) {
+    for (const tag of post.tags) {
+      const label = normalizeTagLabel(tag);
+      const slug = getTagSlug(label);
+      if (!slug) continue;
+      const current = labels.get(slug);
+      labels.set(slug, current ? pickPreferredTagLabel(current, label) : label);
+    }
+  }
+
+  return labels;
+};
+
+const canonicalizeTags = (tags: string[], labels: Map<string, string>) => {
+  const seen = new Set<string>();
+  const normalizedTags: string[] = [];
+
+  for (const tag of tags) {
+    const slug = getTagSlug(tag);
+    if (!slug || seen.has(slug)) continue;
+    seen.add(slug);
+    normalizedTags.push(labels.get(slug) ?? normalizeTagLabel(tag));
+  }
+
+  return normalizedTags;
+};
+
+const readAllPosts = (lang?: SiteLang): BlogPostMeta[] => {
   const entries = safeReadDir(BLOG_DIR).filter((entry) => entry.isDirectory());
-  const posts = entries.flatMap((entry) => {
+  return entries.flatMap((entry) => {
     const slug = entry.name;
     const dirPath = path.join(BLOG_DIR, slug);
     const files = safeReadDir(dirPath).filter((file) => file.isFile());
@@ -237,29 +283,68 @@ export const getAllPosts = (lang?: SiteLang): BlogPostMeta[] => {
       })
       .filter((meta): meta is BlogPostMeta => Boolean(meta));
   });
+};
 
-  return posts.sort((a, b) => {
-    const aTime = a.date ? new Date(a.date).getTime() : 0;
-    const bTime = b.date ? new Date(b.date).getTime() : 0;
-    return bTime - aTime;
-  });
+export const getAllPosts = (lang?: SiteLang): BlogPostMeta[] => {
+  const posts = readAllPosts(lang);
+  const labels = buildCanonicalTagLabelMap(posts);
+
+  return posts
+    .map((post) => ({
+      ...post,
+      tags: canonicalizeTags(post.tags, labels),
+    }))
+    .sort(comparePostsByDateDesc);
 };
 
 export const getPostsByTag = (tag: string, lang?: SiteLang): BlogPostMeta[] => {
-  const normalized = tag.trim();
-  if (!normalized) return [];
-  return getAllPosts(lang).filter((post) => post.tags.includes(normalized));
+  const slug = getTagSlug(tag);
+  if (!slug) return [];
+  return getAllPosts(lang).filter((post) =>
+    post.tags.some((postTag) => getTagSlug(postTag) === slug),
+  );
+};
+
+export const getAllTagItems = (lang?: SiteLang): BlogTagItem[] => {
+  const tags = new Map<string, BlogTagItem>();
+
+  for (const post of getAllPosts(lang)) {
+    for (const tag of post.tags) {
+      const slug = getTagSlug(tag);
+      const label = normalizeTagLabel(tag);
+      if (!slug) continue;
+
+      const current = tags.get(slug);
+      if (current) {
+        current.count += 1;
+        current.label = pickPreferredTagLabel(current.label, label);
+        continue;
+      }
+
+      tags.set(slug, {
+        slug,
+        label,
+        count: 1,
+      });
+    }
+  }
+
+  return Array.from(tags.values()).sort((a, b) =>
+    a.label.localeCompare(b.label),
+  );
+};
+
+export const getTagItem = (
+  tag: string,
+  lang?: SiteLang,
+): BlogTagItem | null => {
+  const slug = getTagSlug(tag);
+  if (!slug) return null;
+  return getAllTagItems(lang).find((item) => item.slug === slug) ?? null;
 };
 
 export const getAllTags = (lang?: SiteLang): string[] => {
-  const tags = new Set<string>();
-  for (const post of getAllPosts(lang)) {
-    for (const tag of post.tags) {
-      const normalized = tag.trim();
-      if (normalized) tags.add(normalized);
-    }
-  }
-  return Array.from(tags).sort((a, b) => a.localeCompare(b));
+  return getAllTagItems(lang).map((item) => item.slug);
 };
 
 const rewriteRelativeImagePaths = (content: string, slug: string): string => {
@@ -289,9 +374,12 @@ export const getPost = async (
   if (!filePath) return null;
   const { meta, content } = parseFrontmatter(slug, lang, filePath);
   if (meta.draft) return null;
+  const tags =
+    getAllPosts(lang).find((post) => post.slug === slug && post.lang === lang)
+      ?.tags ?? meta.tags;
   const rewrittenContent = rewriteRelativeImagePaths(content, slug);
   const html = await md.renderAsync(rewrittenContent);
-  return { ...meta, content: rewrittenContent, html };
+  return { ...meta, tags, content: rewrittenContent, html };
 };
 
 export const getPostLanguages = (slug: string): SiteLang[] => {
