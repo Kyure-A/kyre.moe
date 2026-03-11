@@ -3,6 +3,8 @@ import { IBM_Plex_Mono } from "next/font/google";
 import { ViewTransitions } from "next-view-transitions";
 import "./globals.css";
 import App from "@/app/main";
+import { DEFAULT_LANG } from "@/shared/lib/i18n";
+import HtmlLangScript from "@/shared/ui/ThemeProvider/HtmlLangScript";
 import ThemeProvider from "@/shared/ui/ThemeProvider/ThemeProvider";
 import ThemeScript from "@/shared/ui/ThemeProvider/ThemeScript";
 
@@ -42,11 +44,12 @@ const RootLayout = ({
   return (
     <ViewTransitions>
       <html
-        lang="en"
+        lang={DEFAULT_LANG}
         className={ibmPlexMono.variable}
         suppressHydrationWarning={true}
       >
         <head>
+          <HtmlLangScript />
           <ThemeScript />
         </head>
         <body suppressHydrationWarning={true}>
