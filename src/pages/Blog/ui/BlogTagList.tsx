@@ -1,16 +1,11 @@
 import { Link } from "next-view-transitions";
-import { buildTagPath } from "@/shared/lib/blog";
+import { buildTagPath, type BlogTagItem } from "@/shared/lib/blog";
 import type { SiteLang } from "@/shared/lib/i18n";
 import BlogSection from "@/pages/Blog/ui/BlogSection";
 
-type TagItem = {
-  tag: string;
-  count: number;
-};
-
 type Props = {
   lang: SiteLang;
-  tags: TagItem[];
+  tags: BlogTagItem[];
 };
 
 const COPY: Record<
@@ -58,11 +53,11 @@ const BlogTagList = ({ lang, tags }: Props) => {
         <div className="flex flex-wrap gap-2 text-[11px] tracking-[0.08em] text-[var(--text-tertiary)]">
           {tags.map((item) => (
             <Link
-              key={item.tag}
-              href={buildTagPath(item.tag, lang)}
+              key={item.slug}
+              href={buildTagPath(item.slug, lang)}
               className="inline-flex items-center gap-2 rounded-[11px] border border-[var(--border-subtle)] px-3 py-1 transition-colors duration-[300ms] ease-out hover:border-[var(--border-subtle-strong)] hover:text-[var(--text-primary)]"
             >
-              <span>#{item.tag}</span>
+              <span>#{item.label}</span>
               <span className="text-[var(--text-tertiary)]/80">
                 {item.count}
               </span>
