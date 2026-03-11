@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { getAllTags, getPostsByTag } from "@/shared/lib/blog.server";
+import { buildTagPath } from "@/shared/lib/blog";
+import {
+  getAllTagItems,
+  getPostsByTag,
+  getTagItem,
+} from "@/shared/lib/blog.server";
 import { DEFAULT_LANG } from "@/shared/lib/i18n";
+import { duplicatePageRobots } from "@/shared/lib/seo";
 
 type Params = { tag: string };
 
@@ -10,7 +16,7 @@ type Props = {
 };
 
 export const generateStaticParams = () => {
-  return getAllTags().map((tag) => ({ tag }));
+  return getAllTagItems().map((tag) => ({ tag: tag.slug }));
 };
 
 const decodeTag = (value: string) => {
@@ -26,15 +32,19 @@ export const generateMetadata = async ({
 }: Props): Promise<Metadata> => {
   const { tag } = await params;
   const decodedTag = decodeTag(tag);
-  if (getPostsByTag(decodedTag, DEFAULT_LANG).length === 0) return {};
-  const title = `#${decodedTag} の記事`;
-  const description = `タグ「${decodedTag}」の記事一覧。`;
-  const ogImage = `/${DEFAULT_LANG}/blog/tag/${encodeURIComponent(decodedTag)}/opengraph-image`;
+  const tagItem = getTagItem(decodedTag, DEFAULT_LANG);
+  if (!tagItem || getPostsByTag(tagItem.slug, DEFAULT_LANG).length === 0) {
+    return {};
+  }
+  const title = `#${tagItem.label} の記事`;
+  const description = `タグ「${tagItem.label}」の記事一覧。`;
+  const ogImage = `/${DEFAULT_LANG}/blog/tag/${encodeURIComponent(tagItem.slug)}/opengraph-image`;
   return {
     title,
     description,
+    robots: duplicatePageRobots,
     alternates: {
-      canonical: `/${DEFAULT_LANG}/blog/tag/${encodeURIComponent(decodedTag)}`,
+      canonical: buildTagPath(tagItem.slug, DEFAULT_LANG),
     },
     openGraph: {
       title,
@@ -52,7 +62,7 @@ export const generateMetadata = async ({
 
 const BlogTagItemRedirectPage = async ({ params }: Props) => {
   const { tag } = await params;
-  redirect(`/${DEFAULT_LANG}/blog/tag/${encodeURIComponent(tag)}`);
+  redirect(buildTagPath(tag, DEFAULT_LANG));
 };
 
 export default BlogTagItemRedirectPage;
