@@ -3,8 +3,8 @@ import Home from "@/pages/Home/ui/Home";
 import { DEFAULT_LANG } from "@/shared/lib/i18n";
 
 export const metadata: Metadata = {
-  title: "ホーム",
-  description: "Kyure_A のポートフォリオ",
+  title: "kyre.moe",
+  description: "キュレェ (Kyure_A)'s portfolio website",
   alternates: {
     canonical: `/${DEFAULT_LANG}`,
     languages: {
@@ -13,14 +13,14 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "ホーム",
-    description: "Kyure_A のポートフォリオ",
+    title: "kyre.moe",
+    description: "キュレェ (Kyure_A)'s portfolio website",
     images: [`/${DEFAULT_LANG}/opengraph-image`],
   },
   twitter: {
     card: "summary_large_image",
     title: "ホーム",
-    description: "Kyure_A のポートフォリオ",
+    description: "キュレェ (Kyure_A)'s portfolio website",
     images: [`/${DEFAULT_LANG}/opengraph-image`],
   },
 };
