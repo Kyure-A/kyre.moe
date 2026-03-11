@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { DEFAULT_LANG } from "@/shared/lib/i18n";
+import { duplicatePageRobots } from "@/shared/lib/seo";
 
 export const metadata: Metadata = {
   title: "自己紹介",
   description: "キュレェの基本情報と自己紹介",
+  robots: duplicatePageRobots,
   alternates: {
     canonical: `/${DEFAULT_LANG}/about`,
   },
