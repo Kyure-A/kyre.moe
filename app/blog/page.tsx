@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { DEFAULT_LANG } from "@/shared/lib/i18n";
+import { duplicatePageRobots } from "@/shared/lib/seo";
 
 export const metadata: Metadata = {
   title: "ブログ",
   description: "記事一覧",
+  robots: duplicatePageRobots,
   alternates: {
     canonical: `/${DEFAULT_LANG}/blog`,
   },
