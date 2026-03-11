@@ -17,6 +17,20 @@ export type BlogPost = BlogPostMeta & {
   html: string;
 };
 
+export type BlogTagItem = {
+  slug: string;
+  label: string;
+  count: number;
+};
+
+export const normalizeTagLabel = (tag: string) => {
+  return tag.normalize("NFKC").trim().replace(/\s+/g, " ");
+};
+
+export const getTagSlug = (tag: string) => {
+  return normalizeTagLabel(tag).toLocaleLowerCase("en-US");
+};
+
 export const formatDate = (date: string, lang: SiteLang) => {
   if (!date) return "";
   try {
@@ -31,5 +45,5 @@ export const formatDate = (date: string, lang: SiteLang) => {
 };
 
 export const buildTagPath = (tag: string, lang: SiteLang) => {
-  return `/${lang}/blog/tag/${encodeURIComponent(tag)}`;
+  return `/${lang}/blog/tag/${encodeURIComponent(getTagSlug(tag))}`;
 };
