@@ -47,12 +47,12 @@ export const sampleBlogPostsEn: BlogPostMeta[] = [
 ];
 
 export const sampleTagItemsJa = [
-  { tag: "intro", count: 1 },
-  { tag: "site", count: 1 },
-  { tag: "exam", count: 1 },
-  { tag: "memo", count: 1 },
-  { tag: "study", count: 1 },
-  { tag: "ouj", count: 1 },
+  { slug: "intro", label: "intro", count: 1 },
+  { slug: "site", label: "site", count: 1 },
+  { slug: "exam", label: "exam", count: 1 },
+  { slug: "memo", label: "memo", count: 1 },
+  { slug: "study", label: "study", count: 1 },
+  { slug: "ouj", label: "ouj", count: 1 },
 ];
 
 export const sampleBlogPostJa: BlogPost = {
