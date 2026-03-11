@@ -15,7 +15,7 @@ const COPY_BY_LANG: Record<SiteLang, { title: string; subtitle: string }> = {
   },
   en: {
     title: "Tags",
-    subtitle: "Kyure_A / Kyuree",
+    subtitle: "Kyure_A / キュレェ",
   },
 };
 
