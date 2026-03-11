@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getAllPosts, getPost } from "@/shared/lib/blog.server";
 import { DEFAULT_LANG } from "@/shared/lib/i18n";
+import { duplicatePageRobots } from "@/shared/lib/seo";
 
 type Params = { slug: string };
 
@@ -28,8 +29,8 @@ export const generateMetadata = async ({
   return {
     title: post.title,
     description: post.description,
+    robots: duplicatePageRobots,
     alternates: { canonical },
-    ...(post.canonical && { robots: { index: false, follow: true } }),
     openGraph: {
       title: post.title,
       description: post.description,
