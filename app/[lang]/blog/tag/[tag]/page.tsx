@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BlogTagIndex from "@/pages/Blog/ui/BlogTagIndex";
 import { buildTagPath } from "@/shared/lib/blog";
-import { getAllTags, getPostsByTag } from "@/shared/lib/blog.server";
+import {
+  getAllTagItems,
+  getPostsByTag,
+  getTagItem,
+} from "@/shared/lib/blog.server";
 import { isSiteLang, SITE_LANGS, type SiteLang } from "@/shared/lib/i18n";
 
 type Params = { lang: string; tag: string };
@@ -35,7 +39,7 @@ const decodeTag = (value: string) => {
 
 export const generateStaticParams = () => {
   return SITE_LANGS.flatMap((lang) =>
-    getAllTags(lang).map((tag) => ({ lang, tag })),
+    getAllTagItems(lang).map((tag) => ({ lang, tag: tag.slug })),
   );
 };
 
@@ -45,18 +49,20 @@ export const generateMetadata = async ({
   const { lang, tag } = await params;
   if (!isSiteLang(lang)) return {};
   const decodedTag = decodeTag(tag);
-  const posts = getPostsByTag(decodedTag, lang);
+  const tagItem = getTagItem(decodedTag, lang);
+  if (!tagItem) return {};
+  const posts = getPostsByTag(tagItem.slug, lang);
   if (posts.length === 0) return {};
 
   const meta = META_COPY[lang];
-  const title = meta.title(decodedTag);
-  const description = meta.description(decodedTag);
-  const ogImage = `/${lang}/blog/tag/${encodeURIComponent(decodedTag)}/opengraph-image`;
+  const title = meta.title(tagItem.label);
+  const description = meta.description(tagItem.label);
+  const ogImage = `/${lang}/blog/tag/${encodeURIComponent(tagItem.slug)}/opengraph-image`;
   const languages: Record<string, string> = {};
 
   for (const siteLang of SITE_LANGS) {
-    if (getPostsByTag(decodedTag, siteLang).length > 0) {
-      languages[siteLang] = buildTagPath(decodedTag, siteLang);
+    if (getTagItem(tagItem.slug, siteLang)) {
+      languages[siteLang] = buildTagPath(tagItem.slug, siteLang);
     }
   }
 
@@ -64,7 +70,7 @@ export const generateMetadata = async ({
     title,
     description,
     alternates: {
-      canonical: buildTagPath(decodedTag, lang),
+      canonical: buildTagPath(tagItem.slug, lang),
       languages,
     },
     openGraph: {
@@ -85,9 +91,11 @@ const BlogTagPage = async ({ params }: Props) => {
   const { lang, tag } = await params;
   if (!isSiteLang(lang)) notFound();
   const decodedTag = decodeTag(tag);
-  const posts = getPostsByTag(decodedTag, lang);
+  const tagItem = getTagItem(decodedTag, lang);
+  if (!tagItem) notFound();
+  const posts = getPostsByTag(tagItem.slug, lang);
   if (posts.length === 0) notFound();
-  return <BlogTagIndex lang={lang} tag={decodedTag} posts={posts} />;
+  return <BlogTagIndex lang={lang} tag={tagItem.label} posts={posts} />;
 };
 
 export default BlogTagPage;
