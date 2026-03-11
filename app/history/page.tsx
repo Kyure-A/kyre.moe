@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { DEFAULT_LANG } from "@/shared/lib/i18n";
+import { duplicatePageRobots } from "@/shared/lib/seo";
 
 export const metadata: Metadata = {
   title: "来歴",
   description: "キュレェの来歴",
+  robots: duplicatePageRobots,
   alternates: {
     canonical: `/${DEFAULT_LANG}/history`,
   },
