@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { buildTagPath } from "@/shared/lib/blog";
-import { getAllPosts, getAllTags } from "@/shared/lib/blog.server";
+import { getAllPosts, getAllTagItems } from "@/shared/lib/blog.server";
 import { SITE_LANGS } from "@/shared/lib/i18n";
 
 export const dynamic = "force-static";
@@ -12,7 +12,6 @@ const sitemap = (): MetadataRoute.Sitemap => {
     ["", "/about", "/accounts", "/history", "/blog", "/blog/tag"].map(
       (path) => ({
         url: `${BASE_URL}/${lang}${path}`,
-        lastModified: new Date(),
       }),
     ),
   );
@@ -23,9 +22,8 @@ const sitemap = (): MetadataRoute.Sitemap => {
   }));
 
   const tags = SITE_LANGS.flatMap((lang) =>
-    getAllTags(lang).map((tag) => ({
-      url: `${BASE_URL}${buildTagPath(tag, lang)}`,
-      lastModified: new Date(),
+    getAllTagItems(lang).map((tag) => ({
+      url: `${BASE_URL}${buildTagPath(tag.slug, lang)}`,
     })),
   );
 
