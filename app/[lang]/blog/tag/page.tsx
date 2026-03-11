@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BlogTagList from "@/pages/Blog/ui/BlogTagList";
-import { getAllPosts } from "@/shared/lib/blog.server";
+import { getAllTagItems } from "@/shared/lib/blog.server";
 import { isSiteLang, SITE_LANGS, type SiteLang } from "@/shared/lib/i18n";
 
 type Params = { lang: string };
@@ -56,24 +56,10 @@ export const generateMetadata = async ({
   };
 };
 
-const buildTagItems = (posts: ReturnType<typeof getAllPosts>) => {
-  const counts = new Map<string, number>();
-  for (const post of posts) {
-    for (const tag of post.tags) {
-      if (!tag) continue;
-      counts.set(tag, (counts.get(tag) ?? 0) + 1);
-    }
-  }
-  return Array.from(counts.entries())
-    .map(([tag, count]) => ({ tag, count }))
-    .sort((a, b) => a.tag.localeCompare(b.tag));
-};
-
 const BlogTagListPage = async ({ params }: Props) => {
   const { lang } = await params;
   if (!isSiteLang(lang)) notFound();
-  const posts = getAllPosts(lang);
-  const tags = buildTagItems(posts);
+  const tags = getAllTagItems(lang);
   return <BlogTagList lang={lang} tags={tags} />;
 };
 
