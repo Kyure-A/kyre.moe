@@ -44,6 +44,11 @@ const TIMELINE_DATA: Record<SiteLang, TimelineItem[]> = {
       description: "最優秀賞",
       url: "https://kloud-hackathon.connpass.com/event/361937/",
     },
+    {
+      date: "March, 2026",
+      title: "大阪公立大学工業高等専門学校 卒業",
+      description: "",
+    }
   ],
   en: [
     {
@@ -85,6 +90,11 @@ const TIMELINE_DATA: Record<SiteLang, TimelineItem[]> = {
       title: "1st Sakura AI Hackathon with Kloud",
       description: "Grand Prize",
       url: "https://kloud-hackathon.connpass.com/event/361937/",
+    },
+    {
+      date: "March, 2026",
+      title: "Graduated from Osaka Metropolitan University College of Technology",
+      description: "",
     },
   ],
 };
