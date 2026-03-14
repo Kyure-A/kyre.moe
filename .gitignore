@@ -27,8 +27,8 @@ storybook-static/
 # misc
 .DS_Store
 *.pem
-content/blog/*/ja.md
-content/blog/*/en.md
+articles/*/ja.md
+articles/*/en.md
 
 # debug
 npm-debug.log*
