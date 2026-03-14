@@ -206,7 +206,9 @@ if (!fs.existsSync(ARTICLES_DIR)) {
   process.exit(1);
 }
 
-const orgFiles = walk(ARTICLES_DIR).filter((file) => file.endsWith(ORG_EXTENSION));
+const orgFiles = walk(ARTICLES_DIR).filter((file) =>
+  file.endsWith(ORG_EXTENSION),
+);
 
 if (orgFiles.length === 0) {
   console.log("No Org files found.");
