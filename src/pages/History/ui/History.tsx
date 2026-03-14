@@ -50,6 +50,12 @@ const TIMELINE_DATA: Record<SiteLang, TimelineItem[]> = {
         "大阪公立大学工業高等専門学校 総合工学システム学科 電子情報コース 卒業",
       description: "準学士 (工学)",
     },
+    {
+      date: "April, 2026",
+      title: "筑波大学 情報学群 知識情報・図書館学類 入学",
+      description: "図書館情報大学",
+      url: "https://klis.tsukuba.ac.jp/",
+    },
   ],
   en: [
     {
@@ -97,6 +103,13 @@ const TIMELINE_DATA: Record<SiteLang, TimelineItem[]> = {
       title:
         "Graduated from Osaka Metropolitan University College of Technology, Department of Electronics and Information",
       description: "Associate Degree in Engineering",
+    },
+    {
+      date: "April, 2026",
+      title:
+        "Enrolled in the College of Knowledge and Library Sciences, School of Informatics, University of Tsukuba",
+      description: "University of Library and Information Science",
+      url: "https://klis.tsukuba.ac.jp/",
     },
   ],
 };
