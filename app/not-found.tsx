@@ -30,7 +30,7 @@ const NotFound = () => {
   const copy = COPY[lang];
 
   return (
-    <section className="relative h-[100dvh] w-screen overflow-hidden text-white">
+    <section className="relative h-dvh w-full overflow-hidden text-white">
       <div className="absolute inset-0 bg-black" />
       <div className="absolute inset-0 overflow-hidden">
         <div

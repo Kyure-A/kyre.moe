@@ -22,6 +22,16 @@ const HERO_STYLE: CSSProperties = {
 
 const HERO_WIDTH = 2305;
 const HERO_HEIGHT = 4776;
+const DEFAULT_GLITCH_INTERVAL = 1;
+const DEFAULT_GLITCH_PROBABILITY = 30;
+const DEFAULT_GLITCH_INTENSITY = 5;
+const DEFAULT_AMBIENT_NOISE_STRENGTH = 0.12;
+const DEFAULT_COOL_NOISE_STRENGTH = 0.5;
+const LOW_PERFORMANCE_GLITCH_INTERVAL = 1.8;
+const LOW_PERFORMANCE_GLITCH_PROBABILITY = 18;
+const LOW_PERFORMANCE_GLITCH_INTENSITY = 3;
+const LOW_PERFORMANCE_AMBIENT_NOISE_STRENGTH = 0.08;
+const LOW_PERFORMANCE_COOL_NOISE_STRENGTH = 0.32;
 
 const Home = () => {
   const { lowPerformanceMode } = useRuntimeProfile();
@@ -103,8 +113,24 @@ const Home = () => {
     };
   }, [clearIdle]);
 
+  const glitchInterval = lowPerformanceMode
+    ? LOW_PERFORMANCE_GLITCH_INTERVAL
+    : DEFAULT_GLITCH_INTERVAL;
+  const glitchProbability = lowPerformanceMode
+    ? LOW_PERFORMANCE_GLITCH_PROBABILITY
+    : DEFAULT_GLITCH_PROBABILITY;
+  const glitchIntensity = lowPerformanceMode
+    ? LOW_PERFORMANCE_GLITCH_INTENSITY
+    : DEFAULT_GLITCH_INTENSITY;
+  const ambientNoiseStrength = lowPerformanceMode
+    ? LOW_PERFORMANCE_AMBIENT_NOISE_STRENGTH
+    : DEFAULT_AMBIENT_NOISE_STRENGTH;
+  const coolNoiseStrength = lowPerformanceMode
+    ? LOW_PERFORMANCE_COOL_NOISE_STRENGTH
+    : DEFAULT_COOL_NOISE_STRENGTH;
+
   return (
-    <div className="relative w-screen h-screen overflow-hidden">
+    <div className="relative h-dvh w-full overflow-hidden">
       <h1 className="sr-only">{lang === "ja" ? "ホーム" : "Home"}</h1>
       <div className="absolute flex flex-col z-10 pt-16 inset-0">
         {/* FadeTextRotator は App で同じレイアウトで描画されるため、同じスペースを確保 */}
@@ -117,12 +143,12 @@ const Home = () => {
             maskSrc={srcPath("/kyure_a.png")}
             startDelayMs={1000}
             maskScale={1}
-            ambientNoiseStrength={0.12}
-            coolNoiseStrength={0.5}
-            interval={1}
-            probability={30}
-            intensity={5}
-            active={glitchReady && !lowPerformanceMode}
+            ambientNoiseStrength={ambientNoiseStrength}
+            coolNoiseStrength={coolNoiseStrength}
+            interval={glitchInterval}
+            probability={glitchProbability}
+            intensity={glitchIntensity}
+            active={glitchReady}
           >
             <picture>
               {useWebp && (

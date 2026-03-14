@@ -33,6 +33,8 @@ const ORBIT_VARS: CSSProperties = {
 
 const SHADER_MAX_FPS = 24;
 const ASCII_MAX_FPS = 24;
+const LOW_PERFORMANCE_SHADER_MAX_FPS = 12;
+const LOW_PERFORMANCE_ASCII_MAX_FPS = 12;
 
 type Props = { children: ReactNode };
 
@@ -60,12 +62,11 @@ const App = ({ children }: Props) => {
   const isMobile = useIsMobile();
   const { lowPerformanceMode } = useRuntimeProfile();
 
-  const orbitPaused =
-    lowPerformanceMode || !isHome || (orbitHovered && !orbitDragging);
+  const orbitPaused = !isHome || (orbitHovered && !orbitDragging);
   const shaderResolution = lowPerformanceMode
     ? isMobile
-      ? 0.4
-      : 0.35
+      ? 0.42
+      : 0.36
     : isMobile
       ? 0.65
       : 1;
@@ -76,8 +77,15 @@ const App = ({ children }: Props) => {
     : isMobile
       ? 450
       : 200;
-  const shaderMaxFps = lowPerformanceMode ? 12 : SHADER_MAX_FPS;
-  const asciiMaxFps = lowPerformanceMode ? 12 : ASCII_MAX_FPS;
+  const shaderMaxFps = lowPerformanceMode
+    ? LOW_PERFORMANCE_SHADER_MAX_FPS
+    : SHADER_MAX_FPS;
+  const asciiMaxFps = lowPerformanceMode
+    ? LOW_PERFORMANCE_ASCII_MAX_FPS
+    : ASCII_MAX_FPS;
+  const shaderMouseInteraction = !lowPerformanceMode;
+  const shaderFogDensity = lowPerformanceMode ? 0.24 : 0.3;
+  const shaderNoiseStrength = lowPerformanceMode ? 0.015 : 0.03;
 
   // Home の表示/非表示を切り替える共通スタイル
   const homeLayerStyle: CSSProperties = {
@@ -89,53 +97,49 @@ const App = ({ children }: Props) => {
     <>
       <HeaderControls />
 
-      {/* BackgroundShader - Windows Firefox は負荷が高いため非表示 */}
-      {!lowPerformanceMode && (
-        <div
-          className="home-shader fixed inset-0 w-screen h-screen z-0"
-          style={homeLayerStyle}
-          aria-hidden={!isHome}
-        >
-          <BackgroundShader
-            pixelFilter={250}
-            fogDensity={0.3}
-            isRotate={false}
-            pulseFrequency={0.05}
-            color1="#272822"
-            color2="#66d9ef"
-            color3="#000000"
-            maxFps={shaderMaxFps}
-            resolutionScale={shaderResolution}
-            startDelayMs={startDelayMs}
-            startOnIdle
-            active={isHome}
-          />
-        </div>
-      )}
+      <div
+        className="home-shader fixed inset-0 z-0"
+        style={homeLayerStyle}
+        aria-hidden={!isHome}
+      >
+        <BackgroundShader
+          pixelFilter={250}
+          fogDensity={shaderFogDensity}
+          noiseStrength={shaderNoiseStrength}
+          mouseInteraction={shaderMouseInteraction}
+          isRotate={false}
+          pulseFrequency={0.05}
+          color1="#272822"
+          color2="#66d9ef"
+          color3="#000000"
+          maxFps={shaderMaxFps}
+          resolutionScale={shaderResolution}
+          startDelayMs={startDelayMs}
+          startOnIdle
+          active={isHome}
+        />
+      </div>
 
-      {/* OrbitDock (back layer) - 低スペック時は省略 */}
-      {!lowPerformanceMode && (
-        <div
-          className="fixed left-1/2 top-1/2 z-[1] -translate-x-1/2 -translate-y-1/2"
-          style={{ ...ORBIT_VARS, ...homeLayerStyle }}
-          aria-hidden={!isHome}
-        >
-          <OrbitDock
-            items={orbitItems}
-            layer="back"
-            showDecorations
-            speed={9}
-            rotation={orbitRotation}
-            size="var(--home-orbit-size)"
-            paused={orbitPaused}
-            hoveredIndex={orbitHoveredIndex}
-          />
-        </div>
-      )}
+      <div
+        className="fixed left-1/2 top-1/2 z-[1] -translate-x-1/2 -translate-y-1/2"
+        style={{ ...ORBIT_VARS, ...homeLayerStyle }}
+        aria-hidden={!isHome}
+      >
+        <OrbitDock
+          items={orbitItems}
+          layer="back"
+          showDecorations
+          speed={9}
+          rotation={orbitRotation}
+          size="var(--home-orbit-size)"
+          paused={orbitPaused}
+          hoveredIndex={orbitHoveredIndex}
+        />
+      </div>
 
       {/* FadeTextRotator - 元の Home.tsx と同じレイアウト構造を再現、キャラ画像より前面 */}
       <div
-        className="fixed inset-0 w-screen h-screen z-[15] overflow-hidden pointer-events-none"
+        className="fixed inset-0 z-[15] overflow-hidden pointer-events-none"
         style={{ visibility: isHome ? "visible" : "hidden" }}
         aria-hidden={!isHome}
       >
@@ -145,7 +149,7 @@ const App = ({ children }: Props) => {
               asciiMaxFps={asciiMaxFps}
               asciiStartDelayMs={startDelayMs}
               asciiStartOnIdle
-              asciiEnabled={!lowPerformanceMode}
+              asciiEnabled
               active={isHome}
             />
           </div>
