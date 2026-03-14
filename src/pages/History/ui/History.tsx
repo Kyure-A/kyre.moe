@@ -109,7 +109,7 @@ const PAGE_TITLE: Record<SiteLang, string> = {
 const History = ({ lang }: { lang: SiteLang }) => {
   const timelineData = TIMELINE_DATA[lang];
   return (
-    <div className="max-w-2xl mx-auto p-6 py-20 rounded-lg shadow-sm">
+    <div className="mx-auto max-w-4xl rounded-lg p-6 py-20 shadow-sm">
       <h1 className="sr-only">{PAGE_TITLE[lang]}</h1>
       <Timeline items={timelineData} />
     </div>
