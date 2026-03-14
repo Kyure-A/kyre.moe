@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-const BLOG_DIR = path.join(process.cwd(), "content", "blog");
+const ARTICLES_DIR = path.join(process.cwd(), "articles");
 const ORG_EXTENSION = ".org";
 
 const META_MAP = {
@@ -201,12 +201,12 @@ function exportOrgToMarkdown(filePath) {
   return exported;
 }
 
-if (!fs.existsSync(BLOG_DIR)) {
-  console.error(`Blog directory not found: ${BLOG_DIR}`);
+if (!fs.existsSync(ARTICLES_DIR)) {
+  console.error(`Article directory not found: ${ARTICLES_DIR}`);
   process.exit(1);
 }
 
-const orgFiles = walk(BLOG_DIR).filter((file) => file.endsWith(ORG_EXTENSION));
+const orgFiles = walk(ARTICLES_DIR).filter((file) => file.endsWith(ORG_EXTENSION));
 
 if (orgFiles.length === 0) {
   console.log("No Org files found.");

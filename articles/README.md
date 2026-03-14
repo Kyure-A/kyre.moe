@@ -1,13 +1,13 @@
-# Blog content
+# Article content
 
-Each post lives in a folder under `content/blog/<slug>/` and is written in Markdown
+Each post lives in a folder under `articles/<slug>/` and is written in Markdown
 with frontmatter. Use `ja.md` and/or `en.md` for language variants.
 
 Example:
 
 ```
-content/blog/hello-world/ja.md
-content/blog/hello-world/en.md
+articles/hello-world/ja.md
+articles/hello-world/en.md
 ```
 
 Frontmatter fields:
@@ -31,7 +31,7 @@ Notes:
 - Drafts can be hidden by adding `draft: true` to frontmatter.
 
 Org-mode workflow:
-- Org は `content/blog/<slug>/` に置き、`ja.org` / `en.org` を使う。
+- Org は `articles/<slug>/` に置き、`ja.org` / `en.org` を使う。
 - Next.js が読むのは `.md` なので、ビルド前に Org → Markdown を行う。
 - 変換は `npm run content:org` を使用（Emacs `ox-md` で `.org` を `.md` に出力）。
 
