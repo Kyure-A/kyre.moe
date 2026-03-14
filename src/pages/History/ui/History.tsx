@@ -88,7 +88,7 @@ const TIMELINE_DATA: Record<SiteLang, TimelineItem[]> = {
     },
     {
       date: "September, 2024",
-      title: "Opened a Booth shop",
+      title: "Opened a BOOTH shop",
       description: "Selling accessories for VRChat avatars",
       url: "https://kyre.booth.pm",
     },
@@ -101,7 +101,7 @@ const TIMELINE_DATA: Record<SiteLang, TimelineItem[]> = {
     {
       date: "March, 2026",
       title:
-        "Graduated from Osaka Metropolitan University College of Technology, Department of Electronics and Information",
+        "Graduated from Osaka Metropolitan University College of Technology, Dept. of Technological Systems: Electronics and Information Course",
       description: "Associate Degree in Engineering",
     },
     {
