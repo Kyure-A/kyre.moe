@@ -23,11 +23,11 @@ const Timeline = ({ items = [] }: TimelineProps) => {
               {item.date}
             </time>
 
-            <h2 className="text-lg font-semibold text-[var(--timeline-title)]">
+            <h2 className="text-balance text-lg font-semibold text-[var(--timeline-title)]">
               {item.title}
             </h2>
 
-            <p className="mb-4 text-sm font-normal text-[var(--timeline-description)]">
+            <p className="mb-4 text-pretty text-sm font-normal text-[var(--timeline-description)]">
               {item.description}
             </p>
           </>
