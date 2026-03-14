@@ -28,7 +28,7 @@ import {
 } from "./blog";
 import { DEFAULT_LANG, isSiteLang, type SiteLang } from "./i18n";
 
-const BLOG_DIR = path.join(process.cwd(), "content", "blog");
+const ARTICLES_DIR = path.join(process.cwd(), "articles");
 const MARKDOWN_EXTENSIONS = [".md", ".mdx"];
 
 const TWITTER_HOSTS = new Set([
@@ -215,7 +215,7 @@ const parseFrontmatter = (
 };
 
 const getPostFilePath = (slug: string, lang: SiteLang): string | null => {
-  const dirPath = path.join(BLOG_DIR, slug);
+  const dirPath = path.join(ARTICLES_DIR, slug);
   const ext = MARKDOWN_EXTENSIONS.find((item) =>
     fs.existsSync(path.join(dirPath, `${lang}${item}`)),
   );
@@ -263,10 +263,10 @@ const canonicalizeTags = (tags: string[], labels: Map<string, string>) => {
 };
 
 const readAllPosts = (lang?: SiteLang): BlogPostMeta[] => {
-  const entries = safeReadDir(BLOG_DIR).filter((entry) => entry.isDirectory());
+  const entries = safeReadDir(ARTICLES_DIR).filter((entry) => entry.isDirectory());
   return entries.flatMap((entry) => {
     const slug = entry.name;
-    const dirPath = path.join(BLOG_DIR, slug);
+    const dirPath = path.join(ARTICLES_DIR, slug);
     const files = safeReadDir(dirPath).filter((file) => file.isFile());
 
     return files
@@ -383,7 +383,7 @@ export const getPost = async (
 };
 
 export const getPostLanguages = (slug: string): SiteLang[] => {
-  const dirPath = path.join(BLOG_DIR, slug);
+  const dirPath = path.join(ARTICLES_DIR, slug);
   const files = safeReadDir(dirPath).filter((file) => file.isFile());
   const langs = new Set(
     files

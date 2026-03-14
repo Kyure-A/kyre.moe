@@ -1,0 +1,129 @@
+---
+title: "Hello World"
+description: "新しくブログを作りました"
+date: "2026-01-15"
+tags:
+  - "notification"
+---
+
+
+# はじめに
+
+Vibe Coding でポートフォリオに新たにブログ機能を追加した。卒業論文の初稿を研究室のボスに見てもらう期限が明日に迫っているが、一文字も書かずに現実逃避をしてブログを作っている。やばい。
+
+
+# 見栄えのテスト
+
+これを書くために Org-mode の記法を復習した。わからなさすぎる。
+
+
+## 文字の装飾
+
+*基本的な* ****文字の**** __修飾__ ~~ができる~~
+
+
+## コードブロック
+
+テーマは Monokai にした。
+
+```lisp
+(defun tarai (x y z)
+  (if (<= x y) y
+    (tarai (tarai (1- x) y z) (tarai (1- y) z x) (tarai (1- z) x y))))
+```
+
+
+## 注意書き
+
+GitHub のアラートみたいなのが出せる。
+
+> [!WARNING]
+> [markdown-it-github-alerts](https://github.com/antfu/markdown-it-github-alerts) を使っている
+
+
+## チェックリスト
+
+GitHub みたいにかっこよく書ける。
+
+-   [X] [markdown-it-task-lists](https://github.com/revin/markdown-it-task-lists)
+-   [ ] を使っている
+
+
+## メンション
+
+Slidev で使われているらしい [markdown-it-magic-link](https://github.com/antfu/markdown-it-magic-link) を使っている。
+
+{@antfu} ありがとう
+
+
+## embed
+
+YouTube や Twitter を埋め込める。
+
+<https://www.youtube.com/watch?v=jNQXAC9IVRw>
+
+<https://x.com/jack/status/20>
+
+
+## 数式
+
+KaTeX で数式が書ける。インラインは $E = mc^2$ のように書く。
+
+ブロックはこんな感じ:
+
+$$
+\int_0^\infty e^{-x^2} dx = \frac{\sqrt{\pi}}{2}
+$$
+
+Maxwell 方程式:
+
+$$
+\nabla \times \vec{\mathbf{B}} - \frac{1}{c} \frac{\partial \vec{\mathbf{E}}}{\partial t} = \frac{4\pi}{c} \vec{\mathbf{j}}
+$$
+
+
+# 経緯
+
+
+## アウトプットの場として
+
+このブログを作る以前から運用していたのが
+
+-   Cosense (<https://scrapbox.io/kyre>)
+    -   箇条書きベースの簡易的なアウトプット
+-   Zenn (<https://zenn.dev/kyre>)
+    -   ちゃんと書いた技術記事
+-   Hatena (<https://kyre.hatenablog.jp>)
+    -   ちゃんと書いた非技術記事
+    -   一応ネタ記事も (1 つしかないけど)
+
+の 3 種類であった。この中に、「ちゃんと書いていないがある程度ドキュメンテーションされた文章」をホストする場がなかったので時々困っていた。
+
+将来的には Zenn と Hatena の記事をここに移動させて
+
+-   Cosense
+-   This blog
+
+の 2 種類でアウトプットを完結させたい。
+
+
+## Zenn の自動翻訳
+
+俺は Qiita の騒動の時もそうであったが、サービスが云々で騒がれているとノリでそのサービスのアカウントを消したくなる。
+
+{@ryoppippi} が個人ブログに移行しようみたいな波を作っていたので俺も乗った。
+
+
+# 構成
+
+ryoppippi.com を参考に、[markdown-it](https://github.com/markdown-it/markdown-it) / [markdown-exit](https://github.com/serkodev/markdown-exit) ベースで組んだ。Codex にしっかり要件を伝えたつもりだったが、全くデザインについての要件を伝えていないことを忘れておりクソみたいな見た目になったので全部デザインを直した。
+
+文章自体は Org-mode で書いたものを CI で Markdown に変換している。
+
+kyre.moe 自体は [Feature Sliced Design](https://feature-sliced.design/docs/guides/tech/with-nextjs) に（ある程度）従っているのだが、Pages Router 周りで詰まった。
+
+
+# おわりに
+
+ブログは書いていきたいが、まずは卒論を終わらせないといけない。助けてください。
+
