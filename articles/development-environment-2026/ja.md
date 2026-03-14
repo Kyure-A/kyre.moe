@@ -1,0 +1,118 @@
+---
+title: "開発環境現状確認 2026"
+description: "なんか流行ってるらしい"
+date: "2026-01-17"
+tags:
+  - "environment"
+---
+どうやら [blog.handlena.me](https://blog.handlena.me/entry/2025/01/development-tools/) と [Don't Repeat Yourself](https://blog-dry.com/entry/2026/01/02/145952) が原点らしい。
+
+
+# OS
+
+以前は [NixOS-WSL](https://github.com/nix-community/NixOS-WSL) を使って家のデスクトップで開発をしていたが，MacBook Air M4 32GB を購入してからはもっぱら macOS を使っている。
+Nix の設定が壊れて NixOS-WSL 側で Emacs を起動しても設定が読み込まれなくなっちゃったのも要因ではあるが。
+
+
+# エディタ
+
+Emacs を使っている。以前 [Cosense](https://scrapbox.io/kyre/Emacs_%E3%81%A8%E3%82%AD%E3%83%A5%E3%83%AC%E3%82%A7) にてまとめたが，使い始めて 5 年くらいになる。去年くらいに [Twist.nix に Emacs の設定を寄せた](https://zenn.dev/kyre/articles/b1959567edfc15)。
+
+[@preview](<https://github.com/Kyure-A/.emacs.d>)
+
+Windows で Unity 周りを触る時にたま〜に Visual Studio Code を開くがそれくらい。VSCode についても Emacs キーバインドを使っている。
+Emacs については特に PC を深く使えるようになる前から設定していたキーバインドがあり，それに下手に慣れてしまったせいで離れられず困っている。例えば Undo は `C-u`，Redo は `C-r` にしているので困る。
+
+最近は [Blender](https://github.com/blender/blender) のおかげで `C-z` と `C-Z` で Undo/Redo するのも癖になってきたので，俺の Emacs には Undo と Redo のキーバインドがそれぞれ 3 種類くらいある。
+
+Emacs 自体というより，今まで培ってきた設定とキーバインドと Magit が好き。Magit がないともう Git 使えねえ。Magit おすすめです。
+
+[@preview](<https://magit.vc/>)
+
+
+# コーディングエージェント
+
+Codex を使っている。以前は研究室の金でぬくぬく Claude Code Max $200 を使っていたが，予算が枯渇してなくなってしまった。結局卒論も超手抜きで終わりそう。
+
+別にコーディングエージェントが Codex になったのが悪いとかではなく，純粋に俺の怠惰が原因なので，使われる AI も可哀想だなと思う。
+
+Agent Skills の設定には自分で作った `agent-skills-nix` ってやつを使っている。 ~~たぶん俺以外の誰も使っていない~~ 調べたら ~~2~~ 3 人のユーザーがいるらしい。
+
+ありがたい話だ，去年の末に作って以降ろくに更新していないのでやっていきたい。
+
+[@preview](<https://github.com/Kyure-A/agent-skills-nix>)
+
+
+# ターミナルエミュレータ
+
+Windows では [Windows Terminal](https://github.com/microsoft/terminal) を使っている。macOS では [Alacrrity](https://github.com/alacritty/alacritty)。
+
+Alacrrity，正直 [Ghostty](https://github.com/ghostty-org/ghostty) よりアイコンもかわいくないし，果たして他と比べて早いのかもわからないが，わざわざ移行する気にもなれなくてずるずる使っている。
+
+
+# ターミナルマルチプレクサ
+
+Zellij なるものが最近は流行りらしいが，Vim に阿ってるらしくて腹立ったので tmux を使っている。
+
+tmux のキーバインドはデフォルトだと `C-b` とかだった気がするが，Emacs っぽくして `C-x` にした。おかげで使いやすくなったし，tmux 上で Emacs を起動すると `C-x` が tmux に吸われてコマンドがなんも入力できない。アホか
+
+
+# シェル
+
+[predict-on](https://github.com/zsh-users/zsh/blob/master/Functions/Zle/predict-on) から離れられない愚かな脳なので，zsh を使っている。Twitter で predict-on に直近で言及しまくっている人間はマジで俺しかいなくて，絶滅危惧種であることを自覚している。
+
+いまは `tab` をわざわざ押してコマンドを選択するのが主流らしいですね？！
+
+
+# ランチャー
+
+Windows はなんか [Power Toys](https://github.com/microsoft/PowerToys) にあるやつ。
+macOS は [Raycast](https://raycast.com)。な〜んもプラグインとか入れてないです。
+
+macOS デフォルトのランチャーみたいなやつを Dock から消しているかつ，Spotlight 検索のキーバインドを Raycast の起動にオーバーライドしているせいで，前プロセスを落としたらアプリケーションを起動できなくなって死んだかと思った。
+
+
+# フォント
+
+Windows は Noto Sans を大抵のアプリケーションで強要しているが，macOS は特に何も設定していない。
+
+
+# ブラウザ
+
+以前は Vivaldi を使っていたが，Firefox に移行した。ほぼ困っていないが，Google 周りのサイトがたまに壊れていてムカつく。
+
+
+# 開発環境のセットアップ
+
+[home-manager](https://github.com/nix-community/home-manager) で管理している。macOS は [nix-darwin](https://github.com/nix-darwin/nix-darwin) で管理している。NixOS-WSL についての設定も残っているが，最近はメンテナンスしていないので壊れていそうだ。
+
+[@preview](<https://github.com/Kyure-A/nix-config>)
+
+
+# タスク管理・ノートテイキング
+
+ノートテイキングには [Cosense](https://scrapbox.io/kyre) を使っている。また，Discord に自分のファイル共有や文章共有用のサーバーがある。あんまりセキュアではないと思うが，まあ転送寺ギガヒコに任せるのも大概だしな。
+
+タスク管理は [Habitica](https://habitica.com/profile/81a1fc81-7eb1-453f-bca0-7ccf9f2ca9ff) を使っている。今までは Todoist や Structured，Trello などをホッピングしてきたが，結局比較的楽しそうな Habitica に落ち着いた。Habitica を使い始める以前はそもそもタスク管理をしない期間が数年くらいあり，思い出した時にやるかみたいな生活をしていたが，流石に社会生活をやっていくに当たってはハンデすぎた。
+
+
+# キーボード
+
+[TEX Shura](https://tex.com.tw/products/shura) に [Holy Panda のパチモン](https://shop.yushakobo.jp/products/4131)を入れていたが，授業中にコーディングしていると同級生に「あまりにもうるさい」と言われたので [Kailh Midnight Silent V2 Switch / Tactile](https://shop.yushakobo.jp/products/4272) に変えた。
+
+しかし、家のキーボードであった NiZ Plum 75 が壊れたので TEX Shura を家のキーボードに不本意ながらすることになり、外では MacBook についているキーボードしか使っていない。
+
+
+# ポインティングデバイス
+
+中 2 の頃に Twitter のフォロワーたちが催していたたこ焼きパーティー（俺は遅刻したのでたこ焼きを食うことはできなかった）のビンゴ大会で当たった[エレコムのクソ安いマウス](https://www.elecom.co.jp/products/M-FIR08DRBK.html)をもう 6 年くらい使っている。あまりにもこだわりがない。
+
+TEX Shura はトラックポイント目当てで買ったものの，あんまり使ってない。家にはこのマウスがあるから&#x2026;&#x2026;
+
+MacBook についているトラックパッドが意外と便利なので TEX Shura を持ち歩かなくてもそこまで困っていない。
+
+
+# まとめ
+
+割とこだわりよりも惰性で使い続けている道具が多いので，来年には捨てられているといいな（マウスとか特に）
+

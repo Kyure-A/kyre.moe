@@ -1,24 +1,24 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 
-const CONTENT_DIR = path.join(process.cwd(), "content", "blog");
+const ARTICLES_DIR = path.join(process.cwd(), "articles");
 const PUBLIC_DIR = path.join(process.cwd(), "public", "blog");
 
 const IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"];
 
 function copyBlogImages() {
-  if (!fs.existsSync(CONTENT_DIR)) {
-    console.log("content/blog directory does not exist");
+  if (!fs.existsSync(ARTICLES_DIR)) {
+    console.log("articles directory does not exist");
     return;
   }
 
-  const slugDirs = fs.readdirSync(CONTENT_DIR, { withFileTypes: true });
+  const slugDirs = fs.readdirSync(ARTICLES_DIR, { withFileTypes: true });
 
   for (const dir of slugDirs) {
     if (!dir.isDirectory()) continue;
 
     const slug = dir.name;
-    const srcDir = path.join(CONTENT_DIR, slug);
+    const srcDir = path.join(ARTICLES_DIR, slug);
     const destDir = path.join(PUBLIC_DIR, slug);
 
     const files = fs.readdirSync(srcDir, { withFileTypes: true });
