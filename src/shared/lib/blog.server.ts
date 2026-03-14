@@ -263,7 +263,9 @@ const canonicalizeTags = (tags: string[], labels: Map<string, string>) => {
 };
 
 const readAllPosts = (lang?: SiteLang): BlogPostMeta[] => {
-  const entries = safeReadDir(ARTICLES_DIR).filter((entry) => entry.isDirectory());
+  const entries = safeReadDir(ARTICLES_DIR).filter((entry) =>
+    entry.isDirectory(),
+  );
   return entries.flatMap((entry) => {
     const slug = entry.name;
     const dirPath = path.join(ARTICLES_DIR, slug);
