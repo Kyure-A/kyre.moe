@@ -6,7 +6,7 @@ const TIMELINE_DATA: Record<SiteLang, TimelineItem[]> = {
   ja: [
     {
       date: "July 10, 2005",
-      title: "キュレェ 生誕",
+      title: "生誕",
       description: "納豆の日、約 2700 g",
     },
     {
@@ -60,7 +60,7 @@ const TIMELINE_DATA: Record<SiteLang, TimelineItem[]> = {
   en: [
     {
       date: "July 10, 2005",
-      title: "Kyure_A is born",
+      title: "Birth",
       description: "Natto Day, about 2700 g",
     },
     {
