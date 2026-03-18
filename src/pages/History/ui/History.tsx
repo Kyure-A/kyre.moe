@@ -52,7 +52,7 @@ const TIMELINE_DATA: Record<SiteLang, TimelineItem[]> = {
     },
     {
       date: "April, 2026",
-      title: "筑波大学 情報学群 知識情報・図書館学類 入学",
+      title: "筑波大学 情報学群 知識情報・図書館学類 3 年次編入",
       description: "図書館情報大学",
       url: "https://klis.tsukuba.ac.jp/",
     },
@@ -107,7 +107,7 @@ const TIMELINE_DATA: Record<SiteLang, TimelineItem[]> = {
     {
       date: "April, 2026",
       title:
-        "Enrolled in the College of Knowledge and Library Sciences, School of Informatics, University of Tsukuba",
+        "Transferred into the third year of the College of Knowledge and Library Sciences, School of Informatics, University of Tsukuba",
       description: "University of Library and Information Science",
       url: "https://klis.tsukuba.ac.jp/",
     },
