@@ -26,7 +26,7 @@ const ABOUTME_DATA: Record<SiteLang, AboutMeContent> = {
           "キュレェ (Kyure_A)",
           {
             type: "link",
-            label: "MBTI: INTP-T (16Personalities)",
+            label: "INTP-T (16Personalities)",
             href: "https://www.16personalities.com/intp-personality",
           },
           "A 型",
