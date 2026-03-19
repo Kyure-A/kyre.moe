@@ -1,0 +1,103 @@
+name: Dependabot Auto Merge
+
+on:
+  workflow_run:
+    workflows: ["Deploy Next.js site to Pages"]
+    types: [completed]
+  check_suite:
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  merge:
+    if: |
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
+      (github.event_name == 'check_suite' && github.event.check_suite.conclusion == 'success')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Approve and merge Dependabot pull requests
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prs =
+              context.payload.workflow_run?.pull_requests ??
+              context.payload.check_suite?.pull_requests ??
+              [];
+
+            if (prs.length === 0) {
+              core.info("No pull requests associated with this event.");
+              return;
+            }
+
+            const { owner, repo } = context.repo;
+            const { data: repoInfo } = await github.rest.repos.get({ owner, repo });
+
+            const mergeMethod =
+              repoInfo.allow_squash_merge
+                ? "squash"
+                : repoInfo.allow_rebase_merge
+                  ? "rebase"
+                  : repoInfo.allow_merge_commit
+                    ? "merge"
+                    : null;
+
+            if (!mergeMethod) {
+              core.setFailed("No merge method is enabled for this repository.");
+              return;
+            }
+
+            for (const prRef of prs) {
+              const { data: pull } = await github.rest.pulls.get({
+                owner,
+                repo,
+                pull_number: prRef.number,
+              });
+
+              if (pull.state !== "open") {
+                core.info(`PR #${pull.number} is already closed.`);
+                continue;
+              }
+
+              if (pull.user?.login !== "dependabot[bot]") {
+                core.info(`PR #${pull.number} was not opened by Dependabot.`);
+                continue;
+              }
+
+              if (pull.draft) {
+                core.info(`PR #${pull.number} is still a draft.`);
+                continue;
+              }
+
+              try {
+                await github.rest.pulls.createReview({
+                  owner,
+                  repo,
+                  pull_number: pull.number,
+                  event: "APPROVE",
+                  body: "CI passed, approving Dependabot update for automatic merge.",
+                });
+              } catch (error) {
+                core.info(`Approval skipped for PR #${pull.number}: ${error.message}`);
+              }
+
+              try {
+                const response = await github.rest.pulls.merge({
+                  owner,
+                  repo,
+                  pull_number: pull.number,
+                  merge_method: mergeMethod,
+                });
+                core.info(`Merged PR #${pull.number}: ${response.data.message}`);
+              } catch (error) {
+                if ([405, 409, 422].includes(error.status)) {
+                  core.info(`Merge skipped for PR #${pull.number}: ${error.message}`);
+                  continue;
+                }
+
+                throw error;
+              }
+            }
