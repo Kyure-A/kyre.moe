@@ -12,7 +12,7 @@
     "content:org": "node scripts/export-org.mjs",
     "content:images": "node scripts/copy-blog-images.mjs",
     "fix:ogp-export": "node scripts/fix-ogp-export.mjs",
-    "lint": "next lint"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@js-temporal/polyfill": "^0.5.1",
