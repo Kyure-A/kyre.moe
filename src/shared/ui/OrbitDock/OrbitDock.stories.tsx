@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { FaHome } from "react-icons/fa";
-import { FaClock, FaPenNib, FaUser } from "react-icons/fa6";
+import { FaAt, FaCircleInfo, FaClock, FaPenNib } from "react-icons/fa6";
 import { useState } from "react";
-import { MdDescription } from "react-icons/md";
 import { expect, fn, userEvent, within } from "storybook/test";
 import OrbitDock, { type OrbitDockProps } from "./OrbitDock";
 
@@ -15,9 +14,9 @@ const onAboutClick = fn();
 const items: OrbitDockProps["items"] = [
   { icon: <FaHome />, label: "Home", onClick: onHomeClick },
   { icon: <FaPenNib />, label: "Blog", onClick: onBlogClick },
-  { icon: <FaUser />, label: "Accounts", onClick: onAccountsClick },
+  { icon: <FaAt />, label: "Accounts", onClick: onAccountsClick },
   { icon: <FaClock />, label: "History", onClick: onHistoryClick },
-  { icon: <MdDescription />, label: "About", onClick: onAboutClick },
+  { icon: <FaCircleInfo />, label: "About", onClick: onAboutClick },
 ];
 
 const StoryOrbitDock = (args: OrbitDockProps) => {
