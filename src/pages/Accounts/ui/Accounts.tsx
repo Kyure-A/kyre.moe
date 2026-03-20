@@ -3,6 +3,7 @@ import { FaGithub as FaGitHub } from "react-icons/fa";
 import {
   FaBluesky,
   FaLastfm,
+  FaLetterboxd,
   FaMastodon,
   FaSteam,
   FaThreads,
@@ -10,6 +11,7 @@ import {
 } from "react-icons/fa6";
 import { SiMisskey } from "react-icons/si";
 import { TbBrandMinecraft } from "react-icons/tb";
+import { AnnictIcon } from "@/shared/icons/annict";
 import { NostrIcon } from "@/shared/icons/nostr";
 import { VRChatIcon } from "@/shared/icons/vrchat";
 import type { SiteLang } from "@/shared/lib/i18n";
@@ -109,6 +111,20 @@ const ACCOUNT_DATA: AccountData[] = [
     accentColor: "#4CAF50",
     serviceIcon: <TbBrandMinecraft />,
     serviceUrl: "https://ja.namemc.com/profile/Kyure_A",
+  },
+  {
+    id: "Kyure_A",
+    platform: "Letterboxd",
+    accentColor: "#202830",
+    serviceIcon: <FaLetterboxd />,
+    serviceUrl: "https://letterboxd.com/Kyure_A/",
+  },
+  {
+    id: "Kyure_A",
+    platform: "Annict",
+    accentColor: "#2B6CB0",
+    serviceIcon: <AnnictIcon />,
+    serviceUrl: "https://annict.com/@Kyure_A",
   },
   {
     id: "Kyure_A",
