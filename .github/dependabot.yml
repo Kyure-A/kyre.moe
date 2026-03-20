@@ -2,24 +2,22 @@ version: 2
 updates:
   - package-ecosystem: "npm"
     directory: "/"
-    target-branch: "master"
     schedule:
       interval: "daily"
       time: "09:00"
       timezone: "Asia/Tokyo"
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 0
     commit-message:
       prefix: "chore"
       include: "scope"
 
   - package-ecosystem: "github-actions"
     directory: "/"
-    target-branch: "master"
     schedule:
       interval: "daily"
       time: "09:10"
       timezone: "Asia/Tokyo"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 0
     commit-message:
       prefix: "chore"
       include: "scope"
