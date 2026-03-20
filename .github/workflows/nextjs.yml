@@ -96,9 +96,8 @@ jobs:
       - name: Build with Next.js
         env:
           CI: false
-          ESLINT_NO_DEV_ERRORS: true
           OG_IMAGE_FONT_PATH: ${{ steps.og-font.outputs.path }}
-        run: pnpm next build --no-lint
+        run: pnpm next build
       - name: Rewrite OGP image URLs for static hosting
         run: pnpm fix:ogp-export
       - name: Upload artifact
