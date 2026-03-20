@@ -2,14 +2,17 @@ import type { Omit } from "@react-spring/web";
 import { FaGithub as FaGitHub } from "react-icons/fa";
 import {
   FaBluesky,
+  FaInstagram,
+  FaKeybase,
   FaLastfm,
   FaLetterboxd,
   FaMastodon,
+  FaRedditAlien,
   FaSteam,
   FaThreads,
   FaTwitter,
 } from "react-icons/fa6";
-import { SiMisskey } from "react-icons/si";
+import { SiHuggingface, SiMisskey } from "react-icons/si";
 import { TbBrandMinecraft } from "react-icons/tb";
 import { AnnictIcon } from "@/shared/icons/annict";
 import { NostrIcon } from "@/shared/icons/nostr";
@@ -62,12 +65,40 @@ const ACCOUNT_DATA: AccountData[] = [
     serviceUrl: "https://github.com/Kyure-A",
   },
   {
+    id: "Kyure-A",
+    platform: "Hugging Face",
+    accentColor: "#D97706",
+    serviceIcon: <SiHuggingface />,
+    serviceUrl: "https://huggingface.co/Kyure-A",
+  },
+  {
+    id: "kyure_a",
+    platform: "Keybase",
+    accentColor: "#3D76FF",
+    serviceIcon: <FaKeybase />,
+    serviceUrl: "https://keybase.io/kyure_a",
+  },
+  {
     id: "Kyure_A@misskey.io",
     description: { ja: "xyz 世代", en: "Gen .xyz" },
     platform: "Misskey",
     accentColor: "#55C500",
     serviceIcon: <SiMisskey />,
     serviceUrl: "https://misskey.io/@Kyure_A",
+  },
+  {
+    id: "@kyure_a",
+    platform: "Instagram",
+    accentColor: "#C13584",
+    serviceIcon: <FaInstagram />,
+    serviceUrl: "https://www.instagram.com/kyure_a/",
+  },
+  {
+    id: "@kyure_a",
+    platform: "Threads",
+    accentColor: "#1A1A1A",
+    serviceIcon: <FaThreads />,
+    serviceUrl: "https://threads.net/@kyure_a",
   },
   {
     id: "Kyure_A@mstdn.maud.io",
@@ -77,11 +108,11 @@ const ACCOUNT_DATA: AccountData[] = [
     serviceUrl: "https://mstdn.maud.io/@Kyure_A",
   },
   {
-    id: "@kyure_a",
-    platform: "Threads",
-    accentColor: "#1A1A1A",
-    serviceIcon: <FaThreads />,
-    serviceUrl: "https://threads.net/@kyure_a",
+    id: "u/Kyure_A",
+    platform: "Reddit",
+    accentColor: "#FF4500",
+    serviceIcon: <FaRedditAlien />,
+    serviceUrl: "https://www.reddit.com/user/Kyure_A/",
   },
   {
     id: "kyre.moe",
@@ -154,24 +185,26 @@ const Accounts = ({ lang }: { lang: SiteLang }) => {
     description: account.description?.[lang] ?? "",
   }));
   return (
-    <>
-      <h1 className="sr-only">{PAGE_TITLE[lang]}</h1>
-      <ul className="py-24 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 list-none max-w-6xl mx-auto px-4 sm:px-6">
-        {accounts.map((account) => {
-          return (
-            <Account
-              key={account.serviceUrl}
-              id={account.id}
-              description={account.description}
-              platform={account.platform}
-              accentColor={account.accentColor}
-              serviceIcon={account.serviceIcon}
-              serviceUrl={account.serviceUrl}
-            />
-          );
-        })}
-      </ul>
-    </>
+    <section className="w-full md:grid md:min-h-dvh md:place-items-center">
+      <div className="mx-auto w-full max-w-4xl px-4 py-24 sm:px-6 md:py-16">
+        <h1 className="sr-only">{PAGE_TITLE[lang]}</h1>
+        <ul className="grid grid-cols-1 gap-x-8 gap-y-3 list-none md:grid-cols-2">
+          {accounts.map((account) => {
+            return (
+              <Account
+                key={account.serviceUrl}
+                id={account.id}
+                description={account.description}
+                platform={account.platform}
+                accentColor={account.accentColor}
+                serviceIcon={account.serviceIcon}
+                serviceUrl={account.serviceUrl}
+              />
+            );
+          })}
+        </ul>
+      </div>
+    </section>
   );
 };
 
