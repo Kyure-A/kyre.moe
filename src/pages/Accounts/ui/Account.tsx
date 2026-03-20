@@ -31,7 +31,7 @@ const Account = (props: AccountProps) => {
             {props.serviceIcon}
           </span>
           <div className="flex min-w-0 flex-1 items-center">
-            <span className="platform mr-3 w-16 shrink-0 truncate text-[12px] font-semibold leading-none text-[var(--text-secondary)] transition-[margin,color] duration-[400ms] ease-out group-hover:mr-1 group-hover:text-white group-active:mr-1 group-active:text-white group-focus-visible:mr-1 group-focus-visible:text-white sm:mr-5 sm:w-24 sm:text-[14px] md:w-28 md:text-[15px]">
+            <span className="platform mr-3 w-16 shrink-0 truncate text-[12px] font-semibold leading-[1.2] text-[var(--text-secondary)] transition-[margin,color] duration-[400ms] ease-out group-hover:mr-1 group-hover:text-white group-active:mr-1 group-active:text-white group-focus-visible:mr-1 group-focus-visible:text-white sm:mr-5 sm:w-24 sm:text-[14px] md:w-28 md:text-[15px]">
               {props.platform}
             </span>
             <div
