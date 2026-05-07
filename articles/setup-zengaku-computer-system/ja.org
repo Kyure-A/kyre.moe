@@ -1,0 +1,20 @@
+#+TITLE: 筑波大学 全学計算機システムへの初回 SSH のセットアップ方法
+#+DATE: 2026-04-20
+#+DESCRIPTION: ドキュメントが散逸しているが意外と簡単です
+#+TAGS: SSH
+#+DRAFT: false
+
+** はじめに
+キュレェです。4 月から筑波大学で大学生活を謳歌しています。嘘です。家でうだうだしています。
+さて、筑波大学には全学計算機システムがあります。これに SSH するドキュメントがごちゃごちゃしているので Z 世代のガキには解釈が難しいです。
+
+** セットアップ
+SSH 鍵を生成してから学内で以下をやってあげるだけです。一応注釈しておくと UTID は s26xxxxx (2026 年入学の場合) みたいなやつで、HOST は icho01.u.tsukuba.ac.jp, icho02.u.tsukuba.ac.jp, kiri.u.tsukuba.ac.jp などです。
+
+#+begin_src
+cat ~/.ssh/id_rsa.pub | ssh "${UTID}@${HOST}" \
+'umask 077; mkdir -p ~/.ssh; touch ~/.ssh/authorized_keys; cat >> ~/.ssh/authorized_keys; chmod 700 ~/.ssh; chmod 600 ~/.ssh/authorized_keys'
+#+end_src
+
+** おわりに
+いかがでしたか？
