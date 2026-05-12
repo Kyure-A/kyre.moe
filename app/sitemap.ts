@@ -7,6 +7,15 @@ export const dynamic = "force-static";
 
 const BASE_URL = "https://kyre.moe";
 
+const isExternalCanonical = (canonical?: string) => {
+  if (!canonical || canonical.startsWith("/")) return false;
+  try {
+    return new URL(canonical).hostname !== "kyre.moe";
+  } catch {
+    return false;
+  }
+};
+
 const sitemap = (): MetadataRoute.Sitemap => {
   const staticRoutes = SITE_LANGS.flatMap((lang) =>
     ["", "/about", "/accounts", "/history", "/blog", "/blog/tag"].map(
@@ -16,10 +25,12 @@ const sitemap = (): MetadataRoute.Sitemap => {
     ),
   );
 
-  const posts = getAllPosts().map((post) => ({
-    url: `${BASE_URL}/${post.lang}/blog/${post.slug}`,
-    lastModified: post.date ? new Date(post.date) : new Date(),
-  }));
+  const posts = getAllPosts()
+    .filter((post) => !isExternalCanonical(post.canonical))
+    .map((post) => ({
+      url: `${BASE_URL}/${post.lang}/blog/${post.slug}`,
+      lastModified: post.date ? new Date(post.date) : new Date(),
+    }));
 
   const tags = SITE_LANGS.flatMap((lang) =>
     getAllTagItems(lang).map((tag) => ({
