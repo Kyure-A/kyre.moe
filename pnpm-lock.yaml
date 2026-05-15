@@ -44,7 +44,7 @@ importers:
         specifier: ^0.16.38
         version: 0.16.38
       markdown-exit:
-        specifier: ^1.0.0-beta.7
+        specifier: 1.0.0-beta.7
         version: 1.0.0-beta.7
       markdown-it-anchor:
         specifier: ^9.2.0
@@ -56,7 +56,7 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       markdown-it-github-alerts:
-        specifier: ^1.0.0
+        specifier: ^1.0.1
         version: 1.0.1(markdown-it@14.1.0)
       markdown-it-link-preview:
         specifier: ^1.1.4
@@ -80,10 +80,10 @@ importers:
         specifier: ^1.0.11
         version: 1.0.11
       react:
-        specifier: ^18.0.0
+        specifier: ^18.3.1
         version: 18.3.1
       react-dom:
-        specifier: ^18.0.0
+        specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
       react-icons:
         specifier: ^5.6.0
@@ -96,7 +96,7 @@ importers:
         specifier: ^3.3.5
         version: 3.3.5
       '@storybook/addon-a11y':
-        specifier: ^10.3.0
+        specifier: ^10.3.1
         version: 10.3.1(storybook@10.3.0(@testing-library/dom@10.4.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@storybook/nextjs-vite':
         specifier: 10.2.8
@@ -114,10 +114,10 @@ importers:
         specifier: ^20.17.30
         version: 20.17.30
       '@types/react':
-        specifier: ^18.0.0
+        specifier: ^18.3.20
         version: 18.3.20
       '@types/react-dom':
-        specifier: ^18.0.0
+        specifier: ^18.3.6
         version: 18.3.6(@types/react@18.3.20)
       '@types/three':
         specifier: ^0.175.0
@@ -1767,8 +1767,8 @@ packages:
     resolution: {integrity: sha512-8QmQKqEASLd5nx0U1B1okLElbUuuttJ/AnYmRXbbbGDWh6uS208EjD4Xqq/I9wK7u0v6O08XhTWnt5XtEbR6Dg==}
     engines: {node: '>= 0.4'}
 
-  defu@6.1.4:
-    resolution: {integrity: sha512-mEQCMmwJu317oSz8CwdIOdwf3xMif1ttiM8LTufzc3g6kR+9Pe236twL8j3IYT1F7GfRgGcW6MWxzZjLIkuHIg==}
+  defu@6.1.7:
+    resolution: {integrity: sha512-7z22QmUWiQ/2d0KkdYmANbRUVABpZ9SNYyH5vx6PZ+nE5bcC0l7uFvEfHlyld/HcGBFTL536ClDt3DEcSlEJAQ==}
 
   delayed-stream@1.0.0:
     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
@@ -4920,7 +4920,7 @@ snapshots:
       has-property-descriptors: 1.0.2
       object-keys: 1.1.1
 
-  defu@6.1.4: {}
+  defu@6.1.7: {}
 
   delayed-stream@1.0.0: {}
 
@@ -5933,7 +5933,7 @@ snapshots:
   markdown-it-budoux@1.0.6(canvas@3.2.1):
     dependencies:
       budoux: 0.7.0(canvas@3.2.1)
-      defu: 6.1.4
+      defu: 6.1.7
       markdown-it: 14.1.0
     transitivePeerDependencies:
       - canvas
