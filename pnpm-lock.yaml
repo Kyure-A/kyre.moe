@@ -44,7 +44,7 @@ importers:
         specifier: ^0.16.38
         version: 0.16.38
       markdown-exit:
-        specifier: 1.0.0-beta.7
+        specifier: ^1.0.0-beta.7
         version: 1.0.0-beta.7
       markdown-it-anchor:
         specifier: ^9.2.0
@@ -56,7 +56,7 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       markdown-it-github-alerts:
-        specifier: ^1.0.1
+        specifier: ^1.0.0
         version: 1.0.1(markdown-it@14.1.0)
       markdown-it-link-preview:
         specifier: ^1.1.4
@@ -80,10 +80,10 @@ importers:
         specifier: ^1.0.11
         version: 1.0.11
       react:
-        specifier: ^18.3.1
+        specifier: ^18.0.0
         version: 18.3.1
       react-dom:
-        specifier: ^18.3.1
+        specifier: ^18.0.0
         version: 18.3.1(react@18.3.1)
       react-icons:
         specifier: ^5.6.0
@@ -96,7 +96,7 @@ importers:
         specifier: ^3.3.5
         version: 3.3.5
       '@storybook/addon-a11y':
-        specifier: ^10.3.1
+        specifier: ^10.3.0
         version: 10.3.1(storybook@10.3.0(@testing-library/dom@10.4.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@storybook/nextjs-vite':
         specifier: 10.2.8
@@ -114,10 +114,10 @@ importers:
         specifier: ^20.17.30
         version: 20.17.30
       '@types/react':
-        specifier: ^18.3.20
+        specifier: ^18.0.0
         version: 18.3.20
       '@types/react-dom':
-        specifier: ^18.3.6
+        specifier: ^18.0.0
         version: 18.3.6(@types/react@18.3.20)
       '@types/three':
         specifier: ^0.175.0
@@ -1834,10 +1834,6 @@ packages:
 
   entities@4.5.0:
     resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
-    engines: {node: '>=0.12'}
-
-  entities@7.0.0:
-    resolution: {integrity: sha512-FDWG5cmEYf2Z00IkYRhbFrwIwvdFKH07uV8dvNy0omp/Qb1xcyCWp2UDtcwJF4QZZvk0sLudP6/hAu42TaqVhQ==}
     engines: {node: '>=0.12'}
 
   entities@7.0.1:
@@ -4966,8 +4962,6 @@ snapshots:
 
   entities@4.5.0: {}
 
-  entities@7.0.0: {}
-
   entities@7.0.1: {}
 
   es-abstract@1.23.9:
@@ -5900,7 +5894,7 @@ snapshots:
 
   markdown-exit@1.0.0-beta.7:
     dependencies:
-      entities: 7.0.0
+      entities: 7.0.1
       linkify-it: 5.0.0
       mdurl: 2.0.0
       punycode.js: 2.3.1
