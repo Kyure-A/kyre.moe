@@ -44,7 +44,7 @@ importers:
         specifier: ^0.16.38
         version: 0.16.38
       markdown-exit:
-        specifier: ^1.0.0-beta.7
+        specifier: 1.0.0-beta.7
         version: 1.0.0-beta.7
       markdown-it-anchor:
         specifier: ^9.2.0
@@ -56,7 +56,7 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       markdown-it-github-alerts:
-        specifier: ^1.0.0
+        specifier: ^1.0.1
         version: 1.0.1(markdown-it@14.1.0)
       markdown-it-link-preview:
         specifier: ^1.1.4
@@ -80,10 +80,10 @@ importers:
         specifier: ^1.0.11
         version: 1.0.11
       react:
-        specifier: ^18.0.0
+        specifier: ^18.3.1
         version: 18.3.1
       react-dom:
-        specifier: ^18.0.0
+        specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
       react-icons:
         specifier: ^5.6.0
@@ -96,7 +96,7 @@ importers:
         specifier: ^3.3.5
         version: 3.3.5
       '@storybook/addon-a11y':
-        specifier: ^10.3.0
+        specifier: ^10.3.1
         version: 10.3.1(storybook@10.3.0(@testing-library/dom@10.4.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@storybook/nextjs-vite':
         specifier: 10.2.8
@@ -114,10 +114,10 @@ importers:
         specifier: ^20.17.30
         version: 20.17.30
       '@types/react':
-        specifier: ^18.0.0
+        specifier: ^18.3.20
         version: 18.3.20
       '@types/react-dom':
-        specifier: ^18.0.0
+        specifier: ^18.3.6
         version: 18.3.6(@types/react@18.3.20)
       '@types/three':
         specifier: ^0.175.0
@@ -2831,17 +2831,9 @@ packages:
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
 
-  picomatch@2.3.1:
-    resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
+  picomatch@2.3.2:
+    resolution: {integrity: sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA==}
     engines: {node: '>=8.6'}
-
-  picomatch@4.0.2:
-    resolution: {integrity: sha512-M7BAV6Rlcy5u+m6oPhAPFgJTzAioX/6B0DxyvDlo9l8+T3nLKbrczg2WLUyzd45L8RqfUMyGPzekbMvX2Ldkwg==}
-    engines: {node: '>=12'}
-
-  picomatch@4.0.3:
-    resolution: {integrity: sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==}
-    engines: {node: '>=12'}
 
   picomatch@4.0.4:
     resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==}
@@ -4036,7 +4028,7 @@ snapshots:
     dependencies:
       '@types/estree': 1.0.8
       estree-walker: 2.0.2
-      picomatch: 4.0.2
+      picomatch: 4.0.4
     optionalDependencies:
       rollup: 4.60.4
 
@@ -5390,9 +5382,9 @@ snapshots:
     dependencies:
       reusify: 1.1.0
 
-  fdir@6.4.3(picomatch@4.0.2):
+  fdir@6.4.3(picomatch@4.0.4):
     optionalDependencies:
-      picomatch: 4.0.2
+      picomatch: 4.0.4
 
   fdir@6.5.0(picomatch@4.0.4):
     optionalDependencies:
@@ -5982,7 +5974,7 @@ snapshots:
   micromatch@4.0.8:
     dependencies:
       braces: 3.0.3
-      picomatch: 2.3.1
+      picomatch: 2.3.2
 
   mime-db@1.52.0: {}
 
@@ -6171,11 +6163,7 @@ snapshots:
 
   picocolors@1.1.1: {}
 
-  picomatch@2.3.1: {}
-
-  picomatch@4.0.2: {}
-
-  picomatch@4.0.3: {}
+  picomatch@2.3.2: {}
 
   picomatch@4.0.4: {}
 
@@ -6654,8 +6642,8 @@ snapshots:
 
   tinyglobby@0.2.12:
     dependencies:
-      fdir: 6.4.3(picomatch@4.0.2)
-      picomatch: 4.0.2
+      fdir: 6.4.3(picomatch@4.0.4)
+      picomatch: 4.0.4
 
   tinyglobby@0.2.16:
     dependencies:
@@ -6772,7 +6760,7 @@ snapshots:
     dependencies:
       '@jridgewell/remapping': 2.3.5
       acorn: 8.16.0
-      picomatch: 4.0.3
+      picomatch: 4.0.4
       webpack-virtual-modules: 0.6.2
 
   unrs-resolver@1.4.1:
