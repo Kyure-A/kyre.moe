@@ -1,0 +1,27 @@
+name: Semgrep
+
+on:
+  pull_request:
+  push:
+    branches: ["master"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "semgrep-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    name: Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    container:
+      image: semgrep/semgrep:1.145.0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Run Semgrep
+        run: semgrep scan --config p/default --error --metrics=off .
