@@ -110,8 +110,7 @@
         "anthropic-skills": "anthropic-skills",
         "next-skills": "next-skills",
         "nixpkgs": "nixpkgs_2",
-        "ui-skills": "ui-skills",
-        "vinext": "vinext"
+        "ui-skills": "ui-skills"
       }
     },
     "ui-skills": {
@@ -127,22 +126,6 @@
       "original": {
         "owner": "ibelick",
         "repo": "ui-skills",
-        "type": "github"
-      }
-    },
-    "vinext": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1772202897,
-        "narHash": "sha256-+V56OxJcJ0vIx7yA4E3BXmSo3gKvSi2+tollhAC4vTE=",
-        "owner": "cloudflare",
-        "repo": "vinext",
-        "rev": "3679418f16ee43ae53c61f1d2de8ab9593e5ebab",
-        "type": "github"
-      },
-      "original": {
-        "owner": "cloudflare",
-        "repo": "vinext",
         "type": "github"
       }
     }
