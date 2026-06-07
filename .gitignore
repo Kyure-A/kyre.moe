@@ -27,6 +27,7 @@ storybook-static/
 # misc
 .DS_Store
 *.pem
+/.org-export-cache.json
 articles/*/ja.md
 articles/*/en.md
 
