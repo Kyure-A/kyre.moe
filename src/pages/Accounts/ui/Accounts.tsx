@@ -188,7 +188,7 @@ const Accounts = ({ lang }: { lang: SiteLang }) => {
     <section className="w-full md:grid md:min-h-dvh md:place-items-center">
       <div className="mx-auto w-full max-w-4xl px-4 py-24 sm:px-6 md:py-16">
         <h1 className="sr-only">{PAGE_TITLE[lang]}</h1>
-        <ul className="grid grid-cols-1 gap-x-8 gap-y-3 list-none md:grid-cols-2">
+        <ul className="mx-auto grid max-w-72 grid-cols-1 gap-x-8 gap-y-3 list-none md:max-w-none md:grid-cols-2">
           {accounts.map((account) => {
             return (
               <Account
