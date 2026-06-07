@@ -81,6 +81,7 @@
         {
           default = pkgs.mkShell {
             packages = with pkgs; [
+              actionlint
               nodejs_20
               pnpm_9
               biome
