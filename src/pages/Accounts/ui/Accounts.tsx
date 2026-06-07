@@ -15,6 +15,8 @@ import {
 import { SiHuggingface, SiMisskey } from "react-icons/si";
 import { TbBrandMinecraft } from "react-icons/tb";
 import { AnnictIcon } from "@/shared/icons/annict";
+import { CosenseIcon } from "@/shared/icons/cosense";
+import { HatenaBlogIcon } from "@/shared/icons/hatenablog";
 import { NostrIcon } from "@/shared/icons/nostr";
 import { VRChatIcon } from "@/shared/icons/vrchat";
 import type { SiteLang } from "@/shared/lib/i18n";
@@ -56,6 +58,20 @@ const ACCOUNT_DATA: AccountData[] = [
     accentColor: "#1DA1F2",
     serviceIcon: <FaTwitter />,
     serviceUrl: "https://x.com/kyreroe",
+  },
+  {
+    id: "kyre",
+    platform: "Cosense",
+    accentColor: "#06B632",
+    serviceIcon: <CosenseIcon />,
+    serviceUrl: "https://cosense.kyre.moe",
+  },
+  {
+    id: "kyre",
+    platform: "Hatena Blog",
+    accentColor: "#00A4DE",
+    serviceIcon: <HatenaBlogIcon />,
+    serviceUrl: "https://kyre.hatenablog.jp",
   },
   {
     id: "Kyure-A",
