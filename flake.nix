@@ -16,14 +16,10 @@
       url = "github:ibelick/ui-skills";
       flake = false;
     };
-    vinext = {
-      url = "github:cloudflare/vinext";
-      flake = false;
-    };
   };
 
   outputs =
-    { nixpkgs, agent-skills, anthropic-skills, next-skills, ui-skills, vinext, ... }:
+    { nixpkgs, agent-skills, anthropic-skills, next-skills, ui-skills, ... }:
     let
       eachSystem =
         f:
@@ -46,10 +42,6 @@
           path = ui-skills;
           subdir = "skills";
         };
-        vinext = {
-          path = vinext;
-          subdir = ".agents/skills";
-        };
       };
 
       selection = agentLib.selectSkills rec {
@@ -63,7 +55,6 @@
           enableAll = [
             "next-skills"
             "ui-skills"
-            "vinext"
           ];
         };
         skills = {};
