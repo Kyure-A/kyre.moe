@@ -1,10 +1,14 @@
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const ARTICLES_DIR = path.join(process.cwd(), "articles");
+const CACHE_PATH = path.join(process.cwd(), ".org-export-cache.json");
 const ORG_EXTENSION = ".org";
+const SCRIPT_PATH = fileURLToPath(import.meta.url);
 
 const META_MAP = {
   TITLE: "title",
@@ -45,6 +49,22 @@ function parseOrgMeta(source) {
 function escapeString(value) {
   if (value === null || value === undefined) return '""';
   return `"${String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+}
+
+function hashContent(...values) {
+  const hash = createHash("sha256");
+  values.forEach((value) => hash.update(value));
+  return hash.digest("hex");
+}
+
+function readCache() {
+  try {
+    const cache = JSON.parse(fs.readFileSync(CACHE_PATH, "utf-8"));
+    return cache && typeof cache === "object" ? cache : {};
+  } catch (error) {
+    if (error.code === "ENOENT" || error instanceof SyntaxError) return {};
+    throw error;
+  }
 }
 
 function buildFrontmatter(meta) {
@@ -164,12 +184,21 @@ function unescapeUnderscoreInBackticks(source) {
   return finalState.result;
 }
 
-function exportOrgToMarkdown(filePath) {
-  const tempOut = path.join(
-    os.tmpdir(),
-    `org-md-${Date.now()}-${path.basename(filePath, ORG_EXTENSION)}.md`,
-  );
-  const elisp = `(progn
+function exportOrgToMarkdown(jobs) {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "org-md-"));
+  const elispPath = path.join(tempDir, "export.el");
+  const exportJobs = jobs.map((job, index) => ({
+    ...job,
+    tempOutputPath: path.join(tempDir, `${index}.md`),
+  }));
+  const elispJobs = exportJobs
+    .map(
+      ({ filePath, tempOutputPath }) =>
+        `(${escapeString(filePath)} . ${escapeString(tempOutputPath)})`,
+    )
+    .join("\n");
+  const elisp = `;;; -*- lexical-binding: t; -*-
+(progn
 		(require 'ox-md)
 		(defun kyre-md--ensure-trailing-newline (value)
 			(if (and value (not (string-suffix-p "\\n" value)))
@@ -192,13 +221,23 @@ function exportOrgToMarkdown(filePath) {
 		(setq org-export-with-toc nil
 				org-export-with-title nil
 				org-export-with-sub-superscripts nil)
-		(org-export-to-file 'md-fenced ${escapeString(tempOut)}))`;
-  execFileSync("emacs", ["--batch", filePath, "--eval", elisp], {
-    stdio: "inherit",
-  });
-  const exported = fs.readFileSync(tempOut, "utf-8");
-  fs.rmSync(tempOut, { force: true });
-  return exported;
+		(dolist (job '(${elispJobs}))
+			(find-file (car job))
+			(org-export-to-file 'md-fenced (cdr job))
+			(kill-buffer)))`;
+
+  try {
+    fs.writeFileSync(elispPath, elisp);
+    execFileSync("emacs", ["--batch", "--load", elispPath], {
+      stdio: "inherit",
+    });
+    return exportJobs.map((job) => ({
+      ...job,
+      outputMarkdown: fs.readFileSync(job.tempOutputPath, "utf-8"),
+    }));
+  } finally {
+    fs.rmSync(tempDir, { force: true, recursive: true });
+  }
 }
 
 if (!fs.existsSync(ARTICLES_DIR)) {
@@ -206,28 +245,64 @@ if (!fs.existsSync(ARTICLES_DIR)) {
   process.exit(1);
 }
 
-const orgFiles = walk(ARTICLES_DIR).filter((file) =>
-  file.endsWith(ORG_EXTENSION),
-);
+const orgFiles = walk(ARTICLES_DIR)
+  .filter((file) => file.endsWith(ORG_EXTENSION))
+  .sort();
 
 if (orgFiles.length === 0) {
   console.log("No Org files found.");
   process.exit(0);
 }
 
-orgFiles
-  .map((filePath) => {
-    const source = fs.readFileSync(filePath, "utf-8");
+const cache = readCache();
+const scriptHash = hashContent(fs.readFileSync(SCRIPT_PATH));
+const jobs = orgFiles.map((filePath) => {
+  const source = fs.readFileSync(filePath, "utf-8");
+  const relativePath = path.relative(process.cwd(), filePath);
+  const outputPath = filePath.replace(/\.org$/i, ".md");
+  return {
+    filePath,
+    source,
+    relativePath,
+    outputPath,
+    hash: hashContent(scriptHash, source),
+  };
+});
+const changedJobs = jobs.filter(
+  ({ hash, outputPath, relativePath }) =>
+    cache[relativePath] !== hash || !fs.existsSync(outputPath),
+);
+
+if (changedJobs.length === 0) {
+  console.log("Org files are up to date.");
+  process.exit(0);
+}
+
+exportOrgToMarkdown(changedJobs)
+  .map(({ source, outputMarkdown, outputPath, relativePath, hash }) => {
     const meta = parseOrgMeta(source);
-    const outputMarkdown = unescapeUnderscoreInBackticks(
-      exportOrgToMarkdown(filePath).replace(/\\`/g, "`"),
+    const processedMarkdown = unescapeUnderscoreInBackticks(
+      outputMarkdown.replace(/\\`/g, "`"),
     );
     // ox-md escapes backticks, unescape them for inline code
     const frontmatter = buildFrontmatter(meta);
-    const outputPath = filePath.replace(/\.org$/i, ".md");
-    return { frontmatter, outputMarkdown, outputPath };
+    return {
+      content: `${frontmatter}${processedMarkdown}`,
+      hash,
+      outputPath,
+      relativePath,
+    };
   })
-  .forEach(({ frontmatter, outputMarkdown, outputPath }) => {
-    fs.writeFileSync(outputPath, `${frontmatter}${outputMarkdown}`);
+  .forEach(({ content, hash, outputPath, relativePath }) => {
+    fs.writeFileSync(outputPath, content);
+    cache[relativePath] = hash;
     console.log(`Exported ${path.relative(process.cwd(), outputPath)}`);
   });
+
+const nextCache = Object.fromEntries(
+  jobs.map(({ relativePath, hash }) => [
+    relativePath,
+    cache[relativePath] ?? hash,
+  ]),
+);
+fs.writeFileSync(CACHE_PATH, `${JSON.stringify(nextCache, null, 2)}\n`);
