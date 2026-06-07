@@ -23,6 +23,5 @@ Personal website and blog built with Next.js.
 
 #+begin_src bash
   nix develop
-  pnpm content:org
-  pnpm content:images
+  pnpm content
 #+end_src

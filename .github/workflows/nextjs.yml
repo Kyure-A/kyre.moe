@@ -70,10 +70,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y emacs-nox
-      - name: Export Org to Markdown
-        run: pnpm content:org
-      - name: Copy blog images to public
-        run: pnpm content:images
+      - name: Prepare article content
+        run: pnpm content
       - name: Convert hero image to WebP
         run: |
           sudo apt-get update
