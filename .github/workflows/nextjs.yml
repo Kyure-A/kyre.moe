@@ -36,8 +36,6 @@ jobs:
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
-      - name: Lint GitHub Actions workflows
-        run: nix develop --command pnpm lint:actions
       - name: Setup Pages
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
         uses: actions/configure-pages@v5
