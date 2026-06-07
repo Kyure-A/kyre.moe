@@ -60,14 +60,14 @@ const ACCOUNT_DATA: AccountData[] = [
     serviceUrl: "https://x.com/kyreroe",
   },
   {
-    id: "kyre",
+    id: "/kyre",
     platform: "Cosense",
     accentColor: "#06B632",
     serviceIcon: <CosenseIcon />,
     serviceUrl: "https://cosense.kyre.moe",
   },
   {
-    id: "kyre",
+    id: "kyre.hatenablog.jp",
     platform: "Hatena Blog",
     accentColor: "#00A4DE",
     serviceIcon: <HatenaBlogIcon />,
