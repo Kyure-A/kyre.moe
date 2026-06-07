@@ -104,7 +104,8 @@ const createReactRuntimeAliases = (): AliasEntry[] => {
     const replacement = require.resolve(definition.runtime);
     return [
       {
-        find: new RegExp(`^${escapeRegExp(definition.runtime)}$`),
+        // The runtime package name is escaped before it is interpolated.
+        find: new RegExp(`^${escapeRegExp(definition.runtime)}$`), // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
         replacement,
       },
       ...definition.nextCompiledPatterns.map((find) => ({

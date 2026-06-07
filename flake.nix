@@ -84,6 +84,7 @@
               nodejs_20
               pnpm_9
               biome
+              semgrep
               treefmt
               typescript-language-server
             ];

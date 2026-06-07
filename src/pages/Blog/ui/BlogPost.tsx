@@ -79,6 +79,7 @@ const BlogPostView = ({ post }: Props) => {
       <article
         className="blog-content mt-10"
         /* biome-ignore lint/security/noDangerouslySetInnerHtml: HTML is generated server-side with raw HTML disabled */
+        /* nosemgrep: typescript.react.security.audit.react-dangerouslysetinnerhtml.react-dangerouslysetinnerhtml */
         dangerouslySetInnerHTML={{ __html: post.html }}
       />
 
