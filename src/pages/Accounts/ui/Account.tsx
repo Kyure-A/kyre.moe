@@ -31,13 +31,13 @@ const Account = (props: AccountProps) => {
             {props.serviceIcon}
           </span>
           <div className="flex min-w-0 flex-1 items-center">
-            <span className="platform mr-3 w-16 shrink-0 truncate text-[12px] font-semibold leading-[1.2] text-[var(--text-primary)] transition-[margin,color] duration-[400ms] ease-out group-hover:mr-1 group-hover:text-white group-active:mr-1 group-active:text-white group-focus-visible:mr-1 group-focus-visible:text-white sm:mr-5 sm:w-24 sm:text-[14px] md:w-28 md:text-[15px]">
+            <span className="platform mr-2 w-24 shrink-0 whitespace-nowrap text-[12px] font-semibold leading-[1.2] text-[var(--text-primary)] transition-[margin,color] duration-[400ms] ease-out group-hover:mr-1 group-hover:text-white group-active:mr-1 group-active:text-white group-focus-visible:mr-1 group-focus-visible:text-white sm:mr-5 sm:text-[14px] md:w-28 md:text-[15px]">
               {props.platform}
             </span>
             <div
               className={`min-w-0 flex flex-col min-h-[40px] ${hasDescription ? "" : "justify-center"}`}
             >
-              <p className="text-[12px] leading-none text-[var(--text-primary)] whitespace-nowrap transition-colors duration-[400ms] ease-out group-hover:text-white group-active:text-white group-focus-visible:text-white sm:text-[14px] md:text-[15px]">
+              <p className="truncate text-[12px] leading-none text-[var(--text-primary)] whitespace-nowrap transition-colors duration-[400ms] ease-out group-hover:text-white group-active:text-white group-focus-visible:text-white sm:text-[14px] md:text-[15px]">
                 {props.id}
               </p>
               {hasDescription ? (
