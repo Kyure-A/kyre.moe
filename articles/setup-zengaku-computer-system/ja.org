@@ -1,7 +1,7 @@
 #+TITLE: 筑波大学 全学計算機システムへの初回 SSH のセットアップ方法
 #+DATE: 2026-04-20
 #+DESCRIPTION: ドキュメントが散逸しているが意外と簡単です
-#+TAGS: SSH
+#+TAGS: SSH 筑波大学
 #+DRAFT: false
 
 ** はじめに
