@@ -17,7 +17,6 @@
     "security:semgrep": "semgrep scan --config p/default --error --metrics=off ."
   },
   "dependencies": {
-    "@js-temporal/polyfill": "^0.5.1",
     "@react-spring/web": "^10.0.3",
     "@vscode/markdown-it-katex": "^1.1.2",
     "budoux": "0.8.0",

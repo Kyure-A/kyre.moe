@@ -73,7 +73,7 @@
           default = pkgs.mkShell {
             packages = with pkgs; [
               actionlint
-              nodejs_20
+              nodejs_26
               pnpm_9
               biome
               semgrep
