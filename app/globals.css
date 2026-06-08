@@ -417,6 +417,35 @@ body {
   font-size: 1.3rem;
 }
 
+.blog-content :is(h1, h2, h3, h4) {
+  scroll-margin-top: 6rem;
+}
+
+.blog-content .heading-anchor {
+  color: inherit;
+  border-bottom: 0;
+  text-decoration: none;
+}
+
+.blog-content .heading-anchor::after {
+  content: "#";
+  display: inline-block;
+  margin-left: 0.45rem;
+  color: var(--blog-link);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.blog-content :is(h1, h2, h3, h4):hover .heading-anchor::after,
+.blog-content .heading-anchor:focus-visible::after {
+  opacity: 1;
+}
+
+.blog-content .heading-anchor:focus-visible {
+  outline: 2px solid var(--blog-link);
+  outline-offset: 0.18em;
+}
+
 .blog-content p {
   margin: 1.1rem 0;
 }

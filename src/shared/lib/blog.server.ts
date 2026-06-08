@@ -10,6 +10,7 @@ import {
   type PluginWithOptions,
 } from "markdown-exit";
 import markdownItBudoux from "markdown-it-budoux";
+import anchor from "markdown-it-anchor";
 import footnote from "markdown-it-footnote";
 import githubAlerts from "markdown-it-github-alerts";
 import linkPreview from "markdown-it-link-preview";
@@ -142,6 +143,14 @@ const md = createMarkdownExit({
     }
   },
 });
+
+const slugifyHeading = (value: string) =>
+  encodeURIComponent(
+    value
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "-"),
+  );
 
 const safeReadDir = (dirPath: string) => {
   try {
@@ -419,6 +428,16 @@ md.use(
 );
 md.use(asPluginSimple(linkPreview));
 md.use(embedPlugin);
+md.use(
+  asPluginWithOptions<typeof anchor, anchor.AnchorOptions>(anchor),
+  {
+    level: [1, 2, 3, 4],
+    slugify: slugifyHeading,
+    permalink: anchor.permalink.headerLink({
+      class: "heading-anchor",
+    }),
+  },
+);
 md.use(asPluginSimple(markdownItTocDoneRight));
 md.use(asPluginSimple(markdownItBudoux({ language: "ja" })));
 md.inline.ruler.after("emphasis", "underline", (state, silent) => {
