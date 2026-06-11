@@ -1,13 +1,13 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { css, cx } from "styled-system/css";
+import { visuallyHidden } from "styled-system/patterns";
 import {
   DEFAULT_LANG,
   getLangFromPath,
   replacePathLang,
   type SiteLang,
 } from "@/shared/lib/i18n";
-import { css, cx } from "styled-system/css";
-import { visuallyHidden } from "styled-system/patterns";
 
 type LanguageToggleProps = {
   onChange: (s: string) => void;

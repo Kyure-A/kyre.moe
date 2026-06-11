@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import FadeTransition from "./FadeTransition";
 import { css } from "styled-system/css";
+import FadeTransition from "./FadeTransition";
 
 const panelClass = css({
   borderRadius: "xl",

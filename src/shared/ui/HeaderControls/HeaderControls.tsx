@@ -2,10 +2,10 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { FaArrowLeft } from "react-icons/fa6";
+import { css, cx } from "styled-system/css";
 import { DEFAULT_LANG, getLangFromPath } from "@/shared/lib/i18n";
 import LanguageToggle from "@/shared/ui/LanguageToggleSwitch/LanguageToggleSwitch";
 import ThemeToggle from "@/shared/ui/ThemeToggleSwitch/ThemeToggleSwitch";
-import { css, cx } from "styled-system/css";
 
 const styles = {
   header: css({

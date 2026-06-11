@@ -20,11 +20,11 @@ import magicLink, {
 import taskLists from "markdown-it-task-lists";
 import markdownItTocDoneRight from "markdown-it-toc-done-right";
 import {
-  getTagSlug,
-  normalizeTagLabel,
   type BlogPost,
   type BlogPostMeta,
   type BlogTagItem,
+  getTagSlug,
+  normalizeTagLabel,
 } from "./blog";
 import { DEFAULT_LANG, isSiteLang, type SiteLang } from "./i18n";
 

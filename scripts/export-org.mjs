@@ -53,7 +53,9 @@ function escapeString(value) {
 
 function hashContent(...values) {
   const hash = createHash("sha256");
-  values.forEach((value) => hash.update(value));
+  values.forEach((value) => {
+    hash.update(value);
+  });
   return hash.digest("hex");
 }
 

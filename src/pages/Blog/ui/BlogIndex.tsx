@@ -1,10 +1,10 @@
 import { Link } from "next-view-transitions";
+import { css } from "styled-system/css";
+import { visuallyHidden } from "styled-system/patterns";
 import BlogPostList from "@/pages/Blog/ui/BlogPostList";
 import BlogSection from "@/pages/Blog/ui/BlogSection";
 import type { BlogPostMeta } from "@/shared/lib/blog";
 import type { SiteLang } from "@/shared/lib/i18n";
-import { css } from "styled-system/css";
-import { visuallyHidden } from "styled-system/patterns";
 
 const COPY: Record<SiteLang, { empty: string; tags: string; title: string }> = {
   ja: {
