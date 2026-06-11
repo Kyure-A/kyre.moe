@@ -97,78 +97,93 @@ function buildFrontmatter(meta) {
 }
 
 function unescapeUnderscoreInBackticks(source) {
-  let result = "";
-  let inFence = false;
-  let fenceChar = "";
-  let fenceLen = 0;
-  let inInline = false;
-  let inlineLen = 0;
-  let lineStart = 0;
-  let cursor = 0;
+  const initialState = {
+    result: "",
+    inFence: false,
+    fenceChar: "",
+    fenceLen: 0,
+    inInline: false,
+    inlineLen: 0,
+    lineStart: 0,
+    cursor: 0,
+  };
 
-  for (const [index, ch] of Array.from(source).entries()) {
-    if (index < cursor) continue;
+  const finalState = Array.from(source).reduce((state, ch, index) => {
+    if (index < state.cursor) return state;
 
     if (ch === "\n") {
-      result += "\n";
-      lineStart = index + 1;
-      cursor = index + 1;
-      continue;
+      return {
+        ...state,
+        result: `${state.result}\n`,
+        lineStart: index + 1,
+        cursor: index + 1,
+      };
     }
 
-    if (!inInline && (ch === "`" || ch === "~")) {
+    if (!state.inInline && (ch === "`" || ch === "~")) {
       const runMatch =
         ch === "`"
           ? source.slice(index).match(/^`+/)
           : source.slice(index).match(/^~+/);
       const runLen = runMatch ? runMatch[0].length : 0;
       if (runLen >= 3) {
-        const before = source.slice(lineStart, index);
+        const before = source.slice(state.lineStart, index);
         if (/^[ \t]*$/.test(before)) {
-          const isClosing = inFence && ch === fenceChar && runLen >= fenceLen;
-          if (isClosing) {
-            inFence = false;
-            fenceChar = "";
-            fenceLen = 0;
-          } else if (!inFence) {
-            inFence = true;
-            fenceChar = ch;
-            fenceLen = runLen;
-          }
-          result += source.slice(index, index + runLen);
-          cursor = index + runLen;
-          continue;
+          const isClosing =
+            state.inFence && ch === state.fenceChar && runLen >= state.fenceLen;
+          const nextFenceState = isClosing
+            ? { inFence: false, fenceChar: "", fenceLen: 0 }
+            : state.inFence
+              ? {}
+              : { inFence: true, fenceChar: ch, fenceLen: runLen };
+          return {
+            ...state,
+            ...nextFenceState,
+            result: state.result + source.slice(index, index + runLen),
+            cursor: index + runLen,
+          };
         }
       }
     }
 
-    if (!inFence && ch === "`") {
+    if (!state.inFence && ch === "`") {
       const runMatch = source.slice(index).match(/^`+/);
       const runLen = runMatch ? runMatch[0].length : 0;
-      const shouldClose = inInline && runLen === inlineLen;
-      if (shouldClose) {
-        inInline = false;
-        inlineLen = 0;
-      } else if (!inInline) {
-        inInline = true;
-        inlineLen = runLen;
-      }
-      result += source.slice(index, index + runLen);
-      cursor = index + runLen;
-      continue;
+      const shouldClose = state.inInline && runLen === state.inlineLen;
+      const nextInlineState = state.inInline
+        ? shouldClose
+          ? { inInline: false, inlineLen: 0 }
+          : {}
+        : { inInline: true, inlineLen: runLen };
+      return {
+        ...state,
+        ...nextInlineState,
+        result: state.result + source.slice(index, index + runLen),
+        cursor: index + runLen,
+      };
     }
 
-    if (!inFence && inInline && ch === "\\" && source[index + 1] === "_") {
-      result += "_";
-      cursor = index + 2;
-      continue;
+    if (
+      !state.inFence &&
+      state.inInline &&
+      ch === "\\" &&
+      source[index + 1] === "_"
+    ) {
+      return {
+        ...state,
+        result: `${state.result}_`,
+        cursor: index + 2,
+      };
     }
 
-    result += ch;
-    cursor = index + 1;
-  }
+    return {
+      ...state,
+      result: state.result + ch,
+      cursor: index + 1,
+    };
+  }, initialState);
 
-  return result;
+  return finalState.result;
 }
 
 function exportOrgToMarkdown(jobs) {
