@@ -139,9 +139,7 @@ const SectionRow = ({
 }) => {
   return (
     <div className={styles.row}>
-      <h2 className={styles.rowTitle}>
-        {section.label}
-      </h2>
+      <h2 className={styles.rowTitle}>{section.label}</h2>
 
       <ul className={styles.list}>
         {section.items.map((item, index) => (

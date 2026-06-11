@@ -25,9 +25,7 @@ const styles = {
 // dynamic import すればコードが独立したチャンクに分離され、初期バンドルサイズが削減されるらしい
 const ASCIIText = dynamic(() => import("@/shared/ui/ASCIIText/ASCIIText"), {
   ssr: false,
-  loading: () => (
-    <div className={styles.center} />
-  ),
+  loading: () => <div className={styles.center} />,
 });
 
 type FadeTextRotatorProps = {
@@ -85,10 +83,7 @@ export const FadeTextRotator = ({
             active={active}
           />
         ) : (
-          <div
-            key={text}
-            className={styles.textFallback}
-          >
+          <div key={text} className={styles.textFallback}>
             {text}
           </div>
         ),

@@ -92,7 +92,12 @@ const OrbitDockItem = memo(
       return (
         <div
           data-hovered={isHovered ? "true" : undefined}
-          className={cx("orbit-dock__item", "group", styles.item, item.className)}
+          className={cx(
+            "orbit-dock__item",
+            "group",
+            styles.item,
+            item.className,
+          )}
           style={
             {
               "--orbit-delay": `${delay}s`,

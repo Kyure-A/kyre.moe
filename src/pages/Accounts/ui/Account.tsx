@@ -16,23 +16,27 @@ const styles = {
     display: "block",
     width: "full",
     px: "2",
-    "&:is(:hover, :active, :focus-visible, [data-hover], [data-active], [data-focus-visible]) [data-account-row]": {
-      px: { base: "4", sm: "account-row-hover" },
-      borderRadius: "item",
-      backgroundColor: "accent.dynamic",
-      color: "white",
-      textShadow: "accountText",
-    },
-    "&:is(:hover, :active, :focus-visible, [data-hover], [data-active], [data-focus-visible]) [data-account-primary]": {
-      color: "white",
-    },
-    "&:is(:hover, :active, :focus-visible, [data-hover], [data-active], [data-focus-visible]) [data-account-platform]": {
-      mr: "1",
-      color: "white",
-    },
-    "&:is(:hover, :active, :focus-visible, [data-hover], [data-active], [data-focus-visible]) [data-account-description]": {
-      color: "whiteAlpha90",
-    },
+    "&:is(:hover, :active, :focus-visible, [data-hover], [data-active], [data-focus-visible]) [data-account-row]":
+      {
+        px: { base: "4", sm: "account-row-hover" },
+        borderRadius: "item",
+        backgroundColor: "accent.dynamic",
+        color: "white",
+        textShadow: "accountText",
+      },
+    "&:is(:hover, :active, :focus-visible, [data-hover], [data-active], [data-focus-visible]) [data-account-primary]":
+      {
+        color: "white",
+      },
+    "&:is(:hover, :active, :focus-visible, [data-hover], [data-active], [data-focus-visible]) [data-account-platform]":
+      {
+        mr: "1",
+        color: "white",
+      },
+    "&:is(:hover, :active, :focus-visible, [data-hover], [data-active], [data-focus-visible]) [data-account-description]":
+      {
+        color: "whiteAlpha90",
+      },
   }),
   row: css({
     display: "flex",
@@ -121,11 +125,7 @@ const Account = (props: AccountProps) => {
   const hasDescription = descriptionText.trim().length > 0;
   return (
     <li>
-      <a
-        href={props.serviceUrl}
-        className={styles.link}
-        style={accentStyle}
-      >
+      <a href={props.serviceUrl} className={styles.link} style={accentStyle}>
         <div className={styles.row} data-account-row="">
           <span
             className={cx(styles.icon, props.iconClassName)}
@@ -142,7 +142,10 @@ const Account = (props: AccountProps) => {
               {props.platform}
             </span>
             <div
-              className={cx(styles.copy, !hasDescription && styles.copyCentered)}
+              className={cx(
+                styles.copy,
+                !hasDescription && styles.copyCentered,
+              )}
             >
               <p
                 className={styles.id}

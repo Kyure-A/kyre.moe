@@ -68,17 +68,11 @@ const Timeline = ({ items = [] }: TimelineProps) => {
             {/* dot */}
             <div className={styles.dot} />
 
-            <time className={styles.date}>
-              {item.date}
-            </time>
+            <time className={styles.date}>{item.date}</time>
 
-            <h2 className={styles.title}>
-              {item.title}
-            </h2>
+            <h2 className={styles.title}>{item.title}</h2>
 
-            <p className={styles.description}>
-              {item.description}
-            </p>
+            <p className={styles.description}>{item.description}</p>
           </>
         );
 
