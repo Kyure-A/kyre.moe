@@ -6,12 +6,100 @@ import {
   replacePathLang,
   type SiteLang,
 } from "@/shared/lib/i18n";
+import { css, cx } from "styled-system/css";
+import { visuallyHidden } from "styled-system/patterns";
 
 type LanguageToggleProps = {
   onChange: (s: string) => void;
 };
 
 const STORAGE_KEY = "kyre-lang";
+
+const styles = {
+  root: css({
+    display: "flex",
+    alignItems: "center",
+  }),
+  button: css({
+    position: "relative",
+    display: "inline-flex",
+    width: "language-control",
+    height: "control",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    borderRadius: "control",
+    borderWidth: "1px",
+    borderColor: "control.border",
+    backgroundColor: "control.bg",
+    boxShadow: "md",
+    transitionProperty: "common",
+    transitionDuration: "toggle",
+  }),
+  hiddenLabel: visuallyHidden(),
+  orb: css({
+    position: "absolute",
+    width: "control-orb",
+    height: "control-orb",
+    borderRadius: "control",
+    backgroundColor: "control.orb",
+    transitionProperty: "common",
+    transitionDuration: "toggle",
+    top: "-16",
+  }),
+  orbJa: css({
+    left: "-10",
+  }),
+  orbEn: css({
+    right: "-10",
+  }),
+  label: css({
+    position: "absolute",
+    zIndex: "content",
+    fontSize: "xs",
+    fontWeight: "bold",
+    transitionProperty: "common",
+    transitionDuration: "toggle",
+  }),
+  labelJa: css({
+    left: "3",
+  }),
+  labelEn: css({
+    right: "3",
+  }),
+  labelActive: css({
+    color: "control.labelActive",
+    transform: "scale(1.1)",
+  }),
+  labelMuted: css({
+    color: "control.labelMuted",
+    transform: "scale(0.9)",
+  }),
+  knob: css({
+    position: "absolute",
+    width: "control-knob",
+    height: "control-knob",
+    transform: "translateX(-1.25rem)",
+    borderRadius: "control",
+    backgroundColor: "control.knob",
+    boxShadow: "lg",
+    transitionProperty: "common",
+    transitionDuration: "toggle",
+    transitionTimingFunction: "easeInOut",
+  }),
+  knobEn: css({
+    transform: "translateX(1.25rem)",
+  }),
+  knobInner: css({
+    position: "absolute",
+    inset: "0",
+    m: "1",
+    borderRadius: "control",
+    backgroundColor: "control.knobInner",
+    transitionProperty: "common",
+    transitionDuration: "toggle",
+  }),
+};
 
 const LanguageToggle = ({ onChange }: LanguageToggleProps) => {
   const router = useRouter();
@@ -51,53 +139,53 @@ const LanguageToggle = ({ onChange }: LanguageToggleProps) => {
   };
 
   return (
-    <div className="flex items-center">
+    <div className={styles.root}>
       <button
         type="button"
         onClick={handleToggle}
-        className="relative inline-flex h-10 w-20 items-center justify-center overflow-hidden rounded-full border border-[var(--control-border)] bg-[var(--control-bg)] shadow-md transition-all duration-500"
+        className={styles.button}
         aria-pressed={language === "en"}
       >
-        <span className="sr-only">
+        <span className={styles.hiddenLabel}>
           Toggle language between Japanese and English
         </span>
 
         {/* 背景のアクセント（装飾要素） */}
         <span
-          className={`absolute h-24 w-24 rounded-full bg-[var(--control-orb)] transition-all duration-500 ${
-            language === "ja" ? "-top-16 -left-10" : "-top-16 -right-10"
-          }`}
+          className={cx(styles.orb, language === "ja" ? styles.orbJa : styles.orbEn)}
         />
 
         {/* 言語ラベル - 活性側 */}
         <span
-          className={`absolute left-3 text-xs font-bold z-10 transition-all duration-500 ${
+          className={cx(
+            styles.label,
+            styles.labelJa,
             language === "ja"
-              ? "text-[var(--control-label-active)] scale-110"
-              : "text-[var(--control-label-muted)] scale-90"
-          }`}
+              ? styles.labelActive
+              : styles.labelMuted,
+          )}
         >
           Ja
         </span>
 
         <span
-          className={`absolute right-3 text-xs font-bold z-10 transition-all duration-500 ${
+          className={cx(
+            styles.label,
+            styles.labelEn,
             language === "en"
-              ? "text-[var(--control-label-active)] scale-110"
-              : "text-[var(--control-label-muted)] scale-90"
-          }`}
+              ? styles.labelActive
+              : styles.labelMuted,
+          )}
         >
           En
         </span>
 
         {/* トグルの丸 */}
         <span
-          className={`absolute h-8 w-8 transform rounded-full bg-[var(--control-knob)] shadow-lg transition-all duration-500 ease-in-out ${
-            language === "en" ? "translate-x-5" : "-translate-x-5"
-          }`}
+          className={cx(styles.knob, language === "en" && styles.knobEn)}
         >
           {/* 丸の中のアクセント */}
-          <span className="absolute inset-0 m-1 rounded-full bg-[var(--control-knob-inner)] transition-all duration-500" />
+          <span className={styles.knobInner} />
         </span>
       </button>
     </div>

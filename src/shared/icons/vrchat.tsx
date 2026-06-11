@@ -1,4 +1,10 @@
 import Image from "next/image";
+import { css } from "styled-system/css";
+
+const iconClass = css({
+  width: { base: "icon-sm", sm: "icon-md" },
+  height: { base: "icon-sm", sm: "icon-md" },
+});
 
 export const VRChatIcon = () => {
   return (
@@ -7,7 +13,7 @@ export const VRChatIcon = () => {
       alt="VRChat"
       width={24}
       height={24}
-      className="h-5 w-5 sm:h-6 sm:w-6"
+      className={iconClass}
     />
   );
 };

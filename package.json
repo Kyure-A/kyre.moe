@@ -4,6 +4,12 @@
   "private": true,
   "packageManager": "pnpm@9.15.9",
   "scripts": {
+    "prepare": "panda codegen",
+    "prelint": "panda codegen",
+    "prebuild": "panda codegen",
+    "prestorybook": "panda codegen",
+    "prebuild-storybook": "panda codegen",
+    "panda": "panda codegen",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
@@ -44,10 +50,10 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
+    "@pandacss/dev": "^1.11.3",
     "@storybook/addon-a11y": "^10.3.0",
     "@storybook/nextjs-vite": "10.2.8",
     "@storybook/react": "10.2.8",
-    "@tailwindcss/postcss": "^4.2.2",
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^20.17.30",
     "@types/react": "^18.0.0",
@@ -56,7 +62,6 @@
     "eslint": "^9.31.0",
     "eslint-config-next": "15.2.5",
     "storybook": "^10.3.0",
-    "tailwindcss": "^4.2.2",
     "typescript": "^5.8.3"
   },
   "pnpm": {

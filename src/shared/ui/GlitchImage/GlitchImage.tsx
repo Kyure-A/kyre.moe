@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { css } from "styled-system/css";
 
 interface GlitchImageProps {
   /** The image element to apply the glitch effect to */
@@ -65,6 +66,48 @@ interface GlitchLine {
 interface RandomState {
   seed: number;
 }
+
+const styles = {
+  root: css({
+    position: "relative",
+    overflow: "hidden",
+  }),
+  original: css({
+    position: "relative",
+    transitionProperty: "common",
+    transitionDuration: "fast",
+  }),
+  layer: css({
+    position: "absolute",
+    inset: "0",
+    pointerEvents: "none",
+  }),
+  absolute: css({
+    position: "absolute",
+    inset: "0",
+  }),
+  screen: css({
+    position: "absolute",
+    inset: "0",
+    mixBlendMode: "screen",
+  }),
+  block: css({
+    position: "absolute",
+    left: "0",
+    width: "full",
+    overflow: "hidden",
+  }),
+  line: css({
+    position: "absolute",
+    left: "0",
+    right: "0",
+  }),
+  overlay: css({
+    position: "absolute",
+    inset: "0",
+    mixBlendMode: "overlay",
+  }),
+};
 
 // Pure function: returns next state and random value
 const nextRandom = (state: RandomState): [RandomState, number] => {
@@ -311,11 +354,11 @@ const GlitchImage = ({
   const effectsMaskStyle: CSSProperties = maskStyle ?? {};
 
   return (
-    <div className="relative overflow-hidden">
+    <div className={styles.root}>
       <style>{GLITCH_KEYFRAMES}</style>
       {/* Original image - visible but may flicker */}
       <div
-        className="relative transition-opacity duration-100"
+        className={styles.original}
         style={{
           animation:
             isGlitching && glitchData
@@ -328,11 +371,11 @@ const GlitchImage = ({
 
       {/* Horror glitch effect layers */}
       {isGlitching && glitchData && (
-        <div className="absolute inset-0 pointer-events-none">
+        <div className={styles.layer}>
           {/* Ambient dark noise */}
           {ambientNoiseStrength > 0 && (
             <div
-              className="absolute inset-0 pointer-events-none"
+              className={styles.layer}
               style={{
                 ...effectsMaskStyle,
                 opacity: ambientNoiseStrength * normalizedIntensity,
@@ -347,7 +390,7 @@ const GlitchImage = ({
 
           {/* Color channel separation - red */}
           <div
-            className="absolute inset-0 mix-blend-screen"
+            className={styles.screen}
             style={{
               opacity: 0.7,
               filter:
@@ -360,7 +403,7 @@ const GlitchImage = ({
 
           {/* Color channel separation - blue */}
           <div
-            className="absolute inset-0 mix-blend-screen"
+            className={styles.screen}
             style={{
               opacity: 0.7,
               filter:
@@ -373,7 +416,7 @@ const GlitchImage = ({
 
           {/* Inverted section for horror effect */}
           <div
-            className="absolute inset-0"
+            className={styles.absolute}
             style={{
               opacity: 0.3 * normalizedIntensity * 10,
               filter: "invert(1) hue-rotate(180deg) contrast(1.2)",
@@ -387,7 +430,7 @@ const GlitchImage = ({
           {glitchData.glitchBlocks.map((block) => (
             <div
               key={block.id}
-              className="absolute left-0 w-full overflow-hidden"
+              className={styles.block}
               style={{
                 top: block.top,
                 height: block.height,
@@ -400,14 +443,14 @@ const GlitchImage = ({
 
           {/* Noise + scanline layers */}
           <div
-            className="absolute inset-0 pointer-events-none"
+            className={styles.layer}
             style={effectsMaskStyle}
           >
             {/* Sharp horizontal glitch lines */}
             {glitchData.glitchLines.map((line, index) => (
               <div
                 key={line.id}
-                className="absolute left-0 right-0"
+                className={styles.line}
                 style={{
                   top: `${line.top}%`,
                   height: `${line.height}px`,
@@ -430,7 +473,7 @@ const GlitchImage = ({
 
             {/* Noise overlay */}
             <div
-              className="absolute inset-0 mix-blend-overlay"
+              className={styles.overlay}
               style={{
                 opacity: 0.4 * normalizedIntensity,
                 backgroundImage:
@@ -442,7 +485,7 @@ const GlitchImage = ({
             {/* Prismatic noise */}
             {prismaticStrength > 0 && (
               <div
-                className="absolute inset-0 pointer-events-none"
+                className={styles.layer}
                 style={{
                   opacity: prismaticStrength * normalizedIntensity,
                   mixBlendMode: "screen",
@@ -457,7 +500,7 @@ const GlitchImage = ({
 
             {/* VHS-like scan lines */}
             <div
-              className="absolute inset-0 pointer-events-none"
+              className={styles.layer}
               style={{
                 backgroundImage: `repeating-linear-gradient(
                   0deg,
@@ -476,7 +519,7 @@ const GlitchImage = ({
 
             {/* Vignette effect */}
             <div
-              className="absolute inset-0 pointer-events-none"
+              className={styles.layer}
               style={{
                 background: `radial-gradient(
                   ellipse at center,

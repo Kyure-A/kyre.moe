@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
+import { css, cx } from "styled-system/css";
 
 export type AccountProps = {
   id: string;
@@ -10,9 +11,110 @@ export type AccountProps = {
   iconClassName?: string;
 };
 
+const styles = {
+  link: css({
+    display: "block",
+    width: "full",
+    px: "2",
+    "&:is(:hover, :active, :focus-visible, [data-hover], [data-active], [data-focus-visible]) [data-account-row]": {
+      px: { base: "4", sm: "account-row-hover" },
+      borderRadius: "item",
+      backgroundColor: "accent.dynamic",
+      color: "white",
+      textShadow: "accountText",
+    },
+    "&:is(:hover, :active, :focus-visible, [data-hover], [data-active], [data-focus-visible]) [data-account-primary]": {
+      color: "white",
+    },
+    "&:is(:hover, :active, :focus-visible, [data-hover], [data-active], [data-focus-visible]) [data-account-platform]": {
+      mr: "1",
+      color: "white",
+    },
+    "&:is(:hover, :active, :focus-visible, [data-hover], [data-active], [data-focus-visible]) [data-account-description]": {
+      color: "whiteAlpha90",
+    },
+  }),
+  row: css({
+    display: "flex",
+    width: "full",
+    alignItems: "center",
+    gap: { base: "3", sm: "5" },
+    px: "0",
+    py: { base: "2", sm: "3" },
+    color: "text.primary",
+    transition: "all",
+    transitionDuration: "slower",
+    transitionTimingFunction: "easeOut",
+  }),
+  icon: css({
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: { base: "icon-sm", sm: "icon-md" },
+    height: { base: "icon-sm", sm: "icon-md" },
+    color: "text.primary",
+    fontSize: { base: "icon-md", sm: "icon-lg" },
+    transitionProperty: "colors",
+    transitionDuration: "slower",
+    transitionTimingFunction: "easeOut",
+  }),
+  content: css({
+    display: "flex",
+    minWidth: "0",
+    flex: "1",
+    alignItems: "center",
+  }),
+  platform: css({
+    mr: { base: "2", sm: "5" },
+    width: { base: "account-platform", md: "account-platform-md" },
+    flexShrink: "0",
+    whiteSpace: "nowrap",
+    fontSize: { base: "account-xs", sm: "account-md", md: "account-lg" },
+    fontWeight: "semibold",
+    lineHeight: "tight",
+    color: "text.primary",
+    transition: "all",
+    transitionDuration: "slower",
+    transitionTimingFunction: "easeOut",
+  }),
+  copy: css({
+    minWidth: "0",
+    display: "flex",
+    flexDirection: "column",
+    minHeight: "account-copy",
+  }),
+  copyCentered: css({
+    justifyContent: "center",
+  }),
+  id: css({
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    fontSize: { base: "account-xs", sm: "account-md", md: "account-lg" },
+    lineHeight: "tight",
+    color: "text.primary",
+    transitionProperty: "colors",
+    transitionDuration: "slower",
+    transitionTimingFunction: "easeOut",
+  }),
+  description: css({
+    mt: { base: "0.5", sm: "1" },
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    fontSize: { base: "account-xs", sm: "account-sm" },
+    lineHeight: "snug",
+    color: "text.tertiary",
+    transitionProperty: "colors",
+    transitionDuration: "slower",
+    transitionTimingFunction: "easeOut",
+  }),
+};
+
 const Account = (props: AccountProps) => {
   const accentStyle = {
     "--accent": props.accentColor,
+    "--colors-accent-dynamic": props.accentColor,
   } as CSSProperties;
 
   const descriptionText = props.description ?? "";
@@ -21,27 +123,36 @@ const Account = (props: AccountProps) => {
     <li>
       <a
         href={props.serviceUrl}
-        className="group block w-full px-2"
+        className={styles.link}
         style={accentStyle}
       >
-        <div className="flex w-full items-center gap-3 px-0 py-2 text-[var(--text-primary)] transition-[padding,background-color,border-radius,color] duration-[400ms] ease-out group-hover:px-4 group-hover:rounded-[10px] group-hover:bg-[var(--accent)] group-hover:text-white group-hover:[text-shadow:0_1px_4px_rgba(0,0,0,0.2)] group-active:px-4 group-active:rounded-[10px] group-active:bg-[var(--accent)] group-active:text-white group-active:[text-shadow:0_1px_4px_rgba(0,0,0,0.2)] group-focus-visible:px-4 group-focus-visible:rounded-[10px] group-focus-visible:bg-[var(--accent)] group-focus-visible:text-white group-focus-visible:[text-shadow:0_1px_4px_rgba(0,0,0,0.2)] sm:gap-5 sm:py-3 sm:group-hover:px-5 sm:group-active:px-5 sm:group-focus-visible:px-5">
+        <div className={styles.row} data-account-row="">
           <span
-            className={`flex items-center justify-center text-[18px] text-[var(--text-primary)] transition-colors duration-[400ms] ease-out group-hover:text-white group-active:text-white group-focus-visible:text-white sm:text-[22px] ${props.iconClassName ?? "h-5 w-5 sm:h-6 sm:w-6"}`}
+            className={cx(styles.icon, props.iconClassName)}
+            data-account-primary=""
           >
             {props.serviceIcon}
           </span>
-          <div className="flex min-w-0 flex-1 items-center">
-            <span className="platform mr-2 w-24 shrink-0 whitespace-nowrap text-[12px] font-semibold leading-[1.2] text-[var(--text-primary)] transition-[margin,color] duration-[400ms] ease-out group-hover:mr-1 group-hover:text-white group-active:mr-1 group-active:text-white group-focus-visible:mr-1 group-focus-visible:text-white sm:mr-5 sm:text-[14px] md:w-28 md:text-[15px]">
+          <div className={styles.content}>
+            <span
+              className={styles.platform}
+              data-account-primary=""
+              data-account-platform=""
+            >
               {props.platform}
             </span>
             <div
-              className={`min-w-0 flex flex-col min-h-[40px] ${hasDescription ? "" : "justify-center"}`}
+              className={cx(styles.copy, !hasDescription && styles.copyCentered)}
             >
-              <p className="truncate text-[12px] leading-none text-[var(--text-primary)] whitespace-nowrap transition-colors duration-[400ms] ease-out group-hover:text-white group-active:text-white group-focus-visible:text-white sm:text-[14px] md:text-[15px]">
+              <p
+                className={styles.id}
+                data-account-id=""
+                data-account-primary=""
+              >
                 {props.id}
               </p>
               {hasDescription ? (
-                <p className="mt-0.5 truncate text-[12px] leading-snug text-[var(--text-tertiary)] transition-colors duration-[400ms] ease-out group-hover:text-white/90 group-active:text-white/90 group-focus-visible:text-white/90 sm:mt-1 sm:text-[13px]">
+                <p className={styles.description} data-account-description="">
                   {descriptionText}
                 </p>
               ) : null}

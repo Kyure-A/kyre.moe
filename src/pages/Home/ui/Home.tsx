@@ -12,6 +12,8 @@ import useRuntimeProfile from "@/shared/hooks/useRuntimeProfile";
 import { DEFAULT_LANG, getLangFromPath } from "@/shared/lib/i18n";
 import { srcPath } from "@/shared/lib/path";
 import GlitchImage from "@/shared/ui/GlitchImage/GlitchImage";
+import { css } from "styled-system/css";
+import { visuallyHidden } from "styled-system/patterns";
 
 const HERO_STYLE: CSSProperties = {
   width: "min(60vw, 1000px)",
@@ -32,6 +34,35 @@ const LOW_PERFORMANCE_GLITCH_PROBABILITY = 18;
 const LOW_PERFORMANCE_GLITCH_INTENSITY = 3;
 const LOW_PERFORMANCE_AMBIENT_NOISE_STRENGTH = 0.08;
 const LOW_PERFORMANCE_COOL_NOISE_STRENGTH = 0.32;
+
+const styles = {
+  root: css({
+    position: "relative",
+    height: "dvh",
+    width: "full",
+    overflow: "hidden",
+  }),
+  title: visuallyHidden(),
+  content: css({
+    position: "absolute",
+    inset: "0",
+    zIndex: "content",
+    display: "flex",
+    flexDirection: "column",
+    pt: "16",
+  }),
+  rotatorSpace: css({
+    display: "flex",
+    flexDirection: "column",
+    mb: "6",
+    zIndex: "controls",
+  }),
+  imageSlot: css({
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  }),
+};
 
 const Home = () => {
   const { lowPerformanceMode } = useRuntimeProfile();
@@ -130,15 +161,15 @@ const Home = () => {
     : DEFAULT_COOL_NOISE_STRENGTH;
 
   return (
-    <div className="relative h-dvh w-full overflow-hidden">
-      <h1 className="sr-only">{lang === "ja" ? "ホーム" : "Home"}</h1>
-      <div className="absolute flex flex-col z-10 pt-16 inset-0">
+    <div className={styles.root}>
+      <h1 className={styles.title}>{lang === "ja" ? "ホーム" : "Home"}</h1>
+      <div className={styles.content}>
         {/* FadeTextRotator は App で同じレイアウトで描画されるため、同じスペースを確保 */}
-        <div className="flex flex-col mb-6 z-20">
+        <div className={styles.rotatorSpace}>
           {/* 空のスペース - App 側の FadeTextRotator と同じ高さを取る */}
           <div style={{ height: "auto" }} />
         </div>
-        <div className="flex flex-col items-center center">
+        <div className={styles.imageSlot}>
           <GlitchImage
             maskSrc={srcPath("/kyure_a.png")}
             startDelayMs={1000}

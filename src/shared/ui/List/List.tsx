@@ -1,3 +1,5 @@
+import { css, cx } from "styled-system/css";
+
 type ListProps = {
   items: string[];
   className?: string;
@@ -8,9 +10,15 @@ type ListProps = {
  * Usage:
  *   <List items={['foo', 'bar']} />
  */
+const listClass = css({
+  listStyleType: "disc",
+  pl: "5",
+  spaceY: "1",
+});
+
 const List = ({ items, className = "" }: ListProps) => {
   return (
-    <ul className={`list-disc pl-5 space-y-1 ${className}`}>
+    <ul className={cx(listClass, className)}>
       {items.map((item) => (
         <li key={item}>{item}</li>
       ))}

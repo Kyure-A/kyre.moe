@@ -1,6 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { FaTwitter } from "react-icons/fa6";
 import Account from "./Account";
+import { css } from "styled-system/css";
+
+const listClass = css({
+  maxWidth: "xl",
+});
 
 const meta = {
   title: "Pages/Accounts/Account",
@@ -20,7 +25,7 @@ const meta = {
     },
   },
   render: (args) => (
-    <ul className="max-w-xl">
+    <ul className={listClass}>
       <Account {...args} />
     </ul>
   ),

@@ -17,6 +17,9 @@
 /.next/
 /out/
 
+# panda css
+/styled-system/
+
 # auto-generated blog images
 /public/blog/
 

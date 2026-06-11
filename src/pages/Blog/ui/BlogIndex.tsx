@@ -3,6 +3,8 @@ import BlogPostList from "@/pages/Blog/ui/BlogPostList";
 import BlogSection from "@/pages/Blog/ui/BlogSection";
 import type { BlogPostMeta } from "@/shared/lib/blog";
 import type { SiteLang } from "@/shared/lib/i18n";
+import { css } from "styled-system/css";
+import { visuallyHidden } from "styled-system/patterns";
 
 const COPY: Record<SiteLang, { empty: string; tags: string; title: string }> = {
   ja: {
@@ -22,17 +24,41 @@ type Props = {
   posts: BlogPostMeta[];
 };
 
+const styles = {
+  title: visuallyHidden(),
+  footer: css({
+    mt: "8",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    fontSize: "2xs",
+    letterSpacing: "label",
+    color: "text.tertiary",
+  }),
+  tagLink: css({
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "2",
+    transitionProperty: "colors",
+    transitionDuration: "slow",
+    transitionTimingFunction: "easeOut",
+    _hover: {
+      color: "text.primary",
+    },
+  }),
+};
+
 const BlogIndex = ({ lang, posts }: Props) => {
   const copy = COPY[lang];
 
   return (
     <BlogSection>
-      <h1 className="sr-only">{copy.title}</h1>
+      <h1 className={styles.title}>{copy.title}</h1>
       <BlogPostList posts={posts} emptyLabel={copy.empty} />
-      <div className="mt-8 flex items-center justify-end text-[11px] tracking-[0.08em] text-[var(--text-tertiary)]">
+      <div className={styles.footer}>
         <Link
           href={`/${lang}/blog/tag`}
-          className="inline-flex items-center gap-2 transition-colors duration-[300ms] ease-out hover:text-[var(--text-primary)]"
+          className={styles.tagLink}
         >
           {copy.tags} →
         </Link>

@@ -1,5 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import FadeTransition from "./FadeTransition";
+import { css } from "styled-system/css";
+
+const panelClass = css({
+  borderRadius: "xl",
+  borderWidth: "1px",
+  borderColor: "border.subtle",
+  p: "5",
+  color: "text.primary",
+});
 
 const meta = {
   title: "Shared/FadeTransition",
@@ -12,13 +21,13 @@ const meta = {
     children: [
       <div
         key="one"
-        className="rounded-xl border border-[var(--border-subtle)] p-5 text-[var(--text-primary)]"
+        className={panelClass}
       >
         First content
       </div>,
       <div
         key="two"
-        className="rounded-xl border border-[var(--border-subtle)] p-5 text-[var(--text-primary)]"
+        className={panelClass}
       >
         Second content
       </div>,

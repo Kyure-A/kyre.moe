@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { css, cx } from "styled-system/css";
 
 type BlogSectionSize = "default" | "narrow";
 
@@ -8,19 +9,22 @@ type Props = {
   className?: string;
 };
 
-const SIZE_CLASS: Record<BlogSectionSize, string> = {
-  default: "max-w-4xl",
-  narrow: "max-w-3xl",
+const sizeClass: Record<BlogSectionSize, string> = {
+  default: css({ maxWidth: "content-4xl" }),
+  narrow: css({ maxWidth: "content-3xl" }),
 };
 
 const BlogSection = ({ children, size = "default", className }: Props) => {
-  const classes = [
-    "w-full py-24 mx-auto px-4 sm:px-6",
-    SIZE_CLASS[size],
+  const classes = cx(
+    css({
+      width: "full",
+      py: "page-y",
+      mx: "auto",
+      px: { base: "4", sm: "6" },
+    }),
+    sizeClass[size],
     className,
-  ]
-    .filter((value): value is string => Boolean(value))
-    .join(" ");
+  );
 
   return <section className={classes}>{children}</section>;
 };

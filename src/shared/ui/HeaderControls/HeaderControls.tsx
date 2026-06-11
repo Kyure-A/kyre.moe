@@ -5,6 +5,70 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { DEFAULT_LANG, getLangFromPath } from "@/shared/lib/i18n";
 import LanguageToggle from "@/shared/ui/LanguageToggleSwitch/LanguageToggleSwitch";
 import ThemeToggle from "@/shared/ui/ThemeToggleSwitch/ThemeToggleSwitch";
+import { css, cx } from "styled-system/css";
+
+const styles = {
+  header: css({
+    position: "fixed",
+    top: "control-offset",
+    left: "control-offset",
+    right: "control-offset",
+    zIndex: "header",
+    display: "flex",
+    alignItems: "center",
+  }),
+  spread: css({
+    justifyContent: "space-between",
+  }),
+  end: css({
+    justifyContent: "flex-end",
+  }),
+  backButton: css({
+    position: "relative",
+    display: "inline-flex",
+    width: "control",
+    height: "control",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    borderRadius: "control",
+    backgroundColor: "control.bg",
+    color: "control.fg",
+    boxShadow: "md",
+    transitionProperty: "common",
+    transitionDuration: "toggle",
+    _hover: {
+      color: "control.fgStrong",
+    },
+    _focusVisible: {
+      outlineWidth: "2px",
+      outlineStyle: "solid",
+      outlineColor: "theme.accent",
+      outlineOffset: "0.5",
+    },
+  }),
+  backOrb: css({
+    position: "absolute",
+    width: "control-orb",
+    height: "control-orb",
+    borderRadius: "control",
+    backgroundColor: "control.orb",
+    transitionProperty: "common",
+    transitionDuration: "toggle",
+    top: "-16",
+    left: "-10",
+  }),
+  backIcon: css({
+    position: "relative",
+    zIndex: "content",
+    fontSize: "sm",
+  }),
+  controls: css({
+    display: "flex",
+    alignItems: "center",
+    gap: "2",
+  }),
+};
 
 const HeaderControls = () => {
   const router = useRouter();
@@ -23,22 +87,20 @@ const HeaderControls = () => {
 
   return (
     <header
-      className={`fixed top-6 left-6 right-6 z-40 flex items-center ${
-        showBack ? "justify-between" : "justify-end"
-      }`}
+      className={cx(styles.header, showBack ? styles.spread : styles.end)}
     >
       {showBack && (
         <button
           type="button"
           onClick={handleBack}
           aria-label="Go back"
-          className="relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-[var(--control-bg)] text-[var(--control-fg)] shadow-md transition-all duration-500 hover:text-[var(--control-fg-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent)]/55"
+          className={styles.backButton}
         >
-          <span className="absolute h-24 w-24 rounded-full bg-[var(--control-orb)] transition-all duration-500 -top-16 -left-10" />
-          <FaArrowLeft className="relative z-10 text-sm" />
+          <span className={styles.backOrb} />
+          <FaArrowLeft className={styles.backIcon} />
         </button>
       )}
-      <div className="flex items-center gap-2">
+      <div className={styles.controls}>
         <ThemeToggle />
         <LanguageToggle onChange={() => {}} />
       </div>

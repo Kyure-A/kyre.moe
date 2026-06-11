@@ -1,5 +1,7 @@
 import type { SiteLang } from "@/shared/lib/i18n";
 import LiveAgeText from "./LiveAgeText";
+import { css } from "styled-system/css";
+import { visuallyHidden } from "styled-system/patterns";
 
 type SectionItem =
   | string
@@ -83,6 +85,51 @@ const ABOUTME_DATA: Record<SiteLang, AboutMeContent> = {
   },
 };
 
+const styles = {
+  row: css({
+    display: "grid",
+    gap: { base: "4", md: "6" },
+    borderTopWidth: "1px",
+    borderColor: "border.subtle",
+    py: "6",
+    md: {
+      gridTemplateColumns: "88px minmax(0, 1fr)",
+    },
+  }),
+  rowTitle: css({
+    pt: "1",
+    fontFamily: "mono",
+    fontSize: "2xs",
+    textTransform: "uppercase",
+    letterSpacing: "wideLabel",
+    color: "text.secondary",
+  }),
+  list: css({
+    listStyleType: "disc",
+    spaceY: "1",
+    pl: "5",
+    fontSize: "account-lg",
+    lineHeight: "section",
+    color: "text.secondary",
+  }),
+  link: css({
+    transitionProperty: "colors",
+    transitionDuration: "medium",
+    transitionTimingFunction: "easeOut",
+    _hover: {
+      color: "text.primary",
+    },
+  }),
+  page: css({
+    mx: "auto",
+    width: "full",
+    maxWidth: "content-4xl",
+    px: { base: "4", sm: "6" },
+    py: "page-y",
+  }),
+  title: visuallyHidden(),
+};
+
 const SectionRow = ({
   section,
   lang,
@@ -91,12 +138,12 @@ const SectionRow = ({
   lang: SiteLang;
 }) => {
   return (
-    <div className="grid gap-4 border-t border-[var(--border-subtle)] py-6 md:grid-cols-[88px_minmax(0,1fr)] md:gap-6">
-      <h2 className="pt-1 font-mono text-[11px] uppercase tracking-[0.3em] text-[var(--text-secondary)]">
+    <div className={styles.row}>
+      <h2 className={styles.rowTitle}>
         {section.label}
       </h2>
 
-      <ul className="list-disc space-y-1 pl-5 text-[15px] leading-7 text-[var(--text-secondary)]">
+      <ul className={styles.list}>
         {section.items.map((item, index) => (
           <li
             key={
@@ -114,7 +161,7 @@ const SectionRow = ({
                 href={item.href}
                 target="_blank"
                 rel="noreferrer"
-                className="transition-colors duration-[250ms] ease-out hover:text-[var(--text-primary)]"
+                className={styles.link}
               >
                 {item.label}
               </a>
@@ -130,8 +177,8 @@ const AboutMe = ({ lang }: { lang: SiteLang }) => {
   const data = ABOUTME_DATA[lang];
 
   return (
-    <section className="mx-auto w-full max-w-4xl px-4 py-24 sm:px-6">
-      <h1 className="sr-only">{data.title}</h1>
+    <section className={styles.page}>
+      <h1 className={styles.title}>{data.title}</h1>
 
       <div>
         {data.sections.map((section) => (

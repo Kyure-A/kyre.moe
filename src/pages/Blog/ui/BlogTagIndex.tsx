@@ -3,6 +3,7 @@ import BlogPostList from "@/pages/Blog/ui/BlogPostList";
 import BlogSection from "@/pages/Blog/ui/BlogSection";
 import type { BlogPostMeta } from "@/shared/lib/blog";
 import type { SiteLang } from "@/shared/lib/i18n";
+import { css } from "styled-system/css";
 
 type Props = {
   lang: SiteLang;
@@ -33,24 +34,61 @@ const COPY: Record<
   },
 };
 
+const styles = {
+  header: css({
+    mb: "10",
+  }),
+  label: css({
+    fontSize: "2xs",
+    letterSpacing: "label",
+    color: "text.tertiary",
+  }),
+  title: css({
+    mt: "3",
+    fontSize: { base: "2xl", md: "3xl" },
+    fontWeight: "semibold",
+    color: "text.primary",
+  }),
+  count: css({
+    mt: "2",
+    fontSize: "sm",
+    color: "text.secondary",
+  }),
+  back: css({
+    mt: "5",
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "2",
+    fontSize: "2xs",
+    letterSpacing: "label",
+    color: "text.tertiary",
+    transitionProperty: "colors",
+    transitionDuration: "slow",
+    transitionTimingFunction: "easeOut",
+    _hover: {
+      color: "text.primary",
+    },
+  }),
+};
+
 const BlogTagIndex = ({ lang, tag, posts }: Props) => {
   const copy = COPY[lang];
 
   return (
     <BlogSection>
-      <header className="mb-10">
-        <p className="text-[11px] tracking-[0.08em] text-[var(--text-tertiary)]">
+      <header className={styles.header}>
+        <p className={styles.label}>
           {copy.label}
         </p>
-        <h1 className="mt-3 text-2xl font-semibold text-[var(--text-primary)] md:text-3xl">
+        <h1 className={styles.title}>
           #{tag}
         </h1>
-        <p className="mt-2 text-sm text-[var(--text-secondary)]">
+        <p className={styles.count}>
           {copy.count(posts.length)}
         </p>
         <Link
           href={`/${lang}/blog/tag`}
-          className="mt-5 inline-flex items-center gap-2 text-[11px] tracking-[0.08em] text-[var(--text-tertiary)] transition-colors duration-[300ms] ease-out hover:text-[var(--text-primary)]"
+          className={styles.back}
         >
           ← {copy.back}
         </Link>

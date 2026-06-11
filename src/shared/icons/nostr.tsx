@@ -1,7 +1,15 @@
+import { css } from "styled-system/css";
+
+const iconClass = css({
+  display: "inline-block",
+  width: "icon-md",
+  height: "icon-md",
+});
+
 export const NostrIcon = () => {
   return (
     <svg
-      className="w-6 h-6 inline-block"
+      className={iconClass}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 256 256"
       fill="currentColor"

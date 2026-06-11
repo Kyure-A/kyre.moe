@@ -21,6 +21,8 @@ import { NostrIcon } from "@/shared/icons/nostr";
 import { VRChatIcon } from "@/shared/icons/vrchat";
 import type { SiteLang } from "@/shared/lib/i18n";
 import Account, { type AccountProps } from "./Account";
+import { css } from "styled-system/css";
+import { visuallyHidden } from "styled-system/patterns";
 
 type AccountData = Omit<AccountProps, "delay" | "description"> & {
   description?: Partial<Record<SiteLang, string>>;
@@ -195,16 +197,47 @@ const PAGE_TITLE: Record<SiteLang, string> = {
   en: "Accounts",
 };
 
+const styles = {
+  section: css({
+    width: "full",
+    md: {
+      display: "grid",
+      minHeight: "dvh",
+      placeItems: "center",
+    },
+  }),
+  container: css({
+    mx: "auto",
+    width: "full",
+    maxWidth: "content-4xl",
+    px: { base: "4", sm: "6" },
+    py: { base: "page-y", md: "16" },
+  }),
+  title: visuallyHidden(),
+  list: css({
+    mx: "auto",
+    display: "grid",
+    maxWidth: { base: "card-sm", md: "full" },
+    gridTemplateColumns: {
+      base: "repeat(1, minmax(0, 1fr))",
+      md: "repeat(2, minmax(0, 1fr))",
+    },
+    columnGap: "8",
+    rowGap: "3",
+    listStyle: "none",
+  }),
+};
+
 const Accounts = ({ lang }: { lang: SiteLang }) => {
   const accounts = ACCOUNT_DATA.map((account) => ({
     ...account,
     description: account.description?.[lang] ?? "",
   }));
   return (
-    <section className="w-full md:grid md:min-h-dvh md:place-items-center">
-      <div className="mx-auto w-full max-w-4xl px-4 py-24 sm:px-6 md:py-16">
-        <h1 className="sr-only">{PAGE_TITLE[lang]}</h1>
-        <ul className="mx-auto grid max-w-72 grid-cols-1 gap-x-8 gap-y-3 list-none md:max-w-none md:grid-cols-2">
+    <section className={styles.section}>
+      <div className={styles.container}>
+        <h1 className={styles.title}>{PAGE_TITLE[lang]}</h1>
+        <ul className={styles.list}>
           {accounts.map((account) => {
             return (
               <Account
