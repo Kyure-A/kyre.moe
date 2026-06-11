@@ -442,10 +442,7 @@ const GlitchImage = ({
           ))}
 
           {/* Noise + scanline layers */}
-          <div
-            className={styles.layer}
-            style={effectsMaskStyle}
-          >
+          <div className={styles.layer} style={effectsMaskStyle}>
             {/* Sharp horizontal glitch lines */}
             {glitchData.glitchLines.map((line, index) => (
               <div

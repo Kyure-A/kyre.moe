@@ -21,11 +21,7 @@ const meta = {
     reverse: false,
     delay: 0,
     threshold: 0.1,
-    children: (
-      <div className={demoClass}>
-        Fade-in demo content
-      </div>
-    ),
+    children: <div className={demoClass}>Fade-in demo content</div>,
   },
 } satisfies Meta<typeof AnimatedContent>;
 

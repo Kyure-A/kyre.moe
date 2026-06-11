@@ -67,9 +67,7 @@ const ThemeToggle = () => {
       <span
         className={cx(styles.orb, isLight ? styles.orbLight : styles.orbDark)}
       />
-      <span className={styles.icon}>
-        {isLight ? <FaSun /> : <FaMoon />}
-      </span>
+      <span className={styles.icon}>{isLight ? <FaSun /> : <FaMoon />}</span>
     </button>
   );
 };

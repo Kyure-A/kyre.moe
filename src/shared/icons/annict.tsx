@@ -23,11 +23,5 @@ const iconClass = css({
 });
 
 export const AnnictIcon = () => {
-  return (
-    <span
-      aria-hidden="true"
-      className={iconClass}
-      style={iconStyle}
-    />
-  );
+  return <span aria-hidden="true" className={iconClass} style={iconStyle} />;
 };

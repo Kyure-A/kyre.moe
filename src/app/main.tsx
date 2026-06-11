@@ -242,9 +242,7 @@ const App = ({ children }: Props) => {
         />
       </div>
 
-      <main className={styles.main}>
-        {children}
-      </main>
+      <main className={styles.main}>{children}</main>
     </>
   );
 };

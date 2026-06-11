@@ -56,10 +56,7 @@ const BlogIndex = ({ lang, posts }: Props) => {
       <h1 className={styles.title}>{copy.title}</h1>
       <BlogPostList posts={posts} emptyLabel={copy.empty} />
       <div className={styles.footer}>
-        <Link
-          href={`/${lang}/blog/tag`}
-          className={styles.tagLink}
-        >
+        <Link href={`/${lang}/blog/tag`} className={styles.tagLink}>
           {copy.tags} →
         </Link>
       </div>

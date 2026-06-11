@@ -57,9 +57,7 @@ const StoryOrbitDock = (args: OrbitDockProps) => {
       className={styles.frame}
       style={{ width: "min(80vmin, 640px)", height: "min(80vmin, 640px)" }}
     >
-      <div className={styles.readout}>
-        rotation: {rotation.toFixed(1)}
-      </div>
+      <div className={styles.readout}>rotation: {rotation.toFixed(1)}</div>
       <div className={styles.layer}>
         <OrbitDock
           {...args}

@@ -93,15 +93,9 @@ const BlogTagList = ({ lang, tags }: Props) => {
   return (
     <BlogSection>
       <header className={styles.header}>
-        <p className={styles.label}>
-          {copy.label}
-        </p>
-        <h1 className={styles.title}>
-          {copy.title}
-        </h1>
-        <p className={styles.count}>
-          {copy.count(tags.length)}
-        </p>
+        <p className={styles.label}>{copy.label}</p>
+        <h1 className={styles.title}>{copy.title}</h1>
+        <p className={styles.count}>{copy.count(tags.length)}</p>
       </header>
       {tags.length === 0 ? (
         <p className={styles.empty}>{copy.empty}</p>
@@ -114,9 +108,7 @@ const BlogTagList = ({ lang, tags }: Props) => {
               className={styles.tag}
             >
               <span>#{item.label}</span>
-              <span className={styles.tagCount}>
-                {item.count}
-              </span>
+              <span className={styles.tagCount}>{item.count}</span>
             </Link>
           ))}
         </div>

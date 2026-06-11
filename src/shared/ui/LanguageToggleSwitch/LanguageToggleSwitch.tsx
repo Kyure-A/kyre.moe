@@ -152,7 +152,10 @@ const LanguageToggle = ({ onChange }: LanguageToggleProps) => {
 
         {/* 背景のアクセント（装飾要素） */}
         <span
-          className={cx(styles.orb, language === "ja" ? styles.orbJa : styles.orbEn)}
+          className={cx(
+            styles.orb,
+            language === "ja" ? styles.orbJa : styles.orbEn,
+          )}
         />
 
         {/* 言語ラベル - 活性側 */}
@@ -160,9 +163,7 @@ const LanguageToggle = ({ onChange }: LanguageToggleProps) => {
           className={cx(
             styles.label,
             styles.labelJa,
-            language === "ja"
-              ? styles.labelActive
-              : styles.labelMuted,
+            language === "ja" ? styles.labelActive : styles.labelMuted,
           )}
         >
           Ja
@@ -172,18 +173,14 @@ const LanguageToggle = ({ onChange }: LanguageToggleProps) => {
           className={cx(
             styles.label,
             styles.labelEn,
-            language === "en"
-              ? styles.labelActive
-              : styles.labelMuted,
+            language === "en" ? styles.labelActive : styles.labelMuted,
           )}
         >
           En
         </span>
 
         {/* トグルの丸 */}
-        <span
-          className={cx(styles.knob, language === "en" && styles.knobEn)}
-        >
+        <span className={cx(styles.knob, language === "en" && styles.knobEn)}>
           {/* 丸の中のアクセント */}
           <span className={styles.knobInner} />
         </span>

@@ -77,19 +77,10 @@ const BlogTagIndex = ({ lang, tag, posts }: Props) => {
   return (
     <BlogSection>
       <header className={styles.header}>
-        <p className={styles.label}>
-          {copy.label}
-        </p>
-        <h1 className={styles.title}>
-          #{tag}
-        </h1>
-        <p className={styles.count}>
-          {copy.count(posts.length)}
-        </p>
-        <Link
-          href={`/${lang}/blog/tag`}
-          className={styles.back}
-        >
+        <p className={styles.label}>{copy.label}</p>
+        <h1 className={styles.title}>#{tag}</h1>
+        <p className={styles.count}>{copy.count(posts.length)}</p>
+        <Link href={`/${lang}/blog/tag`} className={styles.back}>
           ← {copy.back}
         </Link>
       </header>

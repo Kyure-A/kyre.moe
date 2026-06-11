@@ -28,27 +28,33 @@ const styles = {
     position: "relative",
     display: "block",
     width: "full",
-    "&:is(:hover, :focus-within, [data-hover], [data-focus-within]) [data-blog-content]": {
-      px: "4",
-      borderRadius: "item",
-      backgroundColor: "accent.dynamic",
-      color: "postHoverTitle",
-    },
-    "&:is(:hover, :focus-within, [data-hover], [data-focus-within]) [data-blog-meta]": {
-      color: "postHoverMeta",
-    },
-    "&:is(:hover, :focus-within, [data-hover], [data-focus-within]) [data-blog-title]": {
-      color: "postHoverTitle",
-    },
-    "&:is(:hover, :focus-within, [data-hover], [data-focus-within]) [data-blog-description]": {
-      color: "postHoverBody",
-    },
-    "&:is(:hover, :focus-within, [data-hover], [data-focus-within]) [data-blog-tags]": {
-      color: "postHoverBody",
-    },
-    "&:is(:hover, :focus-within, [data-hover], [data-focus-within]) [data-blog-tag]": {
-      borderColor: "postHoverBorder",
-    },
+    "&:is(:hover, :focus-within, [data-hover], [data-focus-within]) [data-blog-content]":
+      {
+        px: "4",
+        borderRadius: "item",
+        backgroundColor: "accent.dynamic",
+        color: "postHoverTitle",
+      },
+    "&:is(:hover, :focus-within, [data-hover], [data-focus-within]) [data-blog-meta]":
+      {
+        color: "postHoverMeta",
+      },
+    "&:is(:hover, :focus-within, [data-hover], [data-focus-within]) [data-blog-title]":
+      {
+        color: "postHoverTitle",
+      },
+    "&:is(:hover, :focus-within, [data-hover], [data-focus-within]) [data-blog-description]":
+      {
+        color: "postHoverBody",
+      },
+    "&:is(:hover, :focus-within, [data-hover], [data-focus-within]) [data-blog-tags]":
+      {
+        color: "postHoverBody",
+      },
+    "&:is(:hover, :focus-within, [data-hover], [data-focus-within]) [data-blog-tag]":
+      {
+        borderColor: "postHoverBorder",
+      },
   }),
   overlayLink: css({
     position: "absolute",
@@ -133,9 +139,7 @@ const BlogPostList = ({ posts, emptyLabel }: Props) => {
   return (
     <ul className={styles.list}>
       {posts.length === 0 ? (
-        <li className={styles.empty}>
-          {emptyLabel}
-        </li>
+        <li className={styles.empty}>{emptyLabel}</li>
       ) : (
         posts.map((post) => (
           <li key={`${post.slug}-${post.lang}`} className={styles.item}>

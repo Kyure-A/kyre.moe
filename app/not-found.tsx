@@ -120,13 +120,8 @@ const NotFound = () => {
       <div className={styles.content}>
         <p className={styles.code}>404</p>
         <h1 className={styles.title}>{copy.title}</h1>
-        <p className={styles.description}>
-          {copy.description}
-        </p>
-        <Link
-          href={`/${lang}`}
-          className={styles.action}
-        >
+        <p className={styles.description}>{copy.description}</p>
+        <Link href={`/${lang}`} className={styles.action}>
           {copy.action}
         </Link>
       </div>

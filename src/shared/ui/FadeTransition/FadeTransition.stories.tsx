@@ -19,16 +19,10 @@ const meta = {
     duration: 500,
     blur: false,
     children: [
-      <div
-        key="one"
-        className={panelClass}
-      >
+      <div key="one" className={panelClass}>
         First content
       </div>,
-      <div
-        key="two"
-        className={panelClass}
-      >
+      <div key="two" className={panelClass}>
         Second content
       </div>,
     ],
