@@ -8,12 +8,73 @@ import useIsMobile from "@/shared/hooks/useIsMobile";
 import useRuntimeProfile from "@/shared/hooks/useRuntimeProfile";
 import HeaderControls from "@/shared/ui/HeaderControls/HeaderControls";
 import OrbitDock from "@/shared/ui/OrbitDock/OrbitDock";
+import { css, cx } from "styled-system/css";
+
+const styles = {
+  fullSize: css({
+    width: "full",
+    height: "full",
+  }),
+  fullWidth: css({
+    width: "full",
+  }),
+  homeShader: css({
+    position: "fixed",
+    inset: "0",
+    zIndex: "base",
+  }),
+  centeredBackLayer: css({
+    position: "fixed",
+    left: "half",
+    top: "half",
+    zIndex: "canvas",
+    transform: "translate(-50%, -50%)",
+  }),
+  textOverlay: css({
+    position: "fixed",
+    inset: "0",
+    zIndex: "overlay",
+    overflow: "hidden",
+    pointerEvents: "none",
+  }),
+  textOverlayInner: css({
+    position: "absolute",
+    inset: "0",
+    display: "flex",
+    flexDirection: "column",
+    pt: "16",
+  }),
+  textSlot: css({
+    display: "flex",
+    flexDirection: "column",
+    mb: "6",
+    zIndex: "controls",
+    pointerEvents: "auto",
+  }),
+  spacer: css({
+    flex: "1",
+  }),
+  centeredFrontLayer: css({
+    position: "fixed",
+    left: "half",
+    top: "half",
+    zIndex: "controls",
+    transform: "translate(-50%, -50%)",
+  }),
+  main: css({
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  }),
+};
 
 const BackgroundShader = dynamic(
   () => import("@/shared/ui/Background/Background"),
   {
     ssr: false,
-    loading: () => <div className="w-full h-full" />,
+    loading: () => <div className={styles.fullSize} />,
   },
 );
 
@@ -21,7 +82,7 @@ const FadeTextRotator = dynamic(
   () => import("@/pages/Home/ui/FadeTextRotator"),
   {
     ssr: false,
-    loading: () => <div className="w-full" />,
+    loading: () => <div className={styles.fullWidth} />,
   },
 );
 
@@ -98,7 +159,7 @@ const App = ({ children }: Props) => {
       <HeaderControls />
 
       <div
-        className="home-shader fixed inset-0 z-0"
+        className={cx("home-shader", styles.homeShader)}
         style={homeLayerStyle}
         aria-hidden={!isHome}
       >
@@ -121,7 +182,7 @@ const App = ({ children }: Props) => {
       </div>
 
       <div
-        className="fixed left-1/2 top-1/2 z-[1] -translate-x-1/2 -translate-y-1/2"
+        className={styles.centeredBackLayer}
         style={{ ...ORBIT_VARS, ...homeLayerStyle }}
         aria-hidden={!isHome}
       >
@@ -139,12 +200,12 @@ const App = ({ children }: Props) => {
 
       {/* FadeTextRotator - 元の Home.tsx と同じレイアウト構造を再現、キャラ画像より前面 */}
       <div
-        className="fixed inset-0 z-[15] overflow-hidden pointer-events-none"
+        className={styles.textOverlay}
         style={{ visibility: isHome ? "visible" : "hidden" }}
         aria-hidden={!isHome}
       >
-        <div className="absolute flex flex-col pt-16 inset-0">
-          <div className="flex flex-col mb-6 z-20 pointer-events-auto">
+        <div className={styles.textOverlayInner}>
+          <div className={styles.textSlot}>
             <FadeTextRotator
               asciiMaxFps={asciiMaxFps}
               asciiStartDelayMs={startDelayMs}
@@ -154,13 +215,13 @@ const App = ({ children }: Props) => {
             />
           </div>
           {/* 画像のスペースを確保（実際の画像は children で描画） */}
-          <div className="flex-1" />
+          <div className={styles.spacer} />
         </div>
       </div>
 
       {/* OrbitDock (front layer) - 常にマウント、Home でのみ表示 */}
       <div
-        className="fixed left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2"
+        className={styles.centeredFrontLayer}
         style={{ ...ORBIT_VARS, ...homeLayerStyle }}
         aria-hidden={!isHome}
       >
@@ -181,7 +242,7 @@ const App = ({ children }: Props) => {
         />
       </div>
 
-      <main className="flex-1 flex flex-col justify-center items-center">
+      <main className={styles.main}>
         {children}
       </main>
     </>

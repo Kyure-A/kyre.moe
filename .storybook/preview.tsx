@@ -1,6 +1,14 @@
 import type { Preview } from "@storybook/react";
 import "../app/globals.css";
 import ThemeProvider from "@/shared/ui/ThemeProvider/ThemeProvider";
+import { css } from "styled-system/css";
+
+const previewFrameClass = css({
+  width: "full",
+  minHeight: "screen",
+  py: "10",
+  px: "6",
+});
 
 const preview: Preview = {
   parameters: {
@@ -21,7 +29,7 @@ const preview: Preview = {
   decorators: [
     (Story) => (
       <ThemeProvider>
-        <div className="w-full min-h-screen py-10 px-6">
+        <div className={previewFrameClass}>
           <Story />
         </div>
       </ThemeProvider>

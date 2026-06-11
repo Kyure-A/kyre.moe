@@ -2,6 +2,55 @@
 
 import { FaMoon, FaSun } from "react-icons/fa6";
 import { useTheme } from "@/shared/ui/ThemeProvider/ThemeProvider";
+import { css, cx } from "styled-system/css";
+
+const styles = {
+  button: css({
+    position: "relative",
+    display: "inline-flex",
+    width: "control",
+    height: "control",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    borderRadius: "control",
+    backgroundColor: "control.bg",
+    color: "control.fg",
+    boxShadow: "md",
+    transitionProperty: "common",
+    transitionDuration: "toggle",
+    _hover: {
+      color: "control.fgStrong",
+    },
+    _focusVisible: {
+      outlineWidth: "2px",
+      outlineStyle: "solid",
+      outlineColor: "theme.accent",
+      outlineOffset: "0.5",
+    },
+  }),
+  orb: css({
+    position: "absolute",
+    width: "control-orb",
+    height: "control-orb",
+    borderRadius: "control",
+    backgroundColor: "control.orb",
+    transitionProperty: "common",
+    transitionDuration: "toggle",
+    top: "-16",
+  }),
+  orbLight: css({
+    right: "-10",
+  }),
+  orbDark: css({
+    left: "-10",
+  }),
+  icon: css({
+    position: "relative",
+    zIndex: "content",
+    fontSize: "sm",
+  }),
+};
 
 const ThemeToggle = () => {
   const { theme, toggleTheme } = useTheme();
@@ -13,14 +62,12 @@ const ThemeToggle = () => {
       onClick={toggleTheme}
       aria-pressed={isLight}
       aria-label="Toggle color theme"
-      className="relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-[var(--control-bg)] text-[var(--control-fg)] shadow-md transition-all duration-500 hover:text-[var(--control-fg-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-accent)]/55"
+      className={styles.button}
     >
       <span
-        className={`absolute h-24 w-24 rounded-full bg-[var(--control-orb)] transition-all duration-500 ${
-          isLight ? "-top-16 -right-10" : "-top-16 -left-10"
-        }`}
+        className={cx(styles.orb, isLight ? styles.orbLight : styles.orbDark)}
       />
-      <span className="relative z-10 text-sm">
+      <span className={styles.icon}>
         {isLight ? <FaSun /> : <FaMoon />}
       </span>
     </button>

@@ -1,8 +1,16 @@
+import { css } from "styled-system/css";
+
+const iconClass = css({
+  display: "inline-block",
+  width: { base: "icon-sm", sm: "icon-md" },
+  height: { base: "icon-sm", sm: "icon-md" },
+});
+
 export const HatenaBlogIcon = () => {
   return (
     <svg
       aria-hidden="true"
-      className="inline-block h-5 w-5 sm:h-6 sm:w-6"
+      className={iconClass}
       viewBox="0 0 100 100"
       xmlns="http://www.w3.org/2000/svg"
     >

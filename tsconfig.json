@@ -25,6 +25,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "styled-system/*": [
+        "./styled-system/*"
       ]
     }
   },
@@ -32,6 +35,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
+    "styled-system",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],

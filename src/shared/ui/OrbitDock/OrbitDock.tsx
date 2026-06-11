@@ -3,6 +3,7 @@
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
 import { memo, useCallback, useRef, useState } from "react";
 import type { DockItemData } from "@/shared/hooks/useDockItems";
+import { css, cx } from "styled-system/css";
 
 export type OrbitDockProps = {
   items: DockItemData[];
@@ -36,6 +37,33 @@ type OrbitDockItemProps = {
   dragStateRef: React.MutableRefObject<{ dragged: boolean }>;
 };
 
+const styles = {
+  billboard: css({
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "control",
+    borderWidth: "1px",
+    borderColor: "orbit.pillBorder",
+    backgroundColor: "orbit.pillBg",
+    color: "orbit.pillText",
+    boxShadow: "orbitPill",
+    transitionProperty: "common",
+    transitionDuration: "interaction",
+    _groupFocusVisible: {
+      borderColor: "orbit.pillBorderStrong",
+      color: "orbit.pillTextStrong",
+    },
+  }),
+  billboardHovered: css({
+    borderColor: "orbit.pillBorderStrong",
+    color: "orbit.pillTextStrong",
+  }),
+  item: css({
+    pointerEvents: "auto",
+  }),
+};
+
 const OrbitDockItem = memo(
   ({
     item,
@@ -50,7 +78,11 @@ const OrbitDockItem = memo(
     const label = item.label;
     const itemBody = (
       <span
-        className={`orbit-dock__billboard flex items-center justify-center rounded-full border border-[var(--orbit-pill-border)] bg-[var(--orbit-pill-bg)] text-[var(--orbit-pill-text)] shadow-[var(--orbit-pill-shadow)] transition duration-200 group-focus-visible:border-[var(--orbit-pill-border-strong)] group-focus-visible:text-[var(--orbit-pill-text-strong)] ${isHovered ? "border-[var(--orbit-pill-border-strong)] text-[var(--orbit-pill-text-strong)]" : ""}`}
+        className={cx(
+          "orbit-dock__billboard",
+          styles.billboard,
+          isHovered && styles.billboardHovered,
+        )}
       >
         {item.icon}
       </span>
@@ -60,7 +92,7 @@ const OrbitDockItem = memo(
       return (
         <div
           data-hovered={isHovered ? "true" : undefined}
-          className={`orbit-dock__item group pointer-events-auto ${item.className ?? ""}`}
+          className={cx("orbit-dock__item", "group", styles.item, item.className)}
           style={
             {
               "--orbit-delay": `${delay}s`,
@@ -78,7 +110,7 @@ const OrbitDockItem = memo(
         type="button"
         data-orbit-index={index}
         data-hovered={isHovered ? "true" : undefined}
-        className={`orbit-dock__item group pointer-events-auto ${item.className ?? ""}`}
+        className={cx("orbit-dock__item", "group", styles.item, item.className)}
         style={
           {
             "--orbit-delay": `${delay}s`,
@@ -316,7 +348,7 @@ const OrbitDock = ({
   return (
     <div
       ref={rootRef}
-      className={`orbit-dock ${className}`}
+      className={cx("orbit-dock", className)}
       style={rootStyle}
       data-layer={layer}
       data-draggable={dragEnabled ? "true" : "false"}

@@ -1,12 +1,32 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import FadeTransition from "@/shared/ui/FadeTransition/FadeTransition";
+import { css } from "styled-system/css";
+
+const styles = {
+  center: css({
+    width: "full",
+    height: "full",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  }),
+  textFallback: css({
+    width: "full",
+    height: "full",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "rotator",
+    color: "text.primary",
+  }),
+};
 
 // dynamic import すればコードが独立したチャンクに分離され、初期バンドルサイズが削減されるらしい
 const ASCIIText = dynamic(() => import("@/shared/ui/ASCIIText/ASCIIText"), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-full flex items-center justify-center" />
+    <div className={styles.center} />
   ),
 });
 
@@ -67,7 +87,7 @@ export const FadeTextRotator = ({
         ) : (
           <div
             key={text}
-            className="w-full h-full flex items-center justify-center text-[20px] text-[var(--text-primary)]"
+            className={styles.textFallback}
           >
             {text}
           </div>

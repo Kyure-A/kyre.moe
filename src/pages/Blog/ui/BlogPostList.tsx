@@ -2,59 +2,179 @@ import { Link } from "next-view-transitions";
 import type { CSSProperties } from "react";
 import type { BlogPostMeta } from "@/shared/lib/blog";
 import { buildTagPath, formatDate } from "@/shared/lib/blog";
+import { css } from "styled-system/css";
+import { visuallyHidden } from "styled-system/patterns";
 
 type Props = {
   posts: BlogPostMeta[];
   emptyLabel: string;
 };
 
+const styles = {
+  list: css({
+    listStyle: "none",
+    spaceY: "2",
+  }),
+  empty: css({
+    px: "2",
+    py: "3",
+    fontSize: "sm",
+    color: "text.tertiary",
+  }),
+  item: css({
+    px: "2",
+  }),
+  card: css({
+    position: "relative",
+    display: "block",
+    width: "full",
+    "&:is(:hover, :focus-within, [data-hover], [data-focus-within]) [data-blog-content]": {
+      px: "4",
+      borderRadius: "item",
+      backgroundColor: "accent.dynamic",
+      color: "postHoverTitle",
+    },
+    "&:is(:hover, :focus-within, [data-hover], [data-focus-within]) [data-blog-meta]": {
+      color: "postHoverMeta",
+    },
+    "&:is(:hover, :focus-within, [data-hover], [data-focus-within]) [data-blog-title]": {
+      color: "postHoverTitle",
+    },
+    "&:is(:hover, :focus-within, [data-hover], [data-focus-within]) [data-blog-description]": {
+      color: "postHoverBody",
+    },
+    "&:is(:hover, :focus-within, [data-hover], [data-focus-within]) [data-blog-tags]": {
+      color: "postHoverBody",
+    },
+    "&:is(:hover, :focus-within, [data-hover], [data-focus-within]) [data-blog-tag]": {
+      borderColor: "postHoverBorder",
+    },
+  }),
+  overlayLink: css({
+    position: "absolute",
+    inset: "0",
+    zIndex: "content",
+  }),
+  hiddenTitle: visuallyHidden(),
+  content: css({
+    display: "flex",
+    flexDirection: "column",
+    gap: "2",
+    px: "0",
+    py: "3",
+    color: "text.primary",
+    transition: "all",
+    transitionDuration: "slower",
+    transitionTimingFunction: "easeOut",
+  }),
+  meta: css({
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    gap: "3",
+    fontSize: "2xs",
+    letterSpacing: "label",
+    color: "text.secondary",
+    transitionProperty: "colors",
+    transitionDuration: "slower",
+    transitionTimingFunction: "easeOut",
+  }),
+  title: css({
+    fontSize: { base: "lg", md: "xl" },
+    fontWeight: "semibold",
+    lineHeight: "snug",
+    color: "text.primary",
+    transitionProperty: "colors",
+    transitionDuration: "slower",
+    transitionTimingFunction: "easeOut",
+  }),
+  description: css({
+    fontSize: "sm",
+    lineHeight: "relaxed",
+    color: "text.secondary",
+    transitionProperty: "colors",
+    transitionDuration: "slower",
+    transitionTimingFunction: "easeOut",
+  }),
+  tags: css({
+    position: "relative",
+    zIndex: "controls",
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "2",
+    fontSize: "2xs",
+    letterSpacing: "label",
+    color: "text.tertiary",
+    transitionProperty: "colors",
+    transitionDuration: "slower",
+    transitionTimingFunction: "easeOut",
+  }),
+  tag: css({
+    borderRadius: "tag",
+    borderWidth: "1px",
+    borderColor: "border.subtle",
+    px: "3",
+    py: "1",
+    transitionProperty: "colors",
+    transitionDuration: "slower",
+    transitionTimingFunction: "easeOut",
+    _hover: {
+      borderColor: "border.subtleStrong",
+    },
+  }),
+};
+
 const BlogPostList = ({ posts, emptyLabel }: Props) => {
   const accentStyle = {
     "--accent": "#66d9ef",
+    "--colors-accent-dynamic": "#66d9ef",
   } as CSSProperties;
 
   return (
-    <ul className="list-none space-y-2">
+    <ul className={styles.list}>
       {posts.length === 0 ? (
-        <li className="px-2 py-3 text-sm text-[var(--text-tertiary)]">
+        <li className={styles.empty}>
           {emptyLabel}
         </li>
       ) : (
         posts.map((post) => (
-          <li key={`${post.slug}-${post.lang}`} className="px-2">
-            <div className="group relative block w-full" style={accentStyle}>
+          <li key={`${post.slug}-${post.lang}`} className={styles.item}>
+            <div className={styles.card} style={accentStyle}>
               <Link
                 href={`/${post.lang}/blog/${post.slug}`}
-                className="absolute inset-0 z-10"
+                className={styles.overlayLink}
                 aria-label={post.title}
               >
-                <span className="sr-only">{post.title}</span>
+                <span className={styles.hiddenTitle}>{post.title}</span>
               </Link>
-              <div className="flex flex-col gap-2 px-0 py-3 text-[var(--text-primary)] transition-[padding,background-color,border-radius,color] duration-[400ms] ease-out group-hover:px-4 group-hover:rounded-[10px] group-hover:bg-[var(--accent)] group-hover:text-[#0a3d4e]">
-                <div className="flex flex-wrap items-center gap-3 text-[11px] tracking-[0.08em] text-[var(--text-secondary)] transition-colors duration-[400ms] ease-out group-hover:text-[#1a1a1a]/70">
+              <div className={styles.content} data-blog-content="">
+                <div className={styles.meta} data-blog-meta="">
                   <span>{formatDate(post.date, post.lang)}</span>
                 </div>
                 <h2
-                  className="text-lg font-semibold leading-snug text-[var(--text-primary)] transition-colors duration-[400ms] ease-out group-hover:text-[#0a3d4e] md:text-xl"
+                  className={styles.title}
                   style={{ viewTransitionName: `blog-title-${post.slug}` }}
+                  data-blog-title=""
                 >
                   {post.title}
                 </h2>
                 {post.description && (
                   <p
-                    className="text-sm leading-relaxed text-[var(--text-secondary)] transition-colors duration-[400ms] ease-out group-hover:text-[#1a1a1a]/75"
+                    className={styles.description}
                     style={{ viewTransitionName: `blog-desc-${post.slug}` }}
+                    data-blog-description=""
                   >
                     {post.description}
                   </p>
                 )}
                 {post.tags.length > 0 && (
-                  <div className="relative z-20 flex flex-wrap gap-2 text-[11px] tracking-[0.08em] text-[var(--text-tertiary)] transition-colors duration-[400ms] ease-out group-hover:text-[#1a1a1a]/75">
+                  <div className={styles.tags} data-blog-tags="">
                     {post.tags.map((tag) => (
                       <Link
                         key={`${post.slug}-${tag}`}
                         href={buildTagPath(tag, post.lang)}
-                        className="rounded-[11px] border border-[var(--border-subtle)] px-3 py-1 transition-colors duration-[400ms] ease-out group-hover:border-[#1a1a1a]/30 hover:border-[var(--border-subtle-strong)]"
+                        className={styles.tag}
+                        data-blog-tag=""
                       >
                         #{tag}
                       </Link>

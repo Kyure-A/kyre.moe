@@ -1,18 +1,29 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import Image from "next/image";
 import GlitchImage from "./GlitchImage";
+import { css } from "styled-system/css";
 
 type StoryProps = Omit<React.ComponentProps<typeof GlitchImage>, "children">;
 
+const styles = {
+  frame: css({
+    maxWidth: "card-sm",
+  }),
+  image: css({
+    width: "full",
+    height: "auto",
+  }),
+};
+
 const GlitchImageStory = (props: StoryProps) => (
-  <div className="max-w-[280px]">
+  <div className={styles.frame}>
     <GlitchImage {...props}>
       <Image
         src="/kyure_a.png"
         alt="Kyure_A"
         width={460}
         height={952}
-        className="w-full h-auto"
+        className={styles.image}
       />
     </GlitchImage>
   </div>
