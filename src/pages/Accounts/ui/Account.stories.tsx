@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { FaTwitter } from "react-icons/fa6";
-import Account from "./Account";
 import { css } from "styled-system/css";
+import Account from "./Account";
 
 const listClass = css({
   maxWidth: "xl",

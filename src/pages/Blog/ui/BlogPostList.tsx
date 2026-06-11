@@ -1,9 +1,9 @@
 import { Link } from "next-view-transitions";
 import type { CSSProperties } from "react";
-import type { BlogPostMeta } from "@/shared/lib/blog";
-import { buildTagPath, formatDate } from "@/shared/lib/blog";
 import { css } from "styled-system/css";
 import { visuallyHidden } from "styled-system/patterns";
+import type { BlogPostMeta } from "@/shared/lib/blog";
+import { buildTagPath, formatDate } from "@/shared/lib/blog";
 
 type Props = {
   posts: BlogPostMeta[];

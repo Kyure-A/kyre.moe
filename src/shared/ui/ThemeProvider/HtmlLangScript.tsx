@@ -1,3 +1,5 @@
+// biome-ignore-all lint/security/noDangerouslySetInnerHtml: Inline bootstrap script prevents incorrect initial document language.
+
 import { DEFAULT_LANG, SITE_LANGS } from "@/shared/lib/i18n";
 
 const HtmlLangScript = () => {

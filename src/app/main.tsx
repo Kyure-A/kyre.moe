@@ -3,12 +3,12 @@
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { type CSSProperties, type ReactNode, useMemo, useState } from "react";
+import { css, cx } from "styled-system/css";
 import useDockItems from "@/shared/hooks/useDockItems";
 import useIsMobile from "@/shared/hooks/useIsMobile";
 import useRuntimeProfile from "@/shared/hooks/useRuntimeProfile";
 import HeaderControls from "@/shared/ui/HeaderControls/HeaderControls";
 import OrbitDock from "@/shared/ui/OrbitDock/OrbitDock";
-import { css, cx } from "styled-system/css";
 
 const styles = {
   fullSize: css({

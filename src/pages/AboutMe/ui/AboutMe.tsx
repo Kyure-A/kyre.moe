@@ -1,7 +1,7 @@
-import type { SiteLang } from "@/shared/lib/i18n";
-import LiveAgeText from "./LiveAgeText";
 import { css } from "styled-system/css";
 import { visuallyHidden } from "styled-system/patterns";
+import type { SiteLang } from "@/shared/lib/i18n";
+import LiveAgeText from "./LiveAgeText";
 
 type SectionItem =
   | string

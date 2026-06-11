@@ -18,7 +18,9 @@
     "build-storybook": "storybook build",
     "content": "node scripts/export-org.mjs && node scripts/copy-blog-images.mjs",
     "fix:ogp-export": "node scripts/fix-ogp-export.mjs",
-    "lint": "eslint .",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
     "lint:actions": "actionlint",
     "security:semgrep": "semgrep scan --config p/default --error --metrics=off ."
   },
@@ -49,7 +51,7 @@
     "three": "^0.167.1"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.5",
+    "@biomejs/biome": "^2.4.16",
     "@pandacss/dev": "^1.11.3",
     "@storybook/addon-a11y": "^10.3.0",
     "@storybook/nextjs-vite": "10.2.8",
@@ -59,8 +61,6 @@
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "@types/three": "^0.175.0",
-    "eslint": "^9.31.0",
-    "eslint-config-next": "15.2.5",
     "storybook": "^10.3.0",
     "typescript": "^5.8.3"
   },

@@ -1,7 +1,7 @@
 import type { Preview } from "@storybook/react";
 import "../app/globals.css";
-import ThemeProvider from "@/shared/ui/ThemeProvider/ThemeProvider";
 import { css } from "styled-system/css";
+import ThemeProvider from "@/shared/ui/ThemeProvider/ThemeProvider";
 
 const previewFrameClass = css({
   width: "full",

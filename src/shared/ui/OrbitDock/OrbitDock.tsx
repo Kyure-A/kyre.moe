@@ -2,8 +2,8 @@
 
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
 import { memo, useCallback, useRef, useState } from "react";
-import type { DockItemData } from "@/shared/hooks/useDockItems";
 import { css, cx } from "styled-system/css";
+import type { DockItemData } from "@/shared/hooks/useDockItems";
 
 export type OrbitDockProps = {
   items: DockItemData[];
@@ -381,7 +381,7 @@ const OrbitDock = ({
 
           return (
             <OrbitDockItem
-              key={`${item.label}-${index}`}
+              key={item.label}
               item={item}
               index={index}
               delay={delay}

@@ -1,6 +1,6 @@
-import type { StorybookConfig } from "@storybook/nextjs-vite";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
+import type { StorybookConfig } from "@storybook/nextjs-vite";
 
 const require = createRequire(import.meta.url);
 const NEXT_VIEW_TRANSITIONS_MOCK = fileURLToPath(

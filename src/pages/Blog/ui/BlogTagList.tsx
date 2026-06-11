@@ -1,8 +1,8 @@
 import { Link } from "next-view-transitions";
-import BlogSection from "@/pages/Blog/ui/BlogSection";
-import { buildTagPath, type BlogTagItem } from "@/shared/lib/blog";
-import type { SiteLang } from "@/shared/lib/i18n";
 import { css } from "styled-system/css";
+import BlogSection from "@/pages/Blog/ui/BlogSection";
+import { type BlogTagItem, buildTagPath } from "@/shared/lib/blog";
+import type { SiteLang } from "@/shared/lib/i18n";
 
 type Props = {
   lang: SiteLang;

@@ -14,6 +14,8 @@ import {
 } from "react-icons/fa6";
 import { SiHuggingface, SiMisskey } from "react-icons/si";
 import { TbBrandMinecraft } from "react-icons/tb";
+import { css } from "styled-system/css";
+import { visuallyHidden } from "styled-system/patterns";
 import { AnnictIcon } from "@/shared/icons/annict";
 import { CosenseIcon } from "@/shared/icons/cosense";
 import { HatenaBlogIcon } from "@/shared/icons/hatenablog";
@@ -21,8 +23,6 @@ import { NostrIcon } from "@/shared/icons/nostr";
 import { VRChatIcon } from "@/shared/icons/vrchat";
 import type { SiteLang } from "@/shared/lib/i18n";
 import Account, { type AccountProps } from "./Account";
-import { css } from "styled-system/css";
-import { visuallyHidden } from "styled-system/patterns";
 
 type AccountData = Omit<AccountProps, "delay" | "description"> & {
   description?: Partial<Record<SiteLang, string>>;

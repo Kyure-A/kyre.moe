@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import FadeTransition from "@/shared/ui/FadeTransition/FadeTransition";
 import { css } from "styled-system/css";
+import FadeTransition from "@/shared/ui/FadeTransition/FadeTransition";
 
 const styles = {
   center: css({

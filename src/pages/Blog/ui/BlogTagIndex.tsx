@@ -1,9 +1,9 @@
 import { Link } from "next-view-transitions";
+import { css } from "styled-system/css";
 import BlogPostList from "@/pages/Blog/ui/BlogPostList";
 import BlogSection from "@/pages/Blog/ui/BlogSection";
 import type { BlogPostMeta } from "@/shared/lib/blog";
 import type { SiteLang } from "@/shared/lib/i18n";
-import { css } from "styled-system/css";
 
 type Props = {
   lang: SiteLang;

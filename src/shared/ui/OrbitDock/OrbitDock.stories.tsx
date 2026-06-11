@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { useState } from "react";
 import { FaHome } from "react-icons/fa";
 import { FaAt, FaCircleInfo, FaClock, FaPenNib } from "react-icons/fa6";
-import { useState } from "react";
 import { expect, fn, userEvent, within } from "storybook/test";
-import OrbitDock, { type OrbitDockProps } from "./OrbitDock";
 import { css } from "styled-system/css";
+import OrbitDock, { type OrbitDockProps } from "./OrbitDock";
 
 const onHomeClick = fn();
 const onBlogClick = fn();

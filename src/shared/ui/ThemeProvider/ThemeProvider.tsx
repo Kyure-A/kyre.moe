@@ -12,8 +12,8 @@ import {
 import {
   DEFAULT_THEME,
   isSiteTheme,
-  THEME_STORAGE_KEY,
   type SiteTheme,
+  THEME_STORAGE_KEY,
 } from "@/shared/lib/theme";
 
 type ThemeContextValue = {

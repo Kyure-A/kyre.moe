@@ -1,11 +1,13 @@
+// biome-ignore-all lint/security/noDangerouslySetInnerHtml: Blog post HTML is generated server-side with raw HTML disabled.
+
 import Image from "next/image";
 import { Link } from "next-view-transitions";
+import { css, cx } from "styled-system/css";
 import type { BlogPost } from "@/shared/lib/blog";
 import { buildTagPath, formatDate } from "@/shared/lib/blog";
 import CopyCodeBlock from "@/shared/ui/CopyCodeBlock/CopyCodeBlock";
 import TwitterEmbedEnhancer from "@/shared/ui/TwitterEmbed/TwitterEmbed";
 import YouTubeEmbedEnhancer from "@/shared/ui/YouTubeEmbed/YouTubeEmbed";
-import { css, cx } from "styled-system/css";
 
 type Props = {
   post: BlogPost;
@@ -158,7 +160,6 @@ const BlogPostView = ({ post }: Props) => {
 
       <article
         className={cx("blog-content", styles.content)}
-        /* biome-ignore lint/security/noDangerouslySetInnerHtml: HTML is generated server-side with raw HTML disabled */
         /* nosemgrep: typescript.react.security.audit.react-dangerouslysetinnerhtml.react-dangerouslysetinnerhtml */
         dangerouslySetInnerHTML={{ __html: post.html }}
       />
