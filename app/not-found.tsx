@@ -7,6 +7,7 @@ import {
   getLangFromPath,
   type SiteLang,
 } from "@/shared/lib/i18n";
+import { css, cx } from "styled-system/css";
 
 const COPY: Record<
   SiteLang,
@@ -24,31 +25,107 @@ const COPY: Record<
   },
 };
 
+const styles = {
+  section: css({
+    position: "relative",
+    height: "dvh",
+    width: "full",
+    overflow: "hidden",
+    color: "white",
+  }),
+  blackLayer: css({
+    position: "absolute",
+    inset: "0",
+    backgroundColor: "black",
+  }),
+  imageLayer: css({
+    position: "absolute",
+    inset: "0",
+    overflow: "hidden",
+  }),
+  image: css({
+    position: "absolute",
+    left: "half",
+    top: "half",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+  }),
+  overlay: css({
+    position: "absolute",
+    inset: "0",
+    backgroundColor: "notFoundOverlay",
+  }),
+  content: css({
+    position: "relative",
+    zIndex: "content",
+    display: "flex",
+    height: "full",
+    width: "full",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "4",
+    px: "6",
+    textAlign: "center",
+  }),
+  code: css({
+    fontSize: "xs",
+    letterSpacing: "notFound",
+    color: "whiteAlpha80",
+  }),
+  title: css({
+    fontSize: { base: "3xl", md: "5xl" },
+    fontWeight: "semibold",
+  }),
+  description: css({
+    maxWidth: "xl",
+    fontSize: { base: "sm", md: "md" },
+    color: "whiteAlpha90",
+  }),
+  action: css({
+    mt: "2",
+    display: "inline-flex",
+    borderRadius: "control",
+    borderWidth: "1px",
+    borderColor: "whiteAlpha60",
+    px: "5",
+    py: "2",
+    fontSize: "sm",
+    fontWeight: "medium",
+    transitionProperty: "colors",
+    _hover: {
+      backgroundColor: "white",
+      color: "black",
+    },
+  }),
+};
+
 const NotFound = () => {
   const pathname = usePathname();
   const lang = getLangFromPath(pathname) ?? DEFAULT_LANG;
   const copy = COPY[lang];
 
   return (
-    <section className="relative h-dvh w-full overflow-hidden text-white">
-      <div className="absolute inset-0 bg-black" />
-      <div className="absolute inset-0 overflow-hidden">
+    <section className={styles.section}>
+      <div className={styles.blackLayer} />
+      <div className={styles.imageLayer}>
         <div
-          className="not-found-bg absolute left-1/2 top-1/2 bg-cover bg-center bg-no-repeat"
+          className={cx("not-found-bg", styles.image)}
           style={{ backgroundImage: "url('/404.png')" }}
         />
       </div>
-      <div className="absolute inset-0 bg-black/45" />
+      <div className={styles.overlay} />
 
-      <div className="relative z-10 flex h-full w-full flex-col items-center justify-center gap-4 px-6 text-center">
-        <p className="text-xs tracking-[0.35em] text-white/80">404</p>
-        <h1 className="text-3xl font-semibold md:text-5xl">{copy.title}</h1>
-        <p className="max-w-xl text-sm text-white/90 md:text-base">
+      <div className={styles.content}>
+        <p className={styles.code}>404</p>
+        <h1 className={styles.title}>{copy.title}</h1>
+        <p className={styles.description}>
           {copy.description}
         </p>
         <Link
           href={`/${lang}`}
-          className="mt-2 inline-flex rounded-full border border-white/60 px-5 py-2 text-sm font-medium transition hover:bg-white hover:text-black"
+          className={styles.action}
         >
           {copy.action}
         </Link>
