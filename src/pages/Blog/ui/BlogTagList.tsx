@@ -1,7 +1,8 @@
 import { Link } from "next-view-transitions";
+import BlogSection from "@/pages/Blog/ui/BlogSection";
 import { buildTagPath, type BlogTagItem } from "@/shared/lib/blog";
 import type { SiteLang } from "@/shared/lib/i18n";
-import BlogSection from "@/pages/Blog/ui/BlogSection";
+import { css } from "styled-system/css";
 
 type Props = {
   lang: SiteLang;
@@ -31,34 +32,89 @@ const COPY: Record<
   },
 };
 
+const styles = {
+  header: css({
+    mb: "10",
+  }),
+  label: css({
+    fontSize: "2xs",
+    letterSpacing: "label",
+    color: "text.tertiary",
+  }),
+  title: css({
+    mt: "3",
+    fontSize: { base: "2xl", md: "3xl" },
+    fontWeight: "semibold",
+    color: "text.primary",
+  }),
+  count: css({
+    mt: "2",
+    fontSize: "sm",
+    color: "text.secondary",
+  }),
+  empty: css({
+    fontSize: "sm",
+    color: "text.tertiary",
+  }),
+  tags: css({
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "2",
+    fontSize: "2xs",
+    letterSpacing: "label",
+    color: "text.tertiary",
+  }),
+  tag: css({
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "2",
+    borderRadius: "tag",
+    borderWidth: "1px",
+    borderColor: "border.subtle",
+    px: "3",
+    py: "1",
+    transitionProperty: "colors",
+    transitionDuration: "slow",
+    transitionTimingFunction: "easeOut",
+    _hover: {
+      borderColor: "border.subtleStrong",
+      color: "text.primary",
+    },
+  }),
+  tagCount: css({
+    color: "text.tertiary",
+    opacity: "0.8",
+  }),
+};
+
 const BlogTagList = ({ lang, tags }: Props) => {
   const copy = COPY[lang];
 
   return (
     <BlogSection>
-      <header className="mb-10">
-        <p className="text-[11px] tracking-[0.08em] text-[var(--text-tertiary)]">
+      <header className={styles.header}>
+        <p className={styles.label}>
           {copy.label}
         </p>
-        <h1 className="mt-3 text-2xl font-semibold text-[var(--text-primary)] md:text-3xl">
+        <h1 className={styles.title}>
           {copy.title}
         </h1>
-        <p className="mt-2 text-sm text-[var(--text-secondary)]">
+        <p className={styles.count}>
           {copy.count(tags.length)}
         </p>
       </header>
       {tags.length === 0 ? (
-        <p className="text-sm text-[var(--text-tertiary)]">{copy.empty}</p>
+        <p className={styles.empty}>{copy.empty}</p>
       ) : (
-        <div className="flex flex-wrap gap-2 text-[11px] tracking-[0.08em] text-[var(--text-tertiary)]">
+        <div className={styles.tags}>
           {tags.map((item) => (
             <Link
               key={item.slug}
               href={buildTagPath(item.slug, lang)}
-              className="inline-flex items-center gap-2 rounded-[11px] border border-[var(--border-subtle)] px-3 py-1 transition-colors duration-[300ms] ease-out hover:border-[var(--border-subtle-strong)] hover:text-[var(--text-primary)]"
+              className={styles.tag}
             >
               <span>#{item.label}</span>
-              <span className="text-[var(--text-tertiary)]/80">
+              <span className={styles.tagCount}>
                 {item.count}
               </span>
             </Link>
