@@ -4,6 +4,7 @@ import { FaAt, FaCircleInfo, FaClock, FaPenNib } from "react-icons/fa6";
 import { useState } from "react";
 import { expect, fn, userEvent, within } from "storybook/test";
 import OrbitDock, { type OrbitDockProps } from "./OrbitDock";
+import { css } from "styled-system/css";
 
 const onHomeClick = fn();
 const onBlogClick = fn();
@@ -19,6 +20,31 @@ const items: OrbitDockProps["items"] = [
   { icon: <FaCircleInfo />, label: "About", onClick: onAboutClick },
 ];
 
+const styles = {
+  frame: css({
+    position: "relative",
+  }),
+  readout: css({
+    position: "absolute",
+    top: "2",
+    left: "2",
+    zIndex: "header",
+    borderRadius: "md",
+    borderWidth: "1px",
+    borderColor: "border.subtle",
+    backgroundColor: "background",
+    opacity: "0.8",
+    px: "2",
+    py: "1",
+    fontSize: "2xs",
+    color: "text.secondary",
+  }),
+  layer: css({
+    position: "absolute",
+    inset: "0",
+  }),
+};
+
 const StoryOrbitDock = (args: OrbitDockProps) => {
   const [rotation, setRotation] = useState(0);
   const [hovered, setHovered] = useState(false);
@@ -28,13 +54,13 @@ const StoryOrbitDock = (args: OrbitDockProps) => {
 
   return (
     <div
-      className="relative"
+      className={styles.frame}
       style={{ width: "min(80vmin, 640px)", height: "min(80vmin, 640px)" }}
     >
-      <div className="absolute top-2 left-2 z-30 rounded-md border border-[var(--border-subtle)] bg-[var(--bg)]/80 px-2 py-1 text-[11px] text-[var(--text-secondary)] backdrop-blur">
+      <div className={styles.readout}>
         rotation: {rotation.toFixed(1)}
       </div>
-      <div className="absolute inset-0">
+      <div className={styles.layer}>
         <OrbitDock
           {...args}
           layer="back"
@@ -45,7 +71,7 @@ const StoryOrbitDock = (args: OrbitDockProps) => {
           dragEnabled={false}
         />
       </div>
-      <div className="absolute inset-0">
+      <div className={styles.layer}>
         <OrbitDock
           {...args}
           layer="front"

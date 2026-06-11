@@ -1,5 +1,6 @@
 import { Mesh, Program, Renderer, Triangle } from "ogl";
 import { useEffect, useRef } from "react";
+import { css } from "styled-system/css";
 
 interface MysteriousShaderProps {
   spinRotation?: number;
@@ -24,6 +25,11 @@ interface MysteriousShaderProps {
   startOnIdle?: boolean;
   active?: boolean;
 }
+
+const canvasClass = css({
+  width: "full",
+  height: "full",
+});
 
 const hexToVec4 = (hex: string): [number, number, number, number] => {
   const hexStr = hex.replace("#", "");
@@ -442,7 +448,7 @@ const BackgroundShader = ({
     startOnIdle,
   ]);
 
-  return <div ref={containerRef} className="w-full h-full" />;
+  return <div ref={containerRef} className={canvasClass} />;
 };
 
 export default BackgroundShader;

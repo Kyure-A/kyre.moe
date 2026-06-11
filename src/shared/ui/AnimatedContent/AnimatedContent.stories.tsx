@@ -1,5 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import AnimatedContent from "./AnimatedContent";
+import { css } from "styled-system/css";
+
+const demoClass = css({
+  borderRadius: "xl",
+  borderWidth: "1px",
+  borderColor: "border.subtle",
+  backgroundColor: "background",
+  p: "6",
+  color: "text.primary",
+});
 
 const meta = {
   title: "Shared/AnimatedContent",
@@ -12,7 +22,7 @@ const meta = {
     delay: 0,
     threshold: 0.1,
     children: (
-      <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--background)] p-6 text-[var(--text-primary)]">
+      <div className={demoClass}>
         Fade-in demo content
       </div>
     ),
