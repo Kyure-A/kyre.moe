@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import Image from "next/image";
-import GlitchImage from "./GlitchImage";
 import { css } from "styled-system/css";
+import GlitchImage from "./GlitchImage";
 
 type StoryProps = Omit<React.ComponentProps<typeof GlitchImage>, "children">;
 

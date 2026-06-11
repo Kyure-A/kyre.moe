@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import AnimatedContent from "./AnimatedContent";
 import { css } from "styled-system/css";
+import AnimatedContent from "./AnimatedContent";
 
 const demoClass = css({
   borderRadius: "xl",

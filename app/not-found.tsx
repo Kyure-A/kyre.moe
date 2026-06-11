@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { css, cx } from "styled-system/css";
 import {
   DEFAULT_LANG,
   getLangFromPath,
   type SiteLang,
 } from "@/shared/lib/i18n";
-import { css, cx } from "styled-system/css";
 
 const COPY: Record<
   SiteLang,

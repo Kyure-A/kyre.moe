@@ -1,7 +1,7 @@
-import Timeline, { type TimelineItem } from "@/pages/History/ui/Timeline";
-import type { SiteLang } from "@/shared/lib/i18n";
 import { css } from "styled-system/css";
 import { visuallyHidden } from "styled-system/patterns";
+import Timeline, { type TimelineItem } from "@/pages/History/ui/Timeline";
+import type { SiteLang } from "@/shared/lib/i18n";
 
 // FIXME: url と date は共通化する
 const TIMELINE_DATA: Record<SiteLang, TimelineItem[]> = {

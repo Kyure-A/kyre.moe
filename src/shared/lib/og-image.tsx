@@ -211,9 +211,9 @@ export const generateOgImage = async ({
                 marginTop: "8px",
               }}
             >
-              {displayTags.map((tag, index) => (
+              {displayTags.map((tag) => (
                 <span
-                  key={`${tag}-${index}`}
+                  key={tag}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -257,7 +257,7 @@ export const generateOgImage = async ({
             }}
           >
             {OG_ICON_DATA_URL ? (
-              // eslint-disable-next-line @next/next/no-img-element
+              // biome-ignore lint/performance/noImgElement: ImageResponse requires a plain img element.
               <img
                 src={OG_ICON_DATA_URL}
                 width={40}

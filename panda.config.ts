@@ -37,13 +37,13 @@ export default defineConfig({
           "account-lg": { value: "0.9375rem" },
           "icon-md": { value: "1.125rem" },
           "icon-lg": { value: "1.375rem" },
-          "rotator": { value: "1.25rem" },
+          rotator: { value: "1.25rem" },
         },
         sizes: {
           dvh: { value: "100dvh" },
           "icon-sm": { value: "1.25rem" },
           "icon-md": { value: "1.5rem" },
-          "control": { value: "2.5rem" },
+          control: { value: "2.5rem" },
           "language-control": { value: "5rem" },
           "control-orb": { value: "6rem" },
           "control-knob": { value: "2rem" },
@@ -95,7 +95,10 @@ export default defineConfig({
           tight: { value: "-0.025em" },
         },
         shadows: {
-          md: { value: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)" },
+          md: {
+            value:
+              "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+          },
           sm: { value: "0 1px 2px 0 rgb(0 0 0 / 0.05)" },
           accountText: { value: "0 1px 4px rgba(0, 0, 0, 0.2)" },
           orbitPill: cssVar("orbit-pill-shadow"),

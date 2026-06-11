@@ -53,7 +53,9 @@ function escapeString(value) {
 
 function hashContent(...values) {
   const hash = createHash("sha256");
-  values.forEach((value) => hash.update(value));
+  values.forEach((value) => {
+    hash.update(value);
+  });
   return hash.digest("hex");
 }
 
@@ -95,93 +97,78 @@ function buildFrontmatter(meta) {
 }
 
 function unescapeUnderscoreInBackticks(source) {
-  const initialState = {
-    result: "",
-    inFence: false,
-    fenceChar: "",
-    fenceLen: 0,
-    inInline: false,
-    inlineLen: 0,
-    lineStart: 0,
-    cursor: 0,
-  };
+  let result = "";
+  let inFence = false;
+  let fenceChar = "";
+  let fenceLen = 0;
+  let inInline = false;
+  let inlineLen = 0;
+  let lineStart = 0;
+  let cursor = 0;
 
-  const finalState = Array.from(source).reduce((state, ch, index) => {
-    if (index < state.cursor) return state;
+  for (const [index, ch] of Array.from(source).entries()) {
+    if (index < cursor) continue;
 
     if (ch === "\n") {
-      return {
-        ...state,
-        result: `${state.result}\n`,
-        lineStart: index + 1,
-        cursor: index + 1,
-      };
+      result += "\n";
+      lineStart = index + 1;
+      cursor = index + 1;
+      continue;
     }
 
-    if (!state.inInline && (ch === "`" || ch === "~")) {
+    if (!inInline && (ch === "`" || ch === "~")) {
       const runMatch =
         ch === "`"
           ? source.slice(index).match(/^`+/)
           : source.slice(index).match(/^~+/);
       const runLen = runMatch ? runMatch[0].length : 0;
       if (runLen >= 3) {
-        const before = source.slice(state.lineStart, index);
+        const before = source.slice(lineStart, index);
         if (/^[ \t]*$/.test(before)) {
-          const isClosing =
-            state.inFence && ch === state.fenceChar && runLen >= state.fenceLen;
-          const nextFenceState = isClosing
-            ? { inFence: false, fenceChar: "", fenceLen: 0 }
-            : state.inFence
-              ? {}
-              : { inFence: true, fenceChar: ch, fenceLen: runLen };
-          return {
-            ...state,
-            ...nextFenceState,
-            result: state.result + source.slice(index, index + runLen),
-            cursor: index + runLen,
-          };
+          const isClosing = inFence && ch === fenceChar && runLen >= fenceLen;
+          if (isClosing) {
+            inFence = false;
+            fenceChar = "";
+            fenceLen = 0;
+          } else if (!inFence) {
+            inFence = true;
+            fenceChar = ch;
+            fenceLen = runLen;
+          }
+          result += source.slice(index, index + runLen);
+          cursor = index + runLen;
+          continue;
         }
       }
     }
 
-    if (!state.inFence && ch === "`") {
+    if (!inFence && ch === "`") {
       const runMatch = source.slice(index).match(/^`+/);
       const runLen = runMatch ? runMatch[0].length : 0;
-      const shouldClose = state.inInline && runLen === state.inlineLen;
-      const nextInlineState = state.inInline
-        ? shouldClose
-          ? { inInline: false, inlineLen: 0 }
-          : {}
-        : { inInline: true, inlineLen: runLen };
-      return {
-        ...state,
-        ...nextInlineState,
-        result: state.result + source.slice(index, index + runLen),
-        cursor: index + runLen,
-      };
+      const shouldClose = inInline && runLen === inlineLen;
+      if (shouldClose) {
+        inInline = false;
+        inlineLen = 0;
+      } else if (!inInline) {
+        inInline = true;
+        inlineLen = runLen;
+      }
+      result += source.slice(index, index + runLen);
+      cursor = index + runLen;
+      continue;
     }
 
-    if (
-      !state.inFence &&
-      state.inInline &&
-      ch === "\\" &&
-      source[index + 1] === "_"
-    ) {
-      return {
-        ...state,
-        result: `${state.result}_`,
-        cursor: index + 2,
-      };
+    if (!inFence && inInline && ch === "\\" && source[index + 1] === "_") {
+      result += "_";
+      cursor = index + 2;
+      continue;
     }
 
-    return {
-      ...state,
-      result: state.result + ch,
-      cursor: index + 1,
-    };
-  }, initialState);
+    result += ch;
+    cursor = index + 1;
+  }
 
-  return finalState.result;
+  return result;
 }
 
 function exportOrgToMarkdown(jobs) {
