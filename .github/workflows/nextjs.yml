@@ -36,11 +36,6 @@ jobs:
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
-      - name: Setup Pages
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
-        uses: actions/configure-pages@v5
-        with:
-          static_site_generator: next
       - name: Get pnpm store directory
         id: pnpm-cache
         run: |
@@ -66,6 +61,11 @@ jobs:
         run: nix shell nixpkgs#treefmt nixpkgs#biome --command treefmt --ci
       - name: Lint
         run: pnpm lint
+      - name: Setup Pages
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+        uses: actions/configure-pages@v5
+        with:
+          static_site_generator: next
       - name: Install Emacs for Org export
         run: |
           sudo apt-get update
