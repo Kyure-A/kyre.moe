@@ -93,6 +93,7 @@ class AsciiFilter {
   mouse: { x: number; y: number } = { x: 0, y: 0 };
   cols: number = 0;
   rows: number = 0;
+  output: string[] = [];
 
   constructor(
     renderer: WebGLRenderer,
@@ -132,12 +133,16 @@ class AsciiFilter {
   }
 
   setSize(width: number, height: number) {
-    this.width = width;
-    this.height = height;
-    this.renderer.setSize(width, height);
+    const nextWidth = Math.floor(width);
+    const nextHeight = Math.floor(height);
+    if (nextWidth === this.width && nextHeight === this.height) return;
+
+    this.width = nextWidth;
+    this.height = nextHeight;
+    this.renderer.setSize(nextWidth, nextHeight);
     this.reset();
 
-    this.center = { x: width / 2, y: height / 2 };
+    this.center = { x: nextWidth / 2, y: nextHeight / 2 };
     this.mouse = { x: this.center.x, y: this.center.y };
   }
 
@@ -153,6 +158,7 @@ class AsciiFilter {
 
       this.canvas.width = this.cols;
       this.canvas.height = this.rows;
+      this.output = new Array((this.cols + 1) * this.rows);
       this.pre.style.fontFamily = this.fontFamily;
       this.pre.style.fontSize = `${this.fontSize}px`;
       this.pre.style.margin = "0";
@@ -205,30 +211,36 @@ class AsciiFilter {
   asciify(ctx: CanvasRenderingContext2D, w: number, h: number) {
     if (w && h) {
       const imgData = ctx.getImageData(0, 0, w, h).data;
-      let str = "";
+      const output = this.output;
+      const charset = this.charset;
+      const maxCharIndex = charset.length - 1;
+      let outputIndex = 0;
+
       for (let y = 0; y < h; y++) {
+        const rowOffset = y * w * 4;
         for (let x = 0; x < w; x++) {
-          const i = x * 4 + y * 4 * w;
-          const [r, g, b, a] = [
-            imgData[i],
-            imgData[i + 1],
-            imgData[i + 2],
-            imgData[i + 3],
-          ];
+          const i = rowOffset + x * 4;
+          const a = imgData[i + 3];
 
           if (a === 0) {
-            str += " ";
+            output[outputIndex] = " ";
+            outputIndex++;
             continue;
           }
 
+          const r = imgData[i];
+          const g = imgData[i + 1];
+          const b = imgData[i + 2];
           const gray = (0.3 * r + 0.6 * g + 0.1 * b) / 255;
-          let idx = Math.floor((1 - gray) * (this.charset.length - 1));
-          if (this.invert) idx = this.charset.length - idx - 1;
-          str += this.charset[idx];
+          let idx = Math.floor((1 - gray) * maxCharIndex);
+          if (this.invert) idx = maxCharIndex - idx;
+          output[outputIndex] = charset[idx];
+          outputIndex++;
         }
-        str += "\n";
+        output[outputIndex] = "\n";
+        outputIndex++;
       }
-      this.pre.innerHTML = str;
+      this.pre.textContent = output.join("");
     }
   }
 
@@ -347,6 +359,7 @@ class CanvAscii {
   filter!: AsciiFilter;
   center!: { x: number; y: number };
   animationFrameId: number = 0;
+  resizeFrameId: number = 0;
   frameInterval: number = 0;
   lastFrameTime: number = 0;
   isRunning: boolean = false;
@@ -374,8 +387,8 @@ class CanvAscii {
     this.textColor = textColor;
     this.planeBaseHeight = planeBaseHeight;
     this.container = containerElem;
-    this.width = width;
-    this.height = height;
+    this.width = 0;
+    this.height = 0;
     this.enableWaves = enableWaves;
     this.fontFamily = fontFamily;
     this.maxFps = maxFps;
@@ -391,7 +404,7 @@ class CanvAscii {
     this.onMouseMove = this.onMouseMove.bind(this);
 
     this.setMesh();
-    this.setRenderer();
+    this.setRenderer(width, height);
   }
 
   setMesh() {
@@ -429,7 +442,7 @@ class CanvAscii {
     this.scene.add(this.mesh);
   }
 
-  setRenderer() {
+  setRenderer(width: number, height: number) {
     this.renderer = new WebGLRenderer({ antialias: false, alpha: true });
     this.renderer.setPixelRatio(1);
     this.renderer.setClearColor(0x000000, 0);
@@ -441,22 +454,34 @@ class CanvAscii {
     });
 
     this.container.appendChild(this.filter.domElement);
-    this.setSize(this.width, this.height);
+    this.setSize(width, height);
 
     this.container.addEventListener("mousemove", this.onMouseMove);
     this.container.addEventListener("touchmove", this.onMouseMove);
   }
 
   setSize(w: number, h: number) {
-    this.width = w;
-    this.height = h;
+    const nextWidth = Math.floor(w);
+    const nextHeight = Math.floor(h);
+    if (nextWidth <= 0 || nextHeight <= 0) return;
+    if (nextWidth === this.width && nextHeight === this.height) return;
 
-    this.camera.aspect = w / h;
+    this.width = nextWidth;
+    this.height = nextHeight;
+
+    this.camera.aspect = nextWidth / nextHeight;
     this.camera.updateProjectionMatrix();
 
-    this.filter.setSize(w, h);
+    this.filter.setSize(nextWidth, nextHeight);
 
-    this.center = { x: w / 2, y: h / 2 };
+    this.center = { x: nextWidth / 2, y: nextHeight / 2 };
+  }
+
+  scheduleSize(w: number, h: number) {
+    cancelAnimationFrame(this.resizeFrameId);
+    this.resizeFrameId = requestAnimationFrame(() => {
+      this.setSize(w, h);
+    });
   }
 
   load() {
@@ -546,6 +571,7 @@ class CanvAscii {
 
   dispose() {
     this.stop();
+    cancelAnimationFrame(this.resizeFrameId);
     this.filter.dispose();
     this.container.removeChild(this.filter.domElement);
     this.container.removeEventListener("mousemove", this.onMouseMove);
@@ -585,15 +611,34 @@ const ASCIIText = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const asciiRef = useRef<CanvAscii | null>(null);
   const activeRef = useRef(active);
+  const visibleRef = useRef(true);
 
   useEffect(() => {
     activeRef.current = active;
-    if (active) {
+    if (active && visibleRef.current) {
       asciiRef.current?.start();
     } else {
       asciiRef.current?.stop();
     }
   }, [active]);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      visibleRef.current = document.visibilityState === "visible";
+      if (activeRef.current && visibleRef.current) {
+        asciiRef.current?.start();
+      } else {
+        asciiRef.current?.stop();
+      }
+    };
+
+    handleVisibilityChange();
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -637,14 +682,14 @@ const ASCIIText = ({
         width,
         height,
       );
-      if (activeRef.current) {
+      if (activeRef.current && visibleRef.current) {
         asciiRef.current.start();
       }
 
       const ro = new ResizeObserver((entries) => {
         if (!entries[0]) return;
         const { width: w, height: h } = entries[0].contentRect;
-        asciiRef.current?.setSize(w, h);
+        asciiRef.current?.scheduleSize(w, h);
       });
       ro.observe(containerRef.current);
 
