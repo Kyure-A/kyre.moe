@@ -67,6 +67,11 @@ interface RandomState {
   seed: number;
 }
 
+const NOISE_TEXTURE =
+  "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E\")";
+const PRISMATIC_NOISE_TEXTURE =
+  "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E\")";
+
 const styles = {
   root: css({
     position: "relative",
@@ -226,16 +231,6 @@ const GLITCH_KEYFRAMES = `
   0%, 100% { opacity: 1; }
   50% { opacity: 0.82; }
 }
-
-@keyframes glitch-line-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-@keyframes glitch-scan-shift {
-  0%, 100% { background-position: 0 0; }
-  50% { background-position: 0 -3px; }
-}
 `.trim();
 
 /**
@@ -259,31 +254,40 @@ const GlitchImage = ({
 }: GlitchImageProps): JSX.Element => {
   const [isGlitching, setIsGlitching] = useState<boolean>(false);
   const [glitchSeed, setGlitchSeed] = useState<number>(0);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const visibleRef = useRef(true);
 
   const normalizedIntensity = Math.max(1, Math.min(10, intensity)) / 10;
 
+  const clearGlitchTimeout = useCallback(() => {
+    if (!timeoutRef.current) return;
+    clearTimeout(timeoutRef.current);
+    timeoutRef.current = null;
+  }, []);
+
   const triggerGlitch = useCallback(() => {
-    if (!active) return;
+    if (!active || !visibleRef.current) return;
 
     if (Math.random() * 100 <= probability) {
       setGlitchSeed(Date.now());
       setIsGlitching(true);
 
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
+      clearGlitchTimeout();
 
       timeoutRef.current = setTimeout(() => {
         setIsGlitching(false);
         timeoutRef.current = null;
       }, glitchDuration);
     }
-  }, [active, probability, glitchDuration]);
+  }, [active, probability, glitchDuration, clearGlitchTimeout]);
 
   useEffect(() => {
-    if (!active) return;
+    if (!active) {
+      clearGlitchTimeout();
+      setIsGlitching(false);
+      return;
+    }
 
     const startTimer = setTimeout(
       () => {
@@ -297,12 +301,28 @@ const GlitchImage = ({
       clearTimeout(startTimer);
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
+      clearGlitchTimeout();
+    };
+  }, [active, interval, startDelayMs, triggerGlitch, clearGlitchTimeout]);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      visibleRef.current = document.visibilityState === "visible";
+      if (!visibleRef.current) {
+        clearGlitchTimeout();
+        setIsGlitching(false);
       }
     };
-  }, [active, interval, startDelayMs, triggerGlitch]);
+
+    handleVisibilityChange();
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [clearGlitchTimeout]);
 
   // Pre-compute all random values once per glitch cycle using pure functions
   const glitchData = useMemo(() => {
@@ -311,14 +331,14 @@ const GlitchImage = ({
     const initialState: RandomState = { seed: glitchSeed };
     const [s1, rgbShift] = generateRgbShift(initialState, normalizedIntensity);
 
-    const blockCount = Math.floor(2 + normalizedIntensity * 6);
+    const blockCount = Math.floor(2 + normalizedIntensity * 4);
     const [s3, glitchBlocks] = generateGlitchBlocks(
       s1,
       blockCount,
       normalizedIntensity,
     );
 
-    const lineCount = Math.floor(6 + normalizedIntensity * 18);
+    const lineCount = Math.floor(4 + normalizedIntensity * 12);
     const [s4, glitchLines] = generateGlitchLines(
       s3,
       lineCount,
@@ -338,20 +358,23 @@ const GlitchImage = ({
   const prismaticStrength = Math.max(0, Math.min(1, coolNoiseStrength));
   const maskSize = maskScale === 1 ? "100% 100%" : `${maskScale * 100}% auto`;
 
-  const maskStyle: CSSProperties | undefined = maskSrc
-    ? {
-        WebkitMaskImage: `url(${maskSrc})`,
-        WebkitMaskPosition: "center",
-        WebkitMaskRepeat: "no-repeat",
-        WebkitMaskSize: maskSize,
-        maskImage: `url(${maskSrc})`,
-        maskMode: "alpha",
-        maskPosition: "center",
-        maskRepeat: "no-repeat",
-        maskSize,
-      }
-    : undefined;
-  const effectsMaskStyle: CSSProperties = maskStyle ?? {};
+  const effectsMaskStyle: CSSProperties = useMemo(
+    () =>
+      maskSrc
+        ? {
+            WebkitMaskImage: `url(${maskSrc})`,
+            WebkitMaskPosition: "center",
+            WebkitMaskRepeat: "no-repeat",
+            WebkitMaskSize: maskSize,
+            maskImage: `url(${maskSrc})`,
+            maskMode: "alpha",
+            maskPosition: "center",
+            maskRepeat: "no-repeat",
+            maskSize,
+          }
+        : {},
+    [maskSrc, maskSize],
+  );
 
   return (
     <div className={styles.root}>
@@ -380,8 +403,7 @@ const GlitchImage = ({
                 ...effectsMaskStyle,
                 opacity: ambientNoiseStrength * normalizedIntensity,
                 mixBlendMode: "multiply",
-                backgroundImage:
-                  "radial-gradient(circle at center, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.72) 55%, rgba(0, 0, 0, 0) 85%), url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E\")",
+                backgroundImage: `radial-gradient(circle at center, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.72) 55%, rgba(0, 0, 0, 0) 85%), ${NOISE_TEXTURE}`,
                 backgroundSize: "cover, cover",
                 backgroundBlendMode: "multiply",
               }}
@@ -461,8 +483,7 @@ const GlitchImage = ({
                   boxShadow: line.colorLine
                     ? `0 0 ${line.glow}px rgba(0, 255, 255, 0.7)`
                     : `0 0 ${line.glow}px rgba(255, 255, 255, 0.4)`,
-                  animation:
-                    "glitch-line-flicker 120ms steps(2, end) infinite, glitch-line-shift 180ms steps(2, end) infinite",
+                  animation: "glitch-line-flicker 120ms steps(2, end) infinite",
                   animationDelay: `${(index % 4) * 24}ms`,
                 }}
               />
@@ -473,8 +494,7 @@ const GlitchImage = ({
               className={styles.overlay}
               style={{
                 opacity: 0.4 * normalizedIntensity,
-                backgroundImage:
-                  "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E\")",
+                backgroundImage: NOISE_TEXTURE,
                 backgroundSize: "cover",
               }}
             />
@@ -487,8 +507,7 @@ const GlitchImage = ({
                   opacity: prismaticStrength * normalizedIntensity,
                   mixBlendMode: "screen",
                   filter: "contrast(1.5) saturate(2.1) hue-rotate(12deg)",
-                  backgroundImage:
-                    "linear-gradient(120deg, rgba(0, 255, 255, 0.5), rgba(255, 0, 255, 0.5), rgba(255, 210, 0, 0.18)), url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E\")",
+                  backgroundImage: `linear-gradient(120deg, rgba(0, 255, 255, 0.5), rgba(255, 0, 255, 0.5), rgba(255, 210, 0, 0.18)), ${PRISMATIC_NOISE_TEXTURE}`,
                   backgroundBlendMode: "soft-light",
                   backgroundSize: "200% 200%, cover",
                 }}
@@ -510,7 +529,6 @@ const GlitchImage = ({
                 mixBlendMode: "soft-light",
                 opacity: 0.35 + 0.2 * normalizedIntensity,
                 filter: `contrast(${1.1 + normalizedIntensity * 0.6})`,
-                animation: "glitch-scan-shift 120ms steps(2, end) infinite",
               }}
             />
 
