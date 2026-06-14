@@ -162,7 +162,6 @@ export const generateOgImage = async ({
           padding: "44px 52px",
           boxShadow:
             "0 28px 64px rgba(15, 23, 42, 0.16), 0 0 24px rgba(102, 217, 239, 0.1)",
-          zIndex: 2,
         }}
       >
         <div

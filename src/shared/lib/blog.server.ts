@@ -12,7 +12,6 @@ import {
 import markdownItBudoux from "markdown-it-budoux";
 import footnote from "markdown-it-footnote";
 import githubAlerts from "markdown-it-github-alerts";
-import linkPreview from "markdown-it-link-preview";
 import magicLink, {
   handlerGitHubAt,
   handlerLink,
@@ -45,6 +44,201 @@ const YOUTUBE_HOSTS = new Set([
   "m.youtube.com",
   "youtu.be",
 ]);
+
+type LinkPreviewData = {
+  title: string;
+  description: string;
+  image: string;
+  site_name: string;
+  url: string;
+};
+
+const HTML_ESCAPE_REPLACE_RE = /[&<>"']/g;
+const HTML_REPLACEMENTS: Record<string, string> = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&#39;",
+};
+const LINK_PREVIEW_TIMEOUT_MS = 5000;
+const linkPreviewCache = new Map<string, Promise<LinkPreviewData>>();
+
+const replaceUnsafeChar = (ch: string) => HTML_REPLACEMENTS[ch] ?? ch;
+
+const escapeHtml = (str: string) =>
+  str.replace(HTML_ESCAPE_REPLACE_RE, replaceUnsafeChar);
+
+const decodeHtmlEntities = (str: string) =>
+  str
+    .replace(/&#(\d+);/g, (_, code: string) =>
+      String.fromCodePoint(Number(code)),
+    )
+    .replace(/&#x([\da-f]+);/gi, (_, code: string) =>
+      String.fromCodePoint(Number.parseInt(code, 16)),
+    )
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
+
+const getHtmlAttribute = (tag: string, name: string) => {
+  const normalizedName = name.toLowerCase();
+  const attributes = tag.matchAll(
+    /([\w:-]+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/g,
+  );
+
+  for (const attribute of attributes) {
+    if (attribute[1].toLowerCase() !== normalizedName) continue;
+    return decodeHtmlEntities(
+      attribute[2] ?? attribute[3] ?? attribute[4] ?? "",
+    );
+  }
+
+  return "";
+};
+
+const getMetaContent = (
+  html: string,
+  attr: "name" | "property",
+  value: string,
+) => {
+  const metaTags = html.match(/<meta\b[^>]*>/gi) ?? [];
+  const normalizedValue = value.toLowerCase();
+
+  for (const tag of metaTags) {
+    if (getHtmlAttribute(tag, attr).toLowerCase() !== normalizedValue) continue;
+    const content = getHtmlAttribute(tag, "content");
+    if (content) return content;
+  }
+
+  return "";
+};
+
+const getTitle = (html: string) => {
+  const match = html.match(/<title\b[^>]*>([\s\S]*?)<\/title>/i);
+  return match ? decodeHtmlEntities(match[1].replace(/\s+/g, " ").trim()) : "";
+};
+
+const emptyLinkPreview = (url: string): LinkPreviewData => ({
+  title: "",
+  description: "",
+  image: "",
+  site_name: "",
+  url,
+});
+
+const parseLinkPreviewData = (html: string, url: string): LinkPreviewData => {
+  const pageUrl = getMetaContent(html, "property", "og:url") || url;
+  return {
+    title: getMetaContent(html, "property", "og:title") || getTitle(html),
+    description:
+      getMetaContent(html, "property", "og:description") ||
+      getMetaContent(html, "name", "description") ||
+      getMetaContent(html, "name", "Description"),
+    image: getMetaContent(html, "property", "og:image"),
+    site_name: getMetaContent(html, "property", "og:site_name"),
+    url: pageUrl,
+  };
+};
+
+const fetchLinkPreviewData = async (url: string): Promise<LinkPreviewData> => {
+  let parsedUrl: URL;
+  try {
+    parsedUrl = new URL(url);
+  } catch {
+    return emptyLinkPreview(url);
+  }
+
+  if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
+    return emptyLinkPreview(url);
+  }
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), LINK_PREVIEW_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(parsedUrl, {
+      headers: {
+        accept: "text/html,application/xhtml+xml",
+        "user-agent": "kyre.moe link preview generator",
+      },
+      redirect: "follow",
+      signal: controller.signal,
+    });
+    if (!response.ok) return emptyLinkPreview(url);
+    return parseLinkPreviewData(await response.text(), response.url || url);
+  } catch {
+    return emptyLinkPreview(url);
+  } finally {
+    clearTimeout(timeout);
+  }
+};
+
+const getLinkPreviewData = (url: string) => {
+  const cached = linkPreviewCache.get(url);
+  if (cached) return cached;
+
+  const preview = fetchLinkPreviewData(url);
+  linkPreviewCache.set(url, preview);
+  return preview;
+};
+
+const linkPreviewHtml = (ogData: LinkPreviewData) => {
+  const url = escapeHtml(ogData.url);
+  const imageHtml = ogData.image
+    ? `<a class="link-preview-widget-image" href="${url}" rel="noopener" style="background-image: url('${escapeHtml(ogData.image)}');" target="_blank"></a>`
+    : "";
+
+  return `<div class="link-preview-widget"><a href="${url}" rel="noopener" target="_blank"><div class="link-preview-widget-title">${escapeHtml(ogData.title)}</div><div class="link-preview-widget-description">${escapeHtml(ogData.description)}</div><div class="link-preview-widget-url">${escapeHtml(ogData.site_name)}</div></a>${imageHtml}</div>`;
+};
+
+const linkPreviewPlugin: PluginSimple = (md) => {
+  const defaultRender =
+    md.renderer.rules.link_open ??
+    ((tokens, idx, options, _env, self) =>
+      self.renderToken(tokens, idx, options));
+
+  const isLinkPreview = (
+    tokens: Parameters<typeof defaultRender>[0],
+    idx: number,
+  ) => {
+    const token = tokens[idx + 1];
+    return token?.type === "text" && token.content === "@preview";
+  };
+
+  const hideTokensUntilLinkClose = (
+    tokens: Parameters<typeof defaultRender>[0],
+    idx: number,
+  ) => {
+    tokens[idx + 1].content = "";
+    for (let i = idx + 1; i < tokens.length; i++) {
+      tokens[i].hidden = true;
+      if (tokens[i].type === "link_close") break;
+    }
+  };
+
+  const getHref = (
+    tokens: Parameters<typeof defaultRender>[0],
+    idx: number,
+  ) => {
+    const hrefIdx = tokens[idx].attrIndex("href");
+    return hrefIdx >= 0 ? (tokens[idx].attrs?.[hrefIdx]?.[1] ?? "") : "";
+  };
+
+  md.renderer.rules.link_open = async (tokens, idx, options, env, self) => {
+    if (!isLinkPreview(tokens, idx)) {
+      return defaultRender(tokens, idx, options, env, self);
+    }
+
+    hideTokensUntilLinkClose(tokens, idx);
+    const url = getHref(tokens, idx);
+    const ogData = await getLinkPreviewData(url);
+    return linkPreviewHtml(ogData);
+  };
+};
 
 const buildYouTubeEmbed = (url: URL): string | null => {
   if (!YOUTUBE_HOSTS.has(url.hostname)) return null;
@@ -417,7 +611,7 @@ md.use(
   asPluginWithOptions<typeof magicLink, { handlers?: unknown[] }>(magicLink),
   { handlers: [handlerLink(), handlerGitHubAt()] },
 );
-md.use(asPluginSimple(linkPreview));
+md.use(linkPreviewPlugin);
 md.use(embedPlugin);
 md.use(asPluginSimple(markdownItTocDoneRight));
 md.use(asPluginSimple(markdownItBudoux({ language: "ja" })));

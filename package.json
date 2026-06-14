@@ -28,7 +28,6 @@
     "@react-spring/web": "^10.0.3",
     "@vscode/markdown-it-katex": "^1.1.2",
     "budoux": "0.8.0",
-    "canvas": "^3.2.1",
     "gray-matter": "^4.0.3",
     "gsap": "^3.12.7",
     "highlight.js": "^11.11.1",
@@ -38,7 +37,6 @@
     "markdown-it-budoux": "^1.0.6",
     "markdown-it-footnote": "^4.0.0",
     "markdown-it-github-alerts": "^1.0.0",
-    "markdown-it-link-preview": "^1.1.4",
     "markdown-it-magic-link": "^0.1.4",
     "markdown-it-task-lists": "^2.1.1",
     "markdown-it-toc-done-right": "^4.2.0",
@@ -53,26 +51,22 @@
   "devDependencies": {
     "@biomejs/biome": "^2.4.16",
     "@pandacss/dev": "^1.11.3",
+    "@testing-library/dom": "10.4.0",
     "@storybook/addon-a11y": "^10.3.0",
     "@storybook/nextjs-vite": "10.2.8",
     "@storybook/react": "10.2.8",
     "@types/markdown-it": "^14.1.2",
-    "@types/node": "^20.17.30",
+    "@types/node": "20.19.0",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "@types/three": "^0.175.0",
-    "storybook": "^10.3.0",
-    "typescript": "^5.8.3"
+    "storybook": "10.3.1",
+    "typescript": "^5.8.3",
+    "vite": "7.3.1"
   },
   "pnpm": {
-    "onlyBuiltDependencies": [
-      "canvas"
-    ],
     "overrides": {
       "budoux": "^0.7.0"
-    },
-    "patchedDependencies": {
-      "markdown-it-link-preview": "patches/markdown-it-link-preview.patch"
     }
   }
 }
