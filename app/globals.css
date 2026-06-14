@@ -183,7 +183,7 @@ body {
   --orbit-tilt-z: -20deg;
   --orbit-tilt-z-inv: 20deg;
   --orbit-clip-overscan: 16%;
-  --orbit-clip-seam: 1px;
+  --orbit-clip-seam: 0px;
   --orbit-icon-size: var(--home-orbit-icon, 96px);
   --orbit-icon-gap: var(--home-orbit-gap, 12px);
   --orbit-icon-font-size: calc(var(--orbit-icon-size) * 0.42);
@@ -243,6 +243,12 @@ body {
   animation: orbit-rotate 12s linear infinite;
   opacity: 0.7;
   transform: translateZ(-4px);
+}
+
+.orbit-dock__items-clip {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
 }
 
 .orbit-dock__items {
@@ -325,7 +331,7 @@ body {
   display: none;
 }
 
-.orbit-dock[data-layer="front"] .orbit-dock__items {
+.orbit-dock[data-layer="front"] .orbit-dock__items-clip {
   clip-path: inset(
     calc(50% - var(--orbit-clip-seam)) calc(-1 * var(--orbit-clip-overscan))
       calc(-1 * var(--orbit-clip-overscan))
@@ -333,7 +339,7 @@ body {
   );
 }
 
-.orbit-dock[data-layer="back"] .orbit-dock__items {
+.orbit-dock[data-layer="back"] .orbit-dock__items-clip {
   clip-path: inset(
     calc(-1 * var(--orbit-clip-overscan)) calc(-1 * var(--orbit-clip-overscan))
       calc(50% - var(--orbit-clip-seam)) calc(-1 * var(--orbit-clip-overscan))
