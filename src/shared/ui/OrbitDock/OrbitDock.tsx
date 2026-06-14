@@ -374,25 +374,27 @@ const OrbitDock = ({
           <div className="orbit-dock__scan" />
         </div>
       )}
-      <div className="orbit-dock__items">
-        {items.map((item, index) => {
-          const delay = -(index / items.length) * duration;
-          const isHovered = hoveredIndex === index;
+      <div className="orbit-dock__items-clip">
+        <div className="orbit-dock__items">
+          {items.map((item, index) => {
+            const delay = -(index / items.length) * duration;
+            const isHovered = hoveredIndex === index;
 
-          return (
-            <OrbitDockItem
-              key={item.label}
-              item={item}
-              index={index}
-              delay={delay}
-              isHovered={isHovered}
-              interactive={interactive}
-              onItemClick={handleItemClick}
-              suppressClickRef={suppressClickRef}
-              dragStateRef={dragState}
-            />
-          );
-        })}
+            return (
+              <OrbitDockItem
+                key={item.label}
+                item={item}
+                index={index}
+                delay={delay}
+                isHovered={isHovered}
+                interactive={interactive}
+                onItemClick={handleItemClick}
+                suppressClickRef={suppressClickRef}
+                dragStateRef={dragState}
+              />
+            );
+          })}
+        </div>
       </div>
     </div>
   );
