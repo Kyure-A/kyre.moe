@@ -36,7 +36,7 @@ const TIMELINE_DATA: Record<SiteLang, TimelineItem[]> = {
     },
     {
       date: "September, 2024",
-      title: "Booth ショップ 開設",
+      title: "BOOTH ショップ 開設",
       description: "VRChat アバター向けアクセサリーを販売",
       url: "https://kyre.booth.pm",
     },
