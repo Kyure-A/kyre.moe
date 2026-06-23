@@ -10,10 +10,9 @@ tags:
 > [!NOTE]
 > This article was translated from Japanese by Claude Opus 4.6.
 
-
 # Introduction
 
-Hi, I'm Kyure\_A!
+Hi, I'm Kyure_A!
 
 [Sheldon](https://github.com/rossmacarthur/sheldon) is a Zsh / Bash plugin manager configured using TOML.
 
@@ -21,9 +20,7 @@ When you want to use it in a Nix environment, the naive approach would be to man
 
 This change was merged upstream by [elanora96](https://github.com/elanora96), who took over the [PR](https://github.com/nix-community/home-manager/pull/5672) I originally submitted to home-manager. It was an experience that showed me the warmth and openness of open-source software.
 
-
 # Benefits of Using Sheldon
-
 
 ## Not Dependent on Zsh
 
@@ -31,19 +28,14 @@ Unlike other Zsh plugin managers, Sheldon is implemented as a native Rust binary
 
 Sheldon, on the other hand, simply passes plugins to Zsh via stdout, so Zsh only needs to evaluate that output to load the plugins.
 
-
 ## Template Engine
 
-[Sheldon's examples](https://sheldon.cli.rs/Examples.html) include templates for lazy-loading plugins using `zsh-defer`. This is effectively something that all Sheldon users use by default, but I suspect the reason it's placed in the examples &#x2013; with the premise that users define it themselves rather than having it built into Sheldon &#x2013; is based on the following philosophy:
+[Sheldon's examples](https://sheldon.cli.rs/Examples.html) include templates for lazy-loading plugins using `zsh-defer`. This is effectively something that all Sheldon users use by default, but I suspect the reason it's placed in the examples -- with the premise that users define it themselves rather than having it built into Sheldon -- is based on the following philosophy:
 
--   No dependency on a specific implementation
-    
+- No dependency on a specific implementation
     Currently `zsh-defer` is the mainstream approach for lazy-loading Zsh plugins, but if the mainstream shifts or a user wants to use a different method, they can easily adapt by simply swapping out the template.
-
--   Sheldon is not Zsh-dependent
-    
+- Sheldon is not Zsh-dependent
     `zsh-defer` is designed for Zsh, but for Bash configurations you would naturally need a different implementation. Rather than Sheldon wrapping this internally, users can simply switch between implementations by using templates.
-
 
 ## Declarative Configuration
 
@@ -72,9 +64,7 @@ local = "/nix/store/xxxxx-source"
 apply = ["defer"]
 ```
 
-
 # Using Sheldon with Nix
-
 
 ## home-manager's `programs.sheldon`
 
@@ -102,7 +92,6 @@ programs.sheldon = {
 
 Since it's written as a Nix expression, you can use variable interpolation and conditional branching directly, which is a nice benefit.
 
-
 ## Managing Plugin Sources with Nix
 
 By using Sheldon's `local` source, you can delegate plugin fetching to Nix. Simply pass the path declared as a flake input directly.
@@ -123,7 +112,6 @@ plugins.fast-syntax-highlighting = {
 
 This way, plugin versions are managed by `flake.lock`, and Sheldon's role is reduced to simply reading directories from the Nix Store and feeding them into templates.
 
-
 ## Combining with `inline` Plugins
 
 Using the `inline` source, you can manage even single-line shell scripts as plugins.
@@ -143,7 +131,6 @@ plugins = {
 ```
 
 Everything that was scattered across your `.zshrc` is consolidated into the plugins table, so you can understand what's being loaded just by looking at the attrset.
-
 
 ## Be Careful with `zsh-defer` Load Order
 
@@ -167,7 +154,6 @@ in
 ```
 
 `mkBefore` places it at the top of `.zshrc`, ensuring the order `zsh-defer` -> `sheldon source`. If you get this wrong, all deferred plugins will result in `command not found`, so be careful (learned this the hard way).
-
 
 ## Migrating from `github` Sources to Flake Inputs
 
@@ -200,7 +186,6 @@ plugins.zsh-syntax-highlighting = {
 ```
 
 However, the root `flake.nix` gains another input for every plugin you add. Combined with non-Sheldon inputs, this gets painful quickly.
-
 
 ## Extracting the Sheldon Module into a Sub-Flake
 
@@ -246,27 +231,23 @@ imports = [
 
 This way, adding, removing, or updating plugin versions is self-contained within the sub-flake, without polluting the root flake's `flake.lock`. I think this pattern of extracting modules with many external inputs into sub-flakes can be applied beyond just Sheldon.
 
-
 # Conclusion
 
--   Sheldon's design separates source fetching from source application, which makes it inherently compatible with Nix.
--   It's now available in home-manager, so I highly recommend it.
+- Sheldon's design separates source fetching from source application, which makes it inherently compatible with Nix.
+- It's now available in home-manager, so I highly recommend it.
 
 Thank you for reading!
-
 
 # Aside
 
 If you search for something like "Nix Sheldon" to find this article, you might also stumble upon [Sheldon Nix](https://www.eastern.edu/sheldon-nix), who is apparently a real person. What a name.
 
-
 # Reference
 
 The configurations introduced in this article are from my Nix configuration ([Kyure-A/nix-config](https://github.com/Kyure-A/nix-config)).
 
--   [inputs/sheldon/](https://github.com/Kyure-A/nix-config/tree/master/inputs/sheldon) - Sheldon sub-flake (plugin definitions and module)
--   [inputs/sheldon/flake.nix](https://github.com/Kyure-A/nix-config/blob/master/inputs/sheldon/flake.nix) - Plugin flake inputs
--   [inputs/sheldon/default.nix](https://github.com/Kyure-A/nix-config/blob/master/inputs/sheldon/default.nix) - Sheldon home-manager module
--   [modules/home/programs/zsh/default.nix](https://github.com/Kyure-A/nix-config/blob/master/modules/home/programs/zsh/default.nix) - Loading `zsh-defer` and `sheldon source`
--   [flake.nix](https://github.com/Kyure-A/nix-config/blob/master/flake.nix) - Root flake (sub-flake references)
-
+- [inputs/sheldon/](https://github.com/Kyure-A/nix-config/tree/master/inputs/sheldon) - Sheldon sub-flake (plugin definitions and module)
+- [inputs/sheldon/flake.nix](https://github.com/Kyure-A/nix-config/blob/master/inputs/sheldon/flake.nix) - Plugin flake inputs
+- [inputs/sheldon/default.nix](https://github.com/Kyure-A/nix-config/blob/master/inputs/sheldon/default.nix) - Sheldon home-manager module
+- [modules/home/programs/zsh/default.nix](https://github.com/Kyure-A/nix-config/blob/master/modules/home/programs/zsh/default.nix) - Loading `zsh-defer` and `sheldon source`
+- [flake.nix](https://github.com/Kyure-A/nix-config/blob/master/flake.nix) - Root flake (sub-flake references)
