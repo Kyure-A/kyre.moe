@@ -1,6 +1,5 @@
 import "server-only";
 import * as fs from "node:fs";
-import { createRequire } from "node:module";
 import * as path from "node:path";
 import matter from "gray-matter";
 import hljs from "highlight.js";
@@ -88,10 +87,12 @@ const replaceUnsafeChar = (ch: string) => HTML_REPLACEMENTS[ch] ?? ch;
 const escapeHtml = (str: string) =>
   str.replace(HTML_ESCAPE_REPLACE_RE, replaceUnsafeChar);
 
-const runtimeRequire = createRequire(import.meta.url);
+// biome-ignore lint/security/noGlobalEval: Keeps Turbopack from bundling Ox Content's native binding loader.
+const nativeRequire = eval("require") as NodeRequire;
+const OX_CONTENT_PACKAGE = "@ox-content/napi";
 
 const loadOxContent = (): OxContentModule => {
-  return runtimeRequire("@ox-content/napi") as OxContentModule;
+  return nativeRequire(OX_CONTENT_PACKAGE) as OxContentModule;
 };
 
 const decodeHtmlEntities = (str: string) =>
