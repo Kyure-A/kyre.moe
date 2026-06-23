@@ -1,7 +1,7 @@
 import "server-only";
 import * as fs from "node:fs";
+import { createRequire } from "node:module";
 import * as path from "node:path";
-import { type JsParserOptions, parseAndRender } from "@ox-content/napi";
 import matter from "gray-matter";
 import hljs from "highlight.js";
 import katex from "katex";
@@ -50,6 +50,23 @@ const HTML_REPLACEMENTS: Record<string, string> = {
 };
 const LINK_PREVIEW_TIMEOUT_MS = 5000;
 const linkPreviewCache = new Map<string, Promise<LinkPreviewData>>();
+type OxParserOptions = {
+  gfm?: boolean;
+  footnotes?: boolean;
+  taskLists?: boolean;
+  tables?: boolean;
+  strikethrough?: boolean;
+  autolinks?: boolean;
+};
+type OxContentModule = {
+  parseAndRender: (
+    source: string,
+    options?: OxParserOptions,
+  ) => {
+    html: string;
+    errors: string[];
+  };
+};
 const OX_MARKDOWN_OPTIONS = {
   gfm: true,
   footnotes: true,
@@ -57,7 +74,7 @@ const OX_MARKDOWN_OPTIONS = {
   tables: true,
   strikethrough: true,
   autolinks: true,
-} satisfies JsParserOptions;
+} satisfies OxParserOptions;
 const HTML_PLACEHOLDER_PREFIX = "KYREHTMLPLACEHOLDER";
 
 type HtmlPlaceholder = {
@@ -70,6 +87,12 @@ const replaceUnsafeChar = (ch: string) => HTML_REPLACEMENTS[ch] ?? ch;
 
 const escapeHtml = (str: string) =>
   str.replace(HTML_ESCAPE_REPLACE_RE, replaceUnsafeChar);
+
+const runtimeRequire = createRequire(import.meta.url);
+
+const loadOxContent = (): OxContentModule => {
+  return runtimeRequire("@ox-content/napi") as OxContentModule;
+};
 
 const decodeHtmlEntities = (str: string) =>
   str
@@ -495,6 +518,7 @@ const preprocessMarkdown = async (source: string) => {
 
 const renderMarkdown = async (source: string) => {
   const { markdown, placeholders } = await preprocessMarkdown(source);
+  const { parseAndRender } = loadOxContent();
   const result = parseAndRender(markdown, OX_MARKDOWN_OPTIONS);
   if (result.errors.length > 0) {
     throw new Error(
