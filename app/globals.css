@@ -464,6 +464,11 @@ body {
   accent-color: var(--theme-accent);
 }
 
+.blog-content .task-list-item > p {
+  display: inline;
+  margin: 0;
+}
+
 .blog-content ul ul,
 .blog-content ul ol,
 .blog-content ol ul,

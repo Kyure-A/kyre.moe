@@ -1,23 +1,10 @@
 import "server-only";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import katex from "@vscode/markdown-it-katex";
+import { type JsParserOptions, parseAndRender } from "@ox-content/napi";
 import matter from "gray-matter";
 import hljs from "highlight.js";
-import {
-  createMarkdownExit,
-  type PluginSimple,
-  type PluginWithOptions,
-} from "markdown-exit";
-import markdownItBudoux from "markdown-it-budoux";
-import footnote from "markdown-it-footnote";
-import githubAlerts from "markdown-it-github-alerts";
-import magicLink, {
-  handlerGitHubAt,
-  handlerLink,
-} from "markdown-it-magic-link";
-import taskLists from "markdown-it-task-lists";
-import markdownItTocDoneRight from "markdown-it-toc-done-right";
+import katex from "katex";
 import {
   type BlogPost,
   type BlogPostMeta,
@@ -63,6 +50,21 @@ const HTML_REPLACEMENTS: Record<string, string> = {
 };
 const LINK_PREVIEW_TIMEOUT_MS = 5000;
 const linkPreviewCache = new Map<string, Promise<LinkPreviewData>>();
+const OX_MARKDOWN_OPTIONS = {
+  gfm: true,
+  footnotes: true,
+  taskLists: true,
+  tables: true,
+  strikethrough: true,
+  autolinks: true,
+} satisfies JsParserOptions;
+const HTML_PLACEHOLDER_PREFIX = "KYREHTMLPLACEHOLDER";
+
+type HtmlPlaceholder = {
+  token: string;
+  html: string;
+  block: boolean;
+};
 
 const replaceUnsafeChar = (ch: string) => HTML_REPLACEMENTS[ch] ?? ch;
 
@@ -195,50 +197,8 @@ const linkPreviewHtml = (ogData: LinkPreviewData) => {
   return `<div class="link-preview-widget"><a href="${url}" rel="noopener" target="_blank"><div class="link-preview-widget-title">${escapeHtml(ogData.title)}</div><div class="link-preview-widget-description">${escapeHtml(ogData.description)}</div><div class="link-preview-widget-url">${escapeHtml(ogData.site_name)}</div></a>${imageHtml}</div>`;
 };
 
-const linkPreviewPlugin: PluginSimple = (md) => {
-  const defaultRender =
-    md.renderer.rules.link_open ??
-    ((tokens, idx, options, _env, self) =>
-      self.renderToken(tokens, idx, options));
-
-  const isLinkPreview = (
-    tokens: Parameters<typeof defaultRender>[0],
-    idx: number,
-  ) => {
-    const token = tokens[idx + 1];
-    return token?.type === "text" && token.content === "@preview";
-  };
-
-  const hideTokensUntilLinkClose = (
-    tokens: Parameters<typeof defaultRender>[0],
-    idx: number,
-  ) => {
-    tokens[idx + 1].content = "";
-    for (let i = idx + 1; i < tokens.length; i++) {
-      tokens[i].hidden = true;
-      if (tokens[i].type === "link_close") break;
-    }
-  };
-
-  const getHref = (
-    tokens: Parameters<typeof defaultRender>[0],
-    idx: number,
-  ) => {
-    const hrefIdx = tokens[idx].attrIndex("href");
-    return hrefIdx >= 0 ? (tokens[idx].attrs?.[hrefIdx]?.[1] ?? "") : "";
-  };
-
-  md.renderer.rules.link_open = async (tokens, idx, options, env, self) => {
-    if (!isLinkPreview(tokens, idx)) {
-      return defaultRender(tokens, idx, options, env, self);
-    }
-
-    hideTokensUntilLinkClose(tokens, idx);
-    const url = getHref(tokens, idx);
-    const ogData = await getLinkPreviewData(url);
-    return linkPreviewHtml(ogData);
-  };
-};
+const buildLinkPreview = async (url: string) =>
+  linkPreviewHtml(await getLinkPreviewData(url));
 
 const buildYouTubeEmbed = (url: URL): string | null => {
   if (!YOUTUBE_HOSTS.has(url.hostname)) return null;
@@ -273,69 +233,278 @@ const buildTwitterEmbed = (url: URL): string | null => {
   return `<div class="markdown-embed markdown-embed-twitter"><blockquote class="twitter-tweet" data-dnt="true" data-theme="dark" data-width="550"><a href="${canonical}" aria-label="View this post on X"></a></blockquote></div>`;
 };
 
-const embedPlugin: PluginSimple = (md) => {
-  md.core.ruler.after("inline", "embed", (state) => {
-    const tokens = state.tokens;
-    for (let i = 0; i < tokens.length; i++) {
-      const token = tokens[i];
-      if (token.type !== "paragraph_open") continue;
-      const inline = tokens[i + 1];
-      const close = tokens[i + 2];
-      if (!inline || !close) continue;
-      if (inline.type !== "inline" || close.type !== "paragraph_close")
-        continue;
-
-      const children = inline.children ?? [];
-      const meaningful = children.filter(
-        (child) => child.type !== "text" || child.content?.trim(),
-      );
-      if (meaningful.length !== 3) continue;
-      const [open, , end] = meaningful;
-      if (open.type !== "link_open" || end.type !== "link_close") continue;
-
-      const href =
-        open.attrGet?.("href") ??
-        open.attrs?.find(([name]) => name === "href")?.[1];
-      if (!href) continue;
-
-      let url: URL;
-      try {
-        url = new URL(href);
-      } catch {
-        continue;
-      }
-
-      const html = buildYouTubeEmbed(url) ?? buildTwitterEmbed(url);
-      if (!html) continue;
-
-      const embedToken = new state.Token("html_block", "", 0);
-      embedToken.content = `${html}\n`;
-      tokens.splice(i, 3, embedToken);
-    }
-  });
+const addHtmlPlaceholder = (
+  placeholders: HtmlPlaceholder[],
+  html: string,
+  block: boolean,
+) => {
+  const token = `${HTML_PLACEHOLDER_PREFIX}_${placeholders.length}`;
+  placeholders.push({ token, html, block });
+  return token;
 };
 
-const md = createMarkdownExit({
-  html: false,
-  linkify: true,
-  typographer: true,
-  highlight: (code, lang) => {
-    try {
-      if (lang && hljs.getLanguage(lang)) {
-        const result = hljs.highlight(code, {
-          language: lang,
-          ignoreIllegals: true,
-        });
-        return `<pre class="hljs"><code class="hljs language-${lang}">${result.value}</code></pre>`;
-      }
-      const result = hljs.highlightAuto(code);
-      const langClass = result.language ? ` language-${result.language}` : "";
-      return `<pre class="hljs"><code class="hljs${langClass}">${result.value}</code></pre>`;
-    } catch {
-      return "";
+const buildMagicLink = (user: string) => {
+  const safeUser = escapeHtml(user);
+  const url = `https://github.com/${safeUser}`;
+  const avatar = `https://github.com/${safeUser}.png?size=40`;
+  return `<a class="markdown-magic-link" href="${url}" rel="noopener" target="_blank"><span class="markdown-magic-link-image" style="background-image: url('${avatar}');" aria-hidden="true"></span>@${safeUser}</a>`;
+};
+
+const renderMath = (source: string, displayMode: boolean) => {
+  try {
+    return katex.renderToString(source, {
+      displayMode,
+      throwOnError: false,
+    });
+  } catch {
+    return escapeHtml(source);
+  }
+};
+
+const normalizeAngleLinkDestinations = (line: string) =>
+  line.replace(/\]\(<(https?:\/\/[^>\s]+)>\)/g, "]($1)");
+
+const normalizeTaskListMarkers = (line: string) =>
+  line.replace(
+    /^([ \t]*(?:[-+*]|\d+[.)]))[ \t]+\[([ xX])\][ \t]+/,
+    (_match, bullet: string, marker: string) =>
+      `${bullet} [${marker === "X" ? "x" : marker}] `,
+  );
+
+const decodeSafeNumericEntities = (line: string) =>
+  line
+    .replace(/&#x([\da-f]+);/gi, (match, code: string) => {
+      const value = Number.parseInt(code, 16);
+      if ([34, 38, 39, 60, 62].includes(value)) return match;
+      return String.fromCodePoint(value);
+    })
+    .replace(/&#(\d+);/g, (match, code: string) => {
+      const value = Number.parseInt(code, 10);
+      if ([34, 38, 39, 60, 62].includes(value)) return match;
+      return String.fromCodePoint(value);
+    });
+
+const escapeRawHtmlLine = (line: string) =>
+  line.replace(/<([A-Za-z!/][^>\n]*)>/g, "&lt;$1&gt;");
+
+const replaceInlineMath = (line: string, placeholders: HtmlPlaceholder[]) => {
+  let result = "";
+  let cursor = 0;
+  let inlineCodeTicks = 0;
+
+  while (cursor < line.length) {
+    const ch = line[cursor];
+    if (ch === "`") {
+      const run = line.slice(cursor).match(/^`+/)?.[0] ?? "`";
+      inlineCodeTicks = inlineCodeTicks === run.length ? 0 : run.length;
+      result += run;
+      cursor += run.length;
+      continue;
     }
-  },
-});
+
+    if (inlineCodeTicks === 0 && ch === "$" && line[cursor + 1] !== "$") {
+      let end = cursor + 1;
+      while (end < line.length) {
+        if (line[end] === "$" && line[end - 1] !== "\\") break;
+        end += 1;
+      }
+      if (end < line.length) {
+        const math = line.slice(cursor + 1, end);
+        if (math.trim()) {
+          result += addHtmlPlaceholder(
+            placeholders,
+            renderMath(math, false),
+            false,
+          );
+          cursor = end + 1;
+          continue;
+        }
+      }
+    }
+
+    result += ch;
+    cursor += 1;
+  }
+
+  return result;
+};
+
+const replaceMagicLinks = (line: string, placeholders: HtmlPlaceholder[]) =>
+  line.replace(
+    /\{@([A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?)\}/g,
+    (_match, user: string) =>
+      addHtmlPlaceholder(placeholders, buildMagicLink(user), false),
+  );
+
+const replaceInlineAutolinks = (line: string) =>
+  line.replace(/<((?:https?:\/\/)[^>\s]+)>/g, "[$1]($1)");
+
+const restoreHtmlPlaceholders = (
+  html: string,
+  placeholders: HtmlPlaceholder[],
+) => {
+  let result = html;
+  for (const placeholder of placeholders) {
+    if (placeholder.block) {
+      result = result.replaceAll(
+        `<p>${placeholder.token}</p>`,
+        placeholder.html,
+      );
+    }
+    result = result.replaceAll(placeholder.token, placeholder.html);
+  }
+  return result;
+};
+
+const renderHighlightedCodeBlock = (escapedCode: string, lang: string) => {
+  const code = decodeHtmlEntities(escapedCode);
+  try {
+    if (lang && hljs.getLanguage(lang)) {
+      const result = hljs.highlight(code, {
+        language: lang,
+        ignoreIllegals: true,
+      });
+      return `<pre class="hljs"><code class="hljs language-${escapeHtml(lang)}">${result.value}</code></pre>`;
+    }
+    const result = hljs.highlightAuto(code);
+    const langClass = result.language
+      ? ` language-${escapeHtml(result.language)}`
+      : "";
+    return `<pre class="hljs"><code class="hljs${langClass}">${result.value}</code></pre>`;
+  } catch {
+    return `<pre class="hljs"><code class="hljs">${escapedCode}</code></pre>`;
+  }
+};
+
+const highlightCodeBlocks = (html: string) =>
+  html.replace(
+    /<pre><code(?: class="language-([^"]+)")?>([\s\S]*?)<\/code><\/pre>/g,
+    (_match, lang: string | undefined, code: string) =>
+      renderHighlightedCodeBlock(code, lang ?? ""),
+  );
+
+const normalizeOxHtml = (html: string) =>
+  html
+    .replace(
+      /<blockquote class="ox-callout ox-callout--([a-z]+)">/g,
+      (_match, kind: string) =>
+        `<blockquote class="markdown-alert markdown-alert-${kind}">`,
+    )
+    .replace(
+      /<p class="ox-callout-title">([\s\S]*?)<\/p>/g,
+      '<p class="markdown-alert-title">$1</p>',
+    )
+    .replace(
+      /<li>(\s*<input type="checkbox"[^>]*>)/g,
+      '<li class="task-list-item">$1',
+    );
+
+const preprocessMarkdown = async (source: string) => {
+  const placeholders: HtmlPlaceholder[] = [];
+  const lines = source.split(/\r?\n/);
+  const output: string[] = [];
+  let inFence = false;
+  let fenceChar = "";
+  let fenceLen = 0;
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    const fence = line.match(/^[ \t]*(`{3,}|~{3,})/);
+    if (fence) {
+      const marker = fence[1];
+      const isClosing =
+        inFence && marker[0] === fenceChar && marker.length >= fenceLen;
+      if (isClosing) {
+        inFence = false;
+        fenceChar = "";
+        fenceLen = 0;
+      } else if (!inFence) {
+        inFence = true;
+        fenceChar = marker[0];
+        fenceLen = marker.length;
+      }
+      output.push(line);
+      continue;
+    }
+
+    if (inFence) {
+      output.push(line);
+      continue;
+    }
+
+    if (line.trim() === "$$") {
+      const mathLines: string[] = [];
+      let end = index + 1;
+      while (end < lines.length && lines[end].trim() !== "$$") {
+        mathLines.push(lines[end]);
+        end += 1;
+      }
+      if (end < lines.length) {
+        output.push(
+          addHtmlPlaceholder(
+            placeholders,
+            renderMath(mathLines.join("\n"), true),
+            true,
+          ),
+        );
+        index = end;
+        continue;
+      }
+    }
+
+    const preview = line.match(
+      /^[ \t]*\[@preview\]\((?:<([^>]+)>|([^)]+))\)[ \t]*$/,
+    );
+    if (preview) {
+      output.push(
+        addHtmlPlaceholder(
+          placeholders,
+          await buildLinkPreview(preview[1] ?? preview[2]),
+          true,
+        ),
+      );
+      continue;
+    }
+
+    const autolink = line.match(/^[ \t]*<(https?:\/\/[^>\s]+)>[ \t]*$/);
+    if (autolink) {
+      const url = new URL(autolink[1]);
+      const embed = buildYouTubeEmbed(url) ?? buildTwitterEmbed(url);
+      output.push(
+        embed
+          ? addHtmlPlaceholder(placeholders, embed, true)
+          : `[${autolink[1]}](${autolink[1]})`,
+      );
+      continue;
+    }
+
+    const normalized = normalizeAngleLinkDestinations(
+      normalizeTaskListMarkers(line),
+    );
+    const withAutolinks = replaceInlineAutolinks(normalized);
+    const withMath = replaceInlineMath(withAutolinks, placeholders);
+    const withMagicLinks = replaceMagicLinks(withMath, placeholders);
+    output.push(decodeSafeNumericEntities(escapeRawHtmlLine(withMagicLinks)));
+  }
+
+  return {
+    markdown: output.join("\n"),
+    placeholders,
+  };
+};
+
+const renderMarkdown = async (source: string) => {
+  const { markdown, placeholders } = await preprocessMarkdown(source);
+  const result = parseAndRender(markdown, OX_MARKDOWN_OPTIONS);
+  if (result.errors.length > 0) {
+    throw new Error(
+      `Ox Content failed to render Markdown: ${result.errors.join("\n")}`,
+    );
+  }
+  return normalizeOxHtml(
+    highlightCodeBlocks(restoreHtmlPlaceholders(result.html, placeholders)),
+  );
+};
 
 const safeReadDir = (dirPath: string) => {
   try {
@@ -574,7 +743,7 @@ export const getPost = async (
     getAllPosts(lang).find((post) => post.slug === slug && post.lang === lang)
       ?.tags ?? meta.tags;
   const rewrittenContent = rewriteRelativeImagePaths(content, slug);
-  const html = await md.renderAsync(rewrittenContent);
+  const html = await renderMarkdown(rewrittenContent);
   return { ...meta, tags, content: rewrittenContent, html };
 };
 
@@ -592,50 +761,3 @@ export const getPostLanguages = (slug: string): SiteLang[] => {
   );
   return Array.from(langs);
 };
-
-const asPluginSimple = <T>(plugin: T) => plugin as unknown as PluginSimple;
-const asPluginWithOptions = <T, O>(plugin: T) =>
-  plugin as unknown as PluginWithOptions<O>;
-
-md.use(asPluginSimple(footnote));
-md.use(
-  asPluginWithOptions<
-    typeof taskLists,
-    { label?: boolean; labelAfter?: boolean }
-  >(taskLists),
-  { label: true, labelAfter: false },
-);
-md.use(asPluginSimple(githubAlerts));
-md.use(asPluginSimple(katex));
-md.use(
-  asPluginWithOptions<typeof magicLink, { handlers?: unknown[] }>(magicLink),
-  { handlers: [handlerLink(), handlerGitHubAt()] },
-);
-md.use(linkPreviewPlugin);
-md.use(embedPlugin);
-md.use(asPluginSimple(markdownItTocDoneRight));
-md.use(asPluginSimple(markdownItBudoux({ language: "ja" })));
-md.inline.ruler.after("emphasis", "underline", (state, silent) => {
-  const start = state.pos;
-  if (state.src.charCodeAt(start) !== 0x5f) return false;
-  if (state.src.charCodeAt(start + 1) !== 0x5f) return false;
-  let pos = start + 2;
-  while (pos < state.posMax) {
-    if (
-      state.src.charCodeAt(pos) === 0x5f &&
-      state.src.charCodeAt(pos + 1) === 0x5f
-    ) {
-      if (!silent) {
-        state.push("u_open", "u", 1);
-        state.push("text", "", 0).content = state.src.slice(start + 2, pos);
-        state.push("u_close", "u", -1);
-      }
-      state.pos = pos + 2;
-      return true;
-    }
-    pos += 1;
-  }
-  return false;
-});
-md.renderer.rules.u_open = () => "<u>";
-md.renderer.rules.u_close = () => "</u>";
