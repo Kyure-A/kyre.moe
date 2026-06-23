@@ -66,10 +66,6 @@ jobs:
         uses: actions/configure-pages@v5
         with:
           static_site_generator: next
-      - name: Install Emacs for Org export
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y emacs-nox
       - name: Prepare article content
         run: pnpm content
       - name: Convert hero image to WebP
