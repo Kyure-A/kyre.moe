@@ -1,9 +1,8 @@
-import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { parse as parseOrg } from "uniorg-parse/lib/parser.js";
 
 const ARTICLES_DIR = path.join(process.cwd(), "articles");
 const CACHE_PATH = path.join(process.cwd(), ".org-export-cache.json");
@@ -96,150 +95,197 @@ function buildFrontmatter(meta) {
   return lines.join("\n");
 }
 
-function unescapeUnderscoreInBackticks(source) {
-  const initialState = {
-    result: "",
-    inFence: false,
-    fenceChar: "",
-    fenceLen: 0,
-    inInline: false,
-    inlineLen: 0,
-    lineStart: 0,
-    cursor: 0,
-  };
+function renderInlineChildren(children = [], context = {}) {
+  return children.map((child) => renderInline(child, context)).join("");
+}
 
-  const finalState = Array.from(source).reduce((state, ch, index) => {
-    if (index < state.cursor) return state;
+function wrapInline(marker, node, context = {}) {
+  const value = renderInlineChildren(node.children, {
+    ...context,
+    mark: node.type,
+  });
+  if (context.mark === node.type) return value;
+  return `${marker}${value}${marker}`;
+}
 
-    if (ch === "\n") {
-      return {
-        ...state,
-        result: `${state.result}\n`,
-        lineStart: index + 1,
-        cursor: index + 1,
-      };
-    }
+function markdownLinkTarget(node) {
+  if (node.linkType === "file")
+    return node.path ?? node.rawLink.replace(/^file:/, "");
+  return node.rawLink;
+}
 
-    if (!state.inInline && (ch === "`" || ch === "~")) {
-      const runMatch =
-        ch === "`"
-          ? source.slice(index).match(/^`+/)
-          : source.slice(index).match(/^~+/);
-      const runLen = runMatch ? runMatch[0].length : 0;
-      if (runLen >= 3) {
-        const before = source.slice(state.lineStart, index);
-        if (/^[ \t]*$/.test(before)) {
-          const isClosing =
-            state.inFence && ch === state.fenceChar && runLen >= state.fenceLen;
-          const nextFenceState = isClosing
-            ? { inFence: false, fenceChar: "", fenceLen: 0 }
-            : state.inFence
-              ? {}
-              : { inFence: true, fenceChar: ch, fenceLen: runLen };
-          return {
-            ...state,
-            ...nextFenceState,
-            result: state.result + source.slice(index, index + runLen),
-            cursor: index + runLen,
-          };
-        }
+function renderCaption(affiliated = {}) {
+  const caption = affiliated.CAPTION?.[0];
+  return caption ? renderInlineChildren(caption).trim() : "";
+}
+
+function isImagePath(value) {
+  return /\.(?:avif|gif|jpe?g|png|svg|webp)$/i.test(value);
+}
+
+function isHttpUrl(value) {
+  return /^https?:\/\//i.test(value);
+}
+
+function renderInline(node, context = {}) {
+  switch (node.type) {
+    case "text":
+      return node.value;
+    case "bold":
+      return wrapInline("**", node, context);
+    case "italic":
+      return wrapInline("*", node, context);
+    case "underline":
+      return wrapInline("__", node, context);
+    case "strike-through":
+      return wrapInline("~~", node, context);
+    case "code":
+    case "verbatim":
+      return `\`${node.value.replace(/`/g, "\\`")}\``;
+    case "latex-fragment":
+      return node.value;
+    case "link": {
+      const target = markdownLinkTarget(node);
+      const label = renderInlineChildren(node.children, context).trim();
+      if (node.linkType === "file" && isImagePath(target)) {
+        return `![${label}](${target})`;
       }
+      if (!label && isHttpUrl(target)) {
+        return `<${target}>`;
+      }
+      return label ? `[${label}](${target})` : target;
     }
+    default:
+      return renderInlineChildren(node.children, context) || node.value || "";
+  }
+}
 
-    if (!state.inFence && ch === "`") {
-      const runMatch = source.slice(index).match(/^`+/);
-      const runLen = runMatch ? runMatch[0].length : 0;
-      const shouldClose = state.inInline && runLen === state.inlineLen;
-      const nextInlineState = state.inInline
-        ? shouldClose
-          ? { inInline: false, inlineLen: 0 }
-          : {}
-        : { inInline: true, inlineLen: runLen };
-      return {
-        ...state,
-        ...nextInlineState,
-        result: state.result + source.slice(index, index + runLen),
-        cursor: index + runLen,
-      };
+function renderParagraph(node) {
+  const image = node.children?.find(
+    (child) =>
+      child.type === "link" &&
+      child.linkType === "file" &&
+      isImagePath(markdownLinkTarget(child)),
+  );
+  const onlyImage =
+    image &&
+    node.children.every(
+      (child) =>
+        child === image || (child.type === "text" && child.value.trim() === ""),
+    );
+  if (onlyImage) {
+    const target = markdownLinkTarget(image);
+    const caption = renderCaption(node.affiliated);
+    return `![${caption}](${target})`;
+  }
+  return renderInlineChildren(node.children).trimEnd();
+}
+
+function indentBlock(value, spaces) {
+  const prefix = " ".repeat(spaces);
+  return value
+    .split("\n")
+    .map((line) => (line ? `${prefix}${line}` : line))
+    .join("\n");
+}
+
+function renderListItem(node, index, listType, depth) {
+  const marker = listType === "ordered" ? `${index + 1}.` : "-";
+  const checkbox =
+    node.checkbox === "on" ? " [x]" : node.checkbox === "off" ? " [ ]" : "";
+  const renderedChildren = node.children
+    .map((child) =>
+      renderBlock(child, {
+        listItem: true,
+        depth: child.type === "plain-list" ? depth + 1 : depth,
+      }),
+    )
+    .filter(Boolean);
+  const [first = "", ...rest] = renderedChildren;
+  const firstLine =
+    `${"  ".repeat(depth)}${marker}${checkbox} ${first}`.trimEnd();
+  const restLines = rest.map((child) => indentBlock(child, 2)).join("\n");
+  return [firstLine, restLines].filter(Boolean).join("\n");
+}
+
+function renderBlock(node, context = {}) {
+  switch (node.type) {
+    case "org-data":
+    case "section":
+      return renderBlocks(node.children, context);
+    case "keyword":
+      return "";
+    case "headline":
+      return `${"#".repeat(node.level - (context.headingOffset ?? 0))} ${renderInlineChildren(node.children).trim()}`;
+    case "paragraph":
+      return renderParagraph(node);
+    case "plain-list":
+      return node.children
+        .map((child, index) =>
+          renderListItem(child, index, node.listType, context.depth ?? 0),
+        )
+        .join("\n");
+    case "src-block": {
+      const codeValue = removeCommonIndent(node.value);
+      const code = codeValue.endsWith("\n") ? codeValue : `${codeValue}\n`;
+      return `\`\`\`${node.language ?? ""}\n${code}\`\`\``;
     }
+    case "example-block":
+      return `\`\`\`\n${node.value}\n\`\`\``;
+    case "quote-block":
+      return renderBlocks(node.children)
+        .split("\n")
+        .map((line) => (line ? `> ${line}` : ">"))
+        .join("\n");
+    case "list-item":
+      return renderListItem(node, 0, "unordered", context.depth ?? 0);
+    default:
+      return renderInline(node);
+  }
+}
 
-    if (
-      !state.inFence &&
-      state.inInline &&
-      ch === "\\" &&
-      source[index + 1] === "_"
-    ) {
-      return {
-        ...state,
-        result: `${state.result}_`,
-        cursor: index + 2,
-      };
-    }
+function renderBlocks(children = [], context = {}) {
+  return children
+    .map((child) => renderBlock(child, context))
+    .filter(Boolean)
+    .join("\n\n");
+}
 
-    return {
-      ...state,
-      result: state.result + ch,
-      cursor: index + 1,
-    };
-  }, initialState);
+function visit(node, callback) {
+  callback(node);
+  for (const child of node.children ?? []) visit(child, callback);
+}
 
-  return finalState.result;
+function headingOffset(tree) {
+  const levels = [];
+  visit(tree, (node) => {
+    if (node.type === "headline") levels.push(node.level);
+  });
+  if (levels.length === 0) return 0;
+  return Math.min(...levels) - 1;
+}
+
+function removeCommonIndent(value) {
+  const lines = value.split("\n");
+  const indents = lines
+    .filter((line) => line.trim() !== "")
+    .map((line) => line.match(/^[ \t]*/)?.[0].length ?? 0);
+  const indent = indents.length ? Math.min(...indents) : 0;
+  return lines.map((line) => line.slice(indent)).join("\n");
 }
 
 function exportOrgToMarkdown(jobs) {
-  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "org-md-"));
-  const elispPath = path.join(tempDir, "export.el");
-  const exportJobs = jobs.map((job, index) => ({
-    ...job,
-    tempOutputPath: path.join(tempDir, `${index}.md`),
-  }));
-  const elispJobs = exportJobs
-    .map(
-      ({ filePath, tempOutputPath }) =>
-        `(${escapeString(filePath)} . ${escapeString(tempOutputPath)})`,
-    )
-    .join("\n");
-  const elisp = `;;; -*- lexical-binding: t; -*-
-(progn
-		(require 'ox-md)
-		(defun kyre-md--ensure-trailing-newline (value)
-			(if (and value (not (string-suffix-p "\\n" value)))
-				(concat value "\\n")
-				value))
-		(defun kyre-md-src-block (src-block _contents info)
-			(let* ((lang (org-element-property :language src-block))
-					(code (org-remove-indentation (org-export-format-code-default src-block info)))
-					(code (kyre-md--ensure-trailing-newline code))
-					(lang (or lang "")))
-				(format "\`\`\`%s\\n%s\`\`\`" lang code)))
-		(defun kyre-md-underline (_underline contents _info)
-			(format "__%s__" (or contents "")))
-		(defun kyre-md-strike-through (_strike-through contents _info)
-			(format "~~%s~~" (or contents "")))
-		(org-export-define-derived-backend 'md-fenced 'md
-			:translate-alist '((src-block . kyre-md-src-block)
-				(underline . kyre-md-underline)
-				(strike-through . kyre-md-strike-through)))
-		(setq org-export-with-toc nil
-				org-export-with-title nil
-				org-export-with-sub-superscripts nil)
-		(dolist (job '(${elispJobs}))
-			(find-file (car job))
-			(org-export-to-file 'md-fenced (cdr job))
-			(kill-buffer)))`;
-
-  try {
-    fs.writeFileSync(elispPath, elisp);
-    execFileSync("emacs", ["--batch", "--load", elispPath], {
-      stdio: "inherit",
+  return jobs.map((job) => {
+    const tree = parseOrg(job.source, {
+      useSubSuperscripts: false,
     });
-    return exportJobs.map((job) => ({
+    return {
       ...job,
-      outputMarkdown: fs.readFileSync(job.tempOutputPath, "utf-8"),
-    }));
-  } finally {
-    fs.rmSync(tempDir, { force: true, recursive: true });
-  }
+      outputMarkdown: `${renderBlock(tree, {
+        headingOffset: headingOffset(tree),
+      }).trim()}\n`,
+    };
+  });
 }
 
 if (!fs.existsSync(ARTICLES_DIR)) {
@@ -283,13 +329,9 @@ if (changedJobs.length === 0) {
 exportOrgToMarkdown(changedJobs)
   .map(({ source, outputMarkdown, outputPath, relativePath, hash }) => {
     const meta = parseOrgMeta(source);
-    const processedMarkdown = unescapeUnderscoreInBackticks(
-      outputMarkdown.replace(/\\`/g, "`"),
-    );
-    // ox-md escapes backticks, unescape them for inline code
     const frontmatter = buildFrontmatter(meta);
     return {
-      content: `${frontmatter}${processedMarkdown}`,
+      content: `${frontmatter}${outputMarkdown}`,
       hash,
       outputPath,
       relativePath,

@@ -33,7 +33,7 @@ Notes:
 Org-mode workflow:
 - Org は `articles/<slug>/` に置き、`ja.org` / `en.org` を使う。
 - Next.js が読むのは `.md` なので、ビルド前に Org → Markdown を行う。
-- 変換と画像コピーは `pnpm content` を使用（Emacs `ox-md` で `.org` を `.md` に出力）。
+- 変換と画像コピーは `pnpm content` を使用（uniorg で `.org` を `.md` に出力し、Next.js 側は ox-content で Markdown を描画）。
 
 Org ファイルに書く内容（例）:
 
