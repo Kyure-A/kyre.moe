@@ -1,0 +1,24 @@
+#+TITLE: ブログの構成を変更した (2026-06)
+#+DATE: 2026-06-25
+#+DESCRIPTION: 色々変更したり加えたりしました
+#+TAGS: notification
+#+DRAFT: false
+
+** はじめに
+Vibe Coding で......みたいなことってもうとっくに言わなくなった気がする。逆に人間が書いた時に「人間が書いた」「手書き」と注釈するようになっているかも。
+
+** 構成
+ryoppippi.com を参考に、[[https://github.com/markdown-it/markdown-it][markdown-it]] ベースで組んでいたわけだが、最近は [[https://github.com/ubugeeei-prod/ox-content][ox-content]] ってのがめっちゃ早いらしく「技術的に面白いもんないかなあ」と言っていたら彼に勧められたので入れかえた。markdown-it プラグインとも互換性があるらしく、ブログの組版にも遜色はないように見える。細部はちょっと変わった気もするがまあ誤差で気にするほどでもないかな。これ ryoppippi.com は markdown-it のプラグインへの依存が消えてるけど何をやったんだ。気になります。
+
+文章は Org-mode で書いたものを CI で Markdown に変換している。以前は Emacs を使っていたのだが Emacs を GitHub Actions の Runner に Install する時間と org-babel する時間で結構 CI が遅かったので [[https://github.com/rasendubi/uniorg][uniorg]] という TypeScript で実装された org-mode parser を用いることにした。uniorg 自体は知っていたのだが実プロジェクトでは初めて使う。いいね
+
+直近でない変更もあるので列挙していきたい。
+
+- [[https://github.com/google/budoux][BudouX]] という日本語分かち書きのためのライブラリを導入した。[[https://github.com/staticWagomU/markdown-it-budoux][markdown-it-budoux]] というライブラリを使っている。
+
+- 最初は Tailwind CSS を使っていたが、会社で使ったこともあるし LLM 向けのガードとしてはちょうどいいのではと思い Panda CSS に変えた。まあ Tailwind のほうが LLM は学習してそうだが......
+
+少し考えていることとして、Next.js を [[https://github.com/solidjs/solid-start][SolidStart]] にしてみたいという欲がある。技術的には面白くなるんじゃないかな。とはいえ就活をやってみた感じ、Next.js のプロジェクトをずっと保守していますのほうがウケがいい気はしないではないが。
+
+** おわりに
+月 1 ノルマくらいでブログは維持していきたい。来月はフルタイムでインターンが入っているのでがんばります。
