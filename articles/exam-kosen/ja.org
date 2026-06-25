@@ -1,5 +1,5 @@
 #+TITLE: 令和 3 年度（2021 年度）高専・高校 受験記
-#+DESCRIPTION: 3 校受けました
+#+DESCRIPTION: 3 校受けました (執筆当時の表現のままです)
 #+TAGS: 受験記 高専 高校
 #+DATE: 2021-03-13
 #+CANONICAL: https://kyre.hatenablog.jp/entry/jyukenki
