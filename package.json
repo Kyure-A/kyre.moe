@@ -27,7 +27,6 @@
   "dependencies": {
     "@ox-content/napi": "^2.73.0",
     "@react-spring/web": "^10.0.3",
-    "budoux": "0.8.0",
     "gray-matter": "^4.0.3",
     "gsap": "^3.12.7",
     "highlight.js": "^11.11.1",
@@ -55,10 +54,5 @@
     "storybook": "10.3.1",
     "typescript": "^5.8.3",
     "vite": "7.3.5"
-  },
-  "pnpm": {
-    "overrides": {
-      "budoux": "^0.7.0"
-    }
   }
 }

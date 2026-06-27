@@ -78,15 +78,6 @@ const OG_IMAGE_FONTS = OG_JP_FONT_DATA
     ]
   : undefined;
 
-const budouxParserPromise = import("budoux").then(
-  ({ loadDefaultJapaneseParser }) => loadDefaultJapaneseParser(),
-);
-
-const applyBudoux = async (text: string): Promise<string> => {
-  const parser = await budouxParserPromise;
-  return parser.parse(text).join("\u200B");
-};
-
 const getTitleFontSize = (title: string) => {
   if (title.length > 44) return "46px";
   if (title.length > 28) return "58px";
@@ -105,7 +96,6 @@ export const generateOgImage = async ({
   subtitle,
   tags,
 }: OgImageProps) => {
-  const budouxTitle = await applyBudoux(title);
   const titleFontSize = getTitleFontSize(title);
   const displayTags = normalizeTags(tags);
 
@@ -186,7 +176,7 @@ export const generateOgImage = async ({
               overflowWrap: "anywhere",
             }}
           >
-            {budouxTitle}
+            {title}
           </h1>
           {subtitle && (
             <p
