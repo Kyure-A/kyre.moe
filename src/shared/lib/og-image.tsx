@@ -172,8 +172,7 @@ export const generateOgImage = async ({
               margin: 0,
               lineHeight: 1.15,
               letterSpacing: "-0.03em",
-              wordBreak: "keep-all",
-              overflowWrap: "anywhere",
+              overflowWrap: "break-word",
             }}
           >
             {title}
