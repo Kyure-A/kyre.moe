@@ -19,8 +19,8 @@ importers:
   .:
     dependencies:
       '@ox-content/napi':
-        specifier: ^2.73.0
-        version: 2.73.0
+        specifier: ^2.76.0
+        version: 2.76.0
       '@react-spring/web':
         specifier: ^10.0.3
         version: 10.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -968,33 +968,33 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@ox-content/binding-darwin-arm64@2.73.0':
-    resolution: {integrity: sha512-S9UY43n7mmiwd0qwI9x105ydk7HJNIVFQIeeITsA3C0X4T/4dVit8hMsgRlsXgbzTd23g/c9GkPeDlelNPbDtQ==}
+  '@ox-content/binding-darwin-arm64@2.76.0':
+    resolution: {integrity: sha512-16VppMtoBhvg4jnV4oluQf/oFQcICeChI93FlvIra41LwAGM5bd55it4bI7mJ/6dEgXi5QcGj3use3WVWoj/3Q==}
     cpu: [arm64]
     os: [darwin]
 
-  '@ox-content/binding-darwin-x64@2.73.0':
-    resolution: {integrity: sha512-DjcBvHbn8E7ZekdyRqoB23fQB/T7ux2GOzMVYCDqgej1xIfSnr/UXMH4qN4mvseMyK3UDFuI3M03NJbTKJacig==}
+  '@ox-content/binding-darwin-x64@2.76.0':
+    resolution: {integrity: sha512-ZQFw+AcKNO8j3O6Xh3mwRqlaU1EThPDzMeOz4VARRXEJEE/kFkR2Y3Ljie3LEE29srrUXit53CohKsiCuHu8nQ==}
     cpu: [x64]
     os: [darwin]
 
-  '@ox-content/binding-linux-arm64-gnu@2.73.0':
-    resolution: {integrity: sha512-lhFF8sdvsCCPy8zc2HwAOTg4CK3NRW+W10aj5uv14rtiIPEWOTbwTWp2ej6aL1KYRMgvcc9kUIk3vopQ5hC1ww==}
+  '@ox-content/binding-linux-arm64-gnu@2.76.0':
+    resolution: {integrity: sha512-exF1z3oheePTIpsfc0Tg0wdplpmzXyBQ2gUx3DiOodqoGPT24grkJr0wAOknDKzMZwwjz0ZfB0ajTpdWD7K2/Q==}
     cpu: [arm64]
     os: [linux]
 
-  '@ox-content/binding-linux-x64-gnu@2.73.0':
-    resolution: {integrity: sha512-A3gucTAcH4GtJDWonPNcBQlV2o+xgg/vvqFBunaWnlIgI3Vk2QuYSxUy04Rm7+UQqaFojQdp0ZQ3+bSkfzs5hQ==}
+  '@ox-content/binding-linux-x64-gnu@2.76.0':
+    resolution: {integrity: sha512-G3IG5bOJCWTh1H7Za4Zmjoq5JtsQeO1VCE9oe27FKftqjBN8LWyKIKWq4RTzc0K/egXD8Foqm1zpdc9fPUi0sQ==}
     cpu: [x64]
     os: [linux]
 
-  '@ox-content/binding-win32-x64-msvc@2.73.0':
-    resolution: {integrity: sha512-XUxb/8w586o+O672p6i4F0yigW61b8pPrXEs8rgimK1+QS9nd/BcFg+tmk8q8JWX2UJNN6Hh40n+UXMtszX1Bg==}
+  '@ox-content/binding-win32-x64-msvc@2.76.0':
+    resolution: {integrity: sha512-gR3GXZn4mBzn50PHTIM7B2NhuKjK+cj1Pl0j9xvfH5JByA1m6bW0tMNrvecU6Uv6h4BYVcpaFXkkmV02cFkJhw==}
     cpu: [x64]
     os: [win32]
 
-  '@ox-content/napi@2.73.0':
-    resolution: {integrity: sha512-EgaOa9l8gW0BaTWydQdsY4/zFxt3xCgpkB8IwsOnC0OlMSkvVQM5dnD2w7EpnEusr55ibuHizp/2bE6jHcKVqQ==}
+  '@ox-content/napi@2.76.0':
+    resolution: {integrity: sha512-cfPWaBBVFr8Xyf91/XBRTJLy+YK+5dE8FbT0MaPQ8y84c4zaT2cdW4m5robOmlQKnQv1blnmm868HMjNdW1ELA==}
 
   '@pandacss/config@1.11.3':
     resolution: {integrity: sha512-f0Bu1rY0AO7fpLCaAt/yyPSZ4dmgzKBnsZZwoUsAeh/lN1fQq/GZ6L/0gvMh2oPPOEfV8oHhYpfBzxdgDRabig==}
@@ -3443,28 +3443,28 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
 
-  '@ox-content/binding-darwin-arm64@2.73.0':
+  '@ox-content/binding-darwin-arm64@2.76.0':
     optional: true
 
-  '@ox-content/binding-darwin-x64@2.73.0':
+  '@ox-content/binding-darwin-x64@2.76.0':
     optional: true
 
-  '@ox-content/binding-linux-arm64-gnu@2.73.0':
+  '@ox-content/binding-linux-arm64-gnu@2.76.0':
     optional: true
 
-  '@ox-content/binding-linux-x64-gnu@2.73.0':
+  '@ox-content/binding-linux-x64-gnu@2.76.0':
     optional: true
 
-  '@ox-content/binding-win32-x64-msvc@2.73.0':
+  '@ox-content/binding-win32-x64-msvc@2.76.0':
     optional: true
 
-  '@ox-content/napi@2.73.0':
+  '@ox-content/napi@2.76.0':
     optionalDependencies:
-      '@ox-content/binding-darwin-arm64': 2.73.0
-      '@ox-content/binding-darwin-x64': 2.73.0
-      '@ox-content/binding-linux-arm64-gnu': 2.73.0
-      '@ox-content/binding-linux-x64-gnu': 2.73.0
-      '@ox-content/binding-win32-x64-msvc': 2.73.0
+      '@ox-content/binding-darwin-arm64': 2.76.0
+      '@ox-content/binding-darwin-x64': 2.76.0
+      '@ox-content/binding-linux-arm64-gnu': 2.76.0
+      '@ox-content/binding-linux-x64-gnu': 2.76.0
+      '@ox-content/binding-win32-x64-msvc': 2.76.0
 
   '@pandacss/config@1.11.3':
     dependencies:
