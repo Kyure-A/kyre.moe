@@ -1,4 +1,4 @@
-// biome-ignore-all lint/security/noDangerouslySetInnerHtml: Blog post HTML is generated server-side with raw HTML disabled.
+// biome-ignore-all lint/security/noDangerouslySetInnerHtml: Blog post HTML is generated server-side with raw HTML disabled and sanitized at the content boundary.
 
 import Image from "next/image";
 import { Link } from "next-view-transitions";

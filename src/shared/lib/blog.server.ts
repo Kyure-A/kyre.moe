@@ -4,6 +4,7 @@ import * as path from "node:path";
 import matter from "gray-matter";
 import hljs from "highlight.js";
 import katex from "katex";
+import sanitizeHtml from "sanitize-html";
 import {
   type BlogPost,
   type BlogPostMeta,
@@ -82,10 +83,180 @@ type HtmlPlaceholder = {
   block: boolean;
 };
 
+const CSS_EM_VALUE_RE = /^-?(?:0|\d+(?:\.\d+)?)em$/;
+const CSS_ZERO_RE = /^0$/;
+const CSS_COLOR_RE = /^(?:#[\da-f]{3,8}|[a-z]+)$/i;
+const CSS_BACKGROUND_IMAGE_URL_RE =
+  /^url\((?:"https?:\/\/[^"()\\\s]+"|'https?:\/\/[^'()\\\s]+'|https?:\/\/[^"'()\\\s]+)\)$/i;
+const BLOG_HTML_ALLOWED_TAGS = [
+  "a",
+  "abbr",
+  "b",
+  "blockquote",
+  "br",
+  "caption",
+  "code",
+  "col",
+  "colgroup",
+  "dd",
+  "del",
+  "details",
+  "div",
+  "dl",
+  "dt",
+  "em",
+  "figcaption",
+  "figure",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "hr",
+  "i",
+  "img",
+  "input",
+  "kbd",
+  "li",
+  "mark",
+  "ol",
+  "p",
+  "pre",
+  "s",
+  "small",
+  "span",
+  "strong",
+  "sub",
+  "summary",
+  "sup",
+  "table",
+  "tbody",
+  "td",
+  "tfoot",
+  "th",
+  "thead",
+  "tr",
+  "ul",
+  "annotation",
+  "math",
+  "menclose",
+  "mfrac",
+  "mi",
+  "mn",
+  "mo",
+  "mover",
+  "mpadded",
+  "mphantom",
+  "mroot",
+  "mrow",
+  "mspace",
+  "msqrt",
+  "mstyle",
+  "msub",
+  "msubsup",
+  "msup",
+  "mtable",
+  "mtd",
+  "mtext",
+  "mtr",
+  "munder",
+  "munderover",
+  "semantics",
+];
+const BLOG_HTML_SANITIZE_OPTIONS = {
+  allowedTags: BLOG_HTML_ALLOWED_TAGS,
+  allowedAttributes: {
+    "*": ["aria-hidden", "aria-label", "class", "id", "title"],
+    a: [
+      "aria-label",
+      "class",
+      "data-youtube-video-id",
+      "href",
+      "name",
+      "rel",
+      "style",
+      {
+        name: "target",
+        values: ["_blank"],
+      },
+    ],
+    annotation: ["encoding"],
+    blockquote: ["class", "data-dnt", "data-theme", "data-width"],
+    code: ["class"],
+    img: [
+      "alt",
+      "class",
+      "decoding",
+      "height",
+      "loading",
+      "src",
+      "title",
+      "width",
+    ],
+    input: [
+      "checked",
+      "class",
+      "disabled",
+      {
+        name: "type",
+        values: ["checkbox"],
+      },
+    ],
+    math: ["display", "xmlns"],
+    mo: ["fence", "lspace", "rspace", "separator", "stretchy"],
+    mpadded: ["depth", "height", "lspace", "voffset", "width"],
+    mspace: ["depth", "height", "width"],
+    mstyle: ["displaystyle", "scriptlevel"],
+    ol: ["start", "type"],
+    span: ["aria-hidden", "class", "style"],
+    td: ["align", "colspan", "rowspan"],
+    th: ["align", "colspan", "rowspan"],
+  },
+  allowedClasses: {
+    "*": [/^[A-Za-z0-9_-]+$/],
+  },
+  allowedSchemes: ["http", "https", "mailto"],
+  allowedSchemesAppliedToAttributes: ["href", "src", "cite"],
+  allowProtocolRelative: false,
+  allowedStyles: {
+    a: {
+      "background-image": [CSS_BACKGROUND_IMAGE_URL_RE],
+    },
+    span: {
+      "background-image": [CSS_BACKGROUND_IMAGE_URL_RE],
+      "border-bottom-width": [CSS_EM_VALUE_RE, CSS_ZERO_RE],
+      color: [CSS_COLOR_RE],
+      height: [CSS_EM_VALUE_RE, CSS_ZERO_RE],
+      "margin-left": [CSS_EM_VALUE_RE, CSS_ZERO_RE],
+      "margin-right": [CSS_EM_VALUE_RE, CSS_ZERO_RE],
+      "min-width": [CSS_EM_VALUE_RE, CSS_ZERO_RE],
+      "padding-left": [CSS_EM_VALUE_RE, CSS_ZERO_RE],
+      position: [/^relative$/],
+      top: [CSS_EM_VALUE_RE, CSS_ZERO_RE],
+      "vertical-align": [CSS_EM_VALUE_RE, CSS_ZERO_RE],
+      width: [CSS_EM_VALUE_RE, CSS_ZERO_RE],
+    },
+  },
+  transformTags: {
+    input: (_tagName: string, attribs: sanitizeHtml.Attributes) => ({
+      tagName: "input",
+      attribs: {
+        ...attribs,
+        disabled: "disabled",
+        type: "checkbox",
+      },
+    }),
+  },
+} satisfies NonNullable<Parameters<typeof sanitizeHtml>[1]>;
+
 const replaceUnsafeChar = (ch: string) => HTML_REPLACEMENTS[ch] ?? ch;
 
 const escapeHtml = (str: string) =>
   str.replace(HTML_ESCAPE_REPLACE_RE, replaceUnsafeChar);
+
+const sanitizeBlogHtml = (html: string) =>
+  sanitizeHtml(html, BLOG_HTML_SANITIZE_OPTIONS);
 
 // biome-ignore lint/security/noGlobalEval: Keeps Turbopack from bundling Ox Content's native binding loader.
 const nativeRequire = eval("require") as NodeRequire;
@@ -526,8 +697,10 @@ const renderMarkdown = async (source: string) => {
       `Ox Content failed to render Markdown: ${result.errors.join("\n")}`,
     );
   }
-  return normalizeOxHtml(
-    highlightCodeBlocks(restoreHtmlPlaceholders(result.html, placeholders)),
+  return sanitizeBlogHtml(
+    normalizeOxHtml(
+      highlightCodeBlocks(restoreHtmlPlaceholders(result.html, placeholders)),
+    ),
   );
 };
 

@@ -6,7 +6,7 @@ updates:
       interval: "daily"
       time: "09:00"
       timezone: "Asia/Tokyo"
-    open-pull-requests-limit: 0
+    open-pull-requests-limit: 5
     commit-message:
       prefix: "chore"
       include: "scope"
@@ -17,7 +17,7 @@ updates:
       interval: "daily"
       time: "09:10"
       timezone: "Asia/Tokyo"
-    open-pull-requests-limit: 0
+    open-pull-requests-limit: 5
     commit-message:
       prefix: "chore"
       include: "scope"
