@@ -42,7 +42,7 @@
     "uniorg-parse": "^3.2.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.16",
+    "@biomejs/biome": "^2.5.4",
     "@pandacss/dev": "^1.11.4",
     "@storybook/addon-a11y": "^10.3.0",
     "@storybook/nextjs-vite": "10.2.8",
