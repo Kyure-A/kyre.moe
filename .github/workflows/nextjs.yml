@@ -63,7 +63,7 @@ jobs:
         run: pnpm lint
       - name: Setup Pages
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
         with:
           static_site_generator: next
       - name: Prepare article content
