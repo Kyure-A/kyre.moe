@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@ox-content/napi": "^2.76.0",
-    "@react-spring/web": "^10.0.3",
+    "@react-spring/web": "^10.1.2",
     "gray-matter": "^4.0.3",
     "gsap": "^3.12.7",
     "highlight.js": "^11.11.1",
