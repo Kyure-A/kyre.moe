@@ -1,5 +1,6 @@
 import {
   type CSSProperties,
+  type ReactElement,
   type ReactNode,
   useCallback,
   useEffect,
@@ -251,7 +252,7 @@ const GlitchImage = ({
   active = true,
   intensity = 5,
   startDelayMs = 1000,
-}: GlitchImageProps): JSX.Element => {
+}: GlitchImageProps): ReactElement => {
   const [isGlitching, setIsGlitching] = useState<boolean>(false);
   const [glitchSeed, setGlitchSeed] = useState<number>(0);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
