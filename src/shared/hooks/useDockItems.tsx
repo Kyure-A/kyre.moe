@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { FaHome } from "react-icons/fa";
-import { FaAt, FaCircleInfo, FaClock, FaPenNib } from "react-icons/fa6";
+import { FaAt, FaFeatherPointed, FaTimeline, FaUser } from "react-icons/fa6";
 import { DEFAULT_LANG, getLangFromPath } from "@/shared/lib/i18n";
 
 export type DockItemData = {
@@ -27,7 +27,7 @@ const useDockItems = (): DockItemData[] => {
         onClick: () => router.push(basePath),
       },
       {
-        icon: <FaPenNib />,
+        icon: <FaFeatherPointed />,
         label: "Blog",
         onClick: () => router.push(`${basePath}/blog`),
       },
@@ -37,12 +37,12 @@ const useDockItems = (): DockItemData[] => {
         onClick: () => router.push(`${basePath}/accounts`),
       },
       {
-        icon: <FaClock />,
+        icon: <FaTimeline style={{ transform: "rotate(90deg)" }} />,
         label: "History",
         onClick: () => router.push(`${basePath}/history`),
       },
       {
-        icon: <FaCircleInfo />,
+        icon: <FaUser />,
         label: "About me",
         onClick: () => router.push(`${basePath}/about`),
       },
