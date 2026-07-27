@@ -118,8 +118,10 @@ const BLOG_HTML_ALLOWED_TAGS = [
   "img",
   "input",
   "kbd",
+  "label",
   "li",
   "mark",
+  "nav",
   "ol",
   "p",
   "pre",
@@ -127,6 +129,7 @@ const BLOG_HTML_ALLOWED_TAGS = [
   "small",
   "span",
   "strong",
+  "section",
   "sub",
   "summary",
   "sup",
@@ -137,7 +140,10 @@ const BLOG_HTML_ALLOWED_TAGS = [
   "th",
   "thead",
   "tr",
+  "u",
   "ul",
+  "path",
+  "svg",
   "annotation",
   "math",
   "menclose",
@@ -203,6 +209,7 @@ const BLOG_HTML_SANITIZE_OPTIONS = {
         values: ["checkbox"],
       },
     ],
+    path: ["d"],
     math: ["display", "xmlns"],
     mo: ["fence", "lspace", "rspace", "separator", "stretchy"],
     mpadded: ["depth", "height", "lspace", "voffset", "width"],
@@ -210,6 +217,18 @@ const BLOG_HTML_SANITIZE_OPTIONS = {
     mstyle: ["displaystyle", "scriptlevel"],
     ol: ["start", "type"],
     span: ["aria-hidden", "class", "style"],
+    svg: [
+      "aria-hidden",
+      "class",
+      "height",
+      "preserveAspectRatio",
+      "preserveaspectratio",
+      "style",
+      "viewBox",
+      "viewbox",
+      "width",
+      "xmlns",
+    ],
     td: ["align", "colspan", "rowspan"],
     th: ["align", "colspan", "rowspan"],
   },
@@ -231,10 +250,14 @@ const BLOG_HTML_SANITIZE_OPTIONS = {
       "margin-left": [CSS_EM_VALUE_RE, CSS_ZERO_RE],
       "margin-right": [CSS_EM_VALUE_RE, CSS_ZERO_RE],
       "min-width": [CSS_EM_VALUE_RE, CSS_ZERO_RE],
+      left: [CSS_EM_VALUE_RE, CSS_ZERO_RE],
       "padding-left": [CSS_EM_VALUE_RE, CSS_ZERO_RE],
       position: [/^relative$/],
       top: [CSS_EM_VALUE_RE, CSS_ZERO_RE],
       "vertical-align": [CSS_EM_VALUE_RE, CSS_ZERO_RE],
+      width: [CSS_EM_VALUE_RE, CSS_ZERO_RE],
+    },
+    svg: {
       width: [CSS_EM_VALUE_RE, CSS_ZERO_RE],
     },
   },
@@ -433,7 +456,7 @@ const addHtmlPlaceholder = (
   html: string,
   block: boolean,
 ) => {
-  const token = `${HTML_PLACEHOLDER_PREFIX}_${placeholders.length}`;
+  const token = `${HTML_PLACEHOLDER_PREFIX}${placeholders.length}END`;
   placeholders.push({ token, html, block });
   return token;
 };
@@ -531,8 +554,148 @@ const replaceMagicLinks = (line: string, placeholders: HtmlPlaceholder[]) =>
       addHtmlPlaceholder(placeholders, buildMagicLink(user), false),
   );
 
+const replaceUnderlines = (line: string, placeholders: HtmlPlaceholder[]) => {
+  let result = "";
+  let cursor = 0;
+  let inlineCodeTicks = 0;
+
+  while (cursor < line.length) {
+    if (line[cursor] === "`") {
+      const run = line.slice(cursor).match(/^`+/)?.[0] ?? "`";
+      inlineCodeTicks = inlineCodeTicks === run.length ? 0 : run.length;
+      result += run;
+      cursor += run.length;
+      continue;
+    }
+
+    if (
+      inlineCodeTicks === 0 &&
+      line[cursor] === "_" &&
+      line[cursor + 1] === "_"
+    ) {
+      const end = line.indexOf("__", cursor + 2);
+      if (end > cursor + 2) {
+        result += addHtmlPlaceholder(
+          placeholders,
+          `<u>${escapeHtml(line.slice(cursor + 2, end))}</u>`,
+          false,
+        );
+        cursor = end + 2;
+        continue;
+      }
+    }
+
+    result += line[cursor];
+    cursor += 1;
+  }
+
+  return result;
+};
+
 const replaceInlineAutolinks = (line: string) =>
   line.replace(/<((?:https?:\/\/)[^>\s]+)>/g, "[$1]($1)");
+
+type FootnoteDefinition = {
+  id: string;
+  number: number;
+  content: string;
+  referenceIds: string[];
+};
+
+const extractFootnoteDefinitions = (lines: string[]) => {
+  const markdownLines: string[] = [];
+  const definitions: FootnoteDefinition[] = [];
+  let inFence = false;
+  let fenceChar = "";
+  let fenceLen = 0;
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const fence = lines[index].match(/^[ \t]*(`{3,}|~{3,})/);
+    if (fence) {
+      const marker = fence[1];
+      const isClosing =
+        inFence && marker[0] === fenceChar && marker.length >= fenceLen;
+      if (isClosing) {
+        inFence = false;
+        fenceChar = "";
+        fenceLen = 0;
+      } else if (!inFence) {
+        inFence = true;
+        fenceChar = marker[0];
+        fenceLen = marker.length;
+      }
+      markdownLines.push(lines[index]);
+      continue;
+    }
+    if (inFence) {
+      markdownLines.push(lines[index]);
+      continue;
+    }
+
+    const definition = lines[index].match(/^\[\^([^\]\s]+)\]:[ \t]*(.*)$/);
+    if (!definition) {
+      markdownLines.push(lines[index]);
+      continue;
+    }
+
+    const content = [definition[2]];
+    let end = index + 1;
+    while (end < lines.length) {
+      const continuation = lines[end].match(/^(?: {2,}|\t)(.*)$/);
+      if (continuation) {
+        content.push(continuation[1]);
+        end += 1;
+        continue;
+      }
+      if (
+        lines[end].trim() === "" &&
+        end + 1 < lines.length &&
+        /^(?: {2,}|\t)/.test(lines[end + 1])
+      ) {
+        content.push("");
+        end += 1;
+        continue;
+      }
+      break;
+    }
+
+    definitions.push({
+      id: definition[1],
+      number: definitions.length + 1,
+      content: content.join("\n"),
+      referenceIds: [],
+    });
+    index = end - 1;
+  }
+
+  return { definitions, markdownLines };
+};
+
+const replaceFootnoteReferences = (
+  line: string,
+  definitions: Map<string, FootnoteDefinition>,
+  placeholders: HtmlPlaceholder[],
+  referenceLabel: string,
+) =>
+  line.replace(
+    /(^|[^\\])\[\^([^\]\s]+)\]/g,
+    (match, prefix: string, id: string) => {
+      const definition = definitions.get(id);
+      if (!definition) return match;
+
+      const referenceNumber = definition.referenceIds.length + 1;
+      const referenceId = `fnref-${definition.number}${
+        referenceNumber > 1 ? `-${referenceNumber}` : ""
+      }`;
+      definition.referenceIds.push(referenceId);
+
+      return `${prefix}${addHtmlPlaceholder(
+        placeholders,
+        `<sup class="footnote-ref"><a href="#fn-${definition.number}" id="${referenceId}" aria-label="${referenceLabel} ${definition.number}">${definition.number}</a></sup>`,
+        false,
+      )}`;
+    },
+  );
 
 const restoreHtmlPlaceholders = (
   html: string,
@@ -549,6 +712,83 @@ const restoreHtmlPlaceholders = (
     result = result.replaceAll(placeholder.token, placeholder.html);
   }
   return result;
+};
+
+type TableOfContentsItem = {
+  level: number;
+  id: string;
+  label: string;
+  children: TableOfContentsItem[];
+};
+
+const TABLE_OF_CONTENTS_LABELS: Record<SiteLang, string> = {
+  ja: "目次",
+  en: "Table of contents",
+};
+
+const collectTableOfContentsItems = (html: string) => {
+  const roots: TableOfContentsItem[] = [];
+  const stack: TableOfContentsItem[] = [];
+  const headings = html.matchAll(/<h([1-6])\b([^>]*)>([\s\S]*?)<\/h\1>/gi);
+
+  for (const heading of headings) {
+    const id = getHtmlAttribute(heading[2], "id");
+    const label = decodeHtmlEntities(
+      sanitizeHtml(heading[3], {
+        allowedTags: [],
+        allowedAttributes: {},
+      }),
+    )
+      .replace(/\s+/g, " ")
+      .trim();
+    if (!id || !label) continue;
+
+    const item: TableOfContentsItem = {
+      level: Number(heading[1]),
+      id,
+      label,
+      children: [],
+    };
+
+    while (stack.length > 0 && stack[stack.length - 1].level >= item.level) {
+      stack.pop();
+    }
+
+    const parent = stack[stack.length - 1];
+    if (parent) {
+      parent.children.push(item);
+    } else {
+      roots.push(item);
+    }
+    stack.push(item);
+  }
+
+  return roots;
+};
+
+const renderTableOfContentsItems = (items: TableOfContentsItem[]): string => {
+  const entries = items
+    .map((item) => {
+      const children =
+        item.children.length > 0
+          ? renderTableOfContentsItems(item.children)
+          : "";
+      return `<li><a href="#${escapeHtml(item.id)}">${escapeHtml(item.label)}</a>${children}</li>`;
+    })
+    .join("");
+  return `<ol>${entries}</ol>`;
+};
+
+const renderTableOfContents = (html: string, lang: SiteLang) => {
+  const marker = /<p>\s*\[toc\]\s*<\/p>/gi;
+  if (!/<p>\s*\[toc\]\s*<\/p>/i.test(html)) return html;
+
+  const items = collectTableOfContentsItems(html);
+  const tableOfContents =
+    items.length > 0
+      ? `<nav class="blog-toc" aria-label="${TABLE_OF_CONTENTS_LABELS[lang]}"><p class="blog-toc-title">${TABLE_OF_CONTENTS_LABELS[lang]}</p>${renderTableOfContentsItems(items)}</nav>`
+      : "";
+  return html.replace(marker, tableOfContents);
 };
 
 const renderHighlightedCodeBlock = (escapedCode: string, lang: string) => {
@@ -578,25 +818,40 @@ const highlightCodeBlocks = (html: string) =>
       renderHighlightedCodeBlock(code, lang ?? ""),
   );
 
+const MARKDOWN_ALERT_ICONS: Record<string, string> = {
+  note: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-3.75a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5ZM6.75 8a.75.75 0 0 0 0 1.5h.5v2h-.5a.75.75 0 0 0 0 1.5h2.5a.75.75 0 0 0 0-1.5h-.5V8Z"></path></svg>',
+  tip: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a5.5 5.5 0 0 0-3.6 9.66c.38.33.6.8.6 1.3V12a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1.04c0-.5.22-.97.6-1.3A5.5 5.5 0 0 0 8 0Zm1.5 14.5h-3a.75.75 0 0 0 0 1.5h3a.75.75 0 0 0 0-1.5Z"></path></svg>',
+  important:
+    '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M7.2.6a1 1 0 0 1 1.6 0l1.86 2.48 3.1.93a1 1 0 0 1 .5 1.54l-1.87 2.51.08 3.23a1 1 0 0 1-1.31.95L8 11.32l-3.16.92a1 1 0 0 1-1.31-.95l.08-3.23-1.87-2.51a1 1 0 0 1 .5-1.54l3.1-.93L7.2.6Z"></path></svg>',
+  warning:
+    '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6.46 1.22a1.75 1.75 0 0 1 3.08 0l6.21 11.52A1.75 1.75 0 0 1 14.21 15H1.79a1.75 1.75 0 0 1-1.54-2.26L6.46 1.22ZM8 5a.75.75 0 0 0-.75.75v3.5a.75.75 0 0 0 1.5 0v-3.5A.75.75 0 0 0 8 5Zm0 7.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"></path></svg>',
+  caution:
+    '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.22.22A.75.75 0 0 1 5.75 0h4.5c.2 0 .39.08.53.22l3 3c.14.14.22.33.22.53v4.5c0 .2-.08.39-.22.53l-3 3a.75.75 0 0 1-.53.22h-4.5a.75.75 0 0 1-.53-.22l-3-3A.75.75 0 0 1 2 8.25v-4.5c0-.2.08-.39.22-.53l3-3ZM8 3.5a.75.75 0 0 0-.75.75v3.5a.75.75 0 0 0 1.5 0v-3.5A.75.75 0 0 0 8 3.5Zm0 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"></path></svg>',
+};
+
 const normalizeOxHtml = (html: string) =>
   html
     .replace(
-      /<blockquote class="ox-callout ox-callout--([a-z]+)">/g,
-      (_match, kind: string) =>
-        `<blockquote class="markdown-alert markdown-alert-${kind}">`,
+      /<blockquote class="ox-callout ox-callout--([a-z]+)">\s*<p class="ox-callout-title">([\s\S]*?)<\/p>/g,
+      (_match, kind: string, title: string) =>
+        `<blockquote class="markdown-alert markdown-alert-${kind}"><p class="markdown-alert-title">${MARKDOWN_ALERT_ICONS[kind] ?? ""}${title}</p>`,
     )
     .replace(
-      /<p class="ox-callout-title">([\s\S]*?)<\/p>/g,
-      '<p class="markdown-alert-title">$1</p>',
+      /<li>\s*(<input\b(?=[^>]*\btype="checkbox")[^>]*>)\s*<p>([\s\S]*?)<\/p>/g,
+      '<li class="task-list-item"><label>$1 $2</label>',
     )
     .replace(
-      /<li>(\s*<input type="checkbox"[^>]*>)/g,
-      '<li class="task-list-item">$1',
+      /<li>\s*(<input\b(?=[^>]*\btype="checkbox")[^>]*>)\s*((?:(?!<(?:ul|ol)\b)[\s\S])*?)(?=<(?:ul|ol)\b|<\/li>)/g,
+      '<li class="task-list-item"><label>$1 $2</label>',
     );
 
-const preprocessMarkdown = async (source: string) => {
+const preprocessMarkdown = async (source: string, lang: SiteLang) => {
   const placeholders: HtmlPlaceholder[] = [];
-  const lines = source.split(/\r?\n/);
+  const { definitions: footnotes, markdownLines: lines } =
+    extractFootnoteDefinitions(source.split(/\r?\n/));
+  const footnotesById = new Map(
+    footnotes.map((definition) => [definition.id, definition]),
+  );
   const output: string[] = [];
   let inFence = false;
   let fenceChar = "";
@@ -679,17 +934,144 @@ const preprocessMarkdown = async (source: string) => {
     const withAutolinks = replaceInlineAutolinks(normalized);
     const withMath = replaceInlineMath(withAutolinks, placeholders);
     const withMagicLinks = replaceMagicLinks(withMath, placeholders);
-    output.push(decodeSafeNumericEntities(escapeRawHtmlLine(withMagicLinks)));
+    const withUnderlines = replaceUnderlines(withMagicLinks, placeholders);
+    const withFootnotes = replaceFootnoteReferences(
+      withUnderlines,
+      footnotesById,
+      placeholders,
+      FOOTNOTE_LABELS[lang].reference,
+    );
+    output.push(decodeSafeNumericEntities(escapeRawHtmlLine(withFootnotes)));
   }
 
   return {
+    footnotes,
     markdown: output.join("\n"),
     placeholders,
   };
 };
 
-const renderMarkdown = async (source: string) => {
-  const { markdown, placeholders } = await preprocessMarkdown(source);
+const TYPOGRAPHER_PROTECTED_TAGS = new Set(["code", "math", "pre"]);
+const TYPOGRAPHER_VOID_TAGS = new Set(["br", "hr", "img", "input"]);
+
+const applyTypographicReplacements = (text: string) =>
+  text
+    .replace(/\((c)\)/gi, "©")
+    .replace(/\((r)\)/gi, "®")
+    .replace(/\((tm)\)/gi, "™")
+    .replace(/\((p)\)/gi, "§")
+    .replace(/\+-/g, "±")
+    .replace(/\.{2,}/g, "…")
+    .replace(/([?!]){4,}/g, "$1$1$1")
+    .replace(/,{2,}/g, ",")
+    .replace(/(^|[^-])---(?=[^-]|$)/g, "$1—")
+    .replace(/(^|\s)--(?=\s|$)/g, "$1–")
+    .replace(/(^|[\s([{])"([^"\n]+)"(?=$|[\s.,!?;:)\]}])/g, "$1“$2”")
+    .replace(/(^|[\s([{])'([^'\n]+)'(?=$|[\s.,!?;:)\]}])/g, "$1‘$2’");
+
+const applyTypographer = (html: string) => {
+  const stack: boolean[] = [];
+  let protectedDepth = 0;
+
+  return html
+    .split(/(<[^>]+>)/g)
+    .map((token) => {
+      if (!token.startsWith("<")) {
+        return protectedDepth > 0 ? token : applyTypographicReplacements(token);
+      }
+
+      const closing = token.match(/^<\/([a-z0-9-]+)\s*>/i);
+      if (closing) {
+        const wasProtected = stack.pop() ?? false;
+        if (wasProtected) protectedDepth -= 1;
+        return token;
+      }
+
+      const opening = token.match(/^<([a-z0-9-]+)\b/i);
+      if (!opening) return token;
+
+      const tag = opening[1].toLowerCase();
+      const isVoid = TYPOGRAPHER_VOID_TAGS.has(tag) || /\/>\s*$/.test(token);
+      if (isVoid) return token;
+
+      const isProtected =
+        protectedDepth > 0 ||
+        TYPOGRAPHER_PROTECTED_TAGS.has(tag) ||
+        /\bclass=(?:"[^"]*\bkatex\b[^"]*"|'[^']*\bkatex\b[^']*')/i.test(token);
+      stack.push(isProtected);
+      if (isProtected) protectedDepth += 1;
+      return token;
+    })
+    .join("");
+};
+
+const FOOTNOTE_LABELS: Record<
+  SiteLang,
+  { section: string; reference: string; backreference: string }
+> = {
+  ja: {
+    section: "脚注",
+    reference: "脚注",
+    backreference: "本文に戻る",
+  },
+  en: {
+    section: "Footnotes",
+    reference: "Footnote",
+    backreference: "Back to content",
+  },
+};
+
+const renderFootnotes = async (
+  definitions: FootnoteDefinition[],
+  parseAndRender: OxContentModule["parseAndRender"],
+  lang: SiteLang,
+) => {
+  const referenced = definitions.filter(
+    (definition) => definition.referenceIds.length > 0,
+  );
+  if (referenced.length === 0) return "";
+
+  const items = await Promise.all(
+    referenced.map(async (definition) => {
+      const {
+        footnotes: _nestedFootnotes,
+        markdown,
+        placeholders,
+      } = await preprocessMarkdown(definition.content, lang);
+      const result = parseAndRender(markdown, OX_MARKDOWN_OPTIONS);
+      if (result.errors.length > 0) {
+        throw new Error(
+          `Ox Content failed to render a footnote: ${result.errors.join("\n")}`,
+        );
+      }
+
+      const backlinks = definition.referenceIds
+        .map(
+          (referenceId, index) =>
+            `<a class="footnote-backref" href="#${referenceId}" aria-label="${FOOTNOTE_LABELS[lang].backreference}${
+              definition.referenceIds.length > 1 ? ` ${index + 1}` : ""
+            }">↩</a>`,
+        )
+        .join(" ");
+      const renderedBody = normalizeOxHtml(
+        highlightCodeBlocks(restoreHtmlPlaceholders(result.html, placeholders)),
+      ).trim();
+      const body = /<\/p>$/.test(renderedBody)
+        ? renderedBody.replace(/<\/p>$/, ` ${backlinks}</p>`)
+        : `${renderedBody}<p>${backlinks}</p>`;
+
+      return `<li id="fn-${definition.number}">${body}</li>`;
+    }),
+  );
+
+  return `<hr class="footnotes-sep"><section class="footnotes" aria-label="${FOOTNOTE_LABELS[lang].section}"><ol class="footnotes-list">${items.join("")}</ol></section>`;
+};
+
+const renderMarkdown = async (source: string, lang: SiteLang) => {
+  const { footnotes, markdown, placeholders } = await preprocessMarkdown(
+    source,
+    lang,
+  );
   const { parseAndRender } = loadOxContent();
   const result = parseAndRender(markdown, OX_MARKDOWN_OPTIONS);
   if (result.errors.length > 0) {
@@ -697,9 +1079,21 @@ const renderMarkdown = async (source: string) => {
       `Ox Content failed to render Markdown: ${result.errors.join("\n")}`,
     );
   }
+  const renderedFootnotes = await renderFootnotes(
+    footnotes,
+    parseAndRender,
+    lang,
+  );
   return sanitizeBlogHtml(
-    normalizeOxHtml(
-      highlightCodeBlocks(restoreHtmlPlaceholders(result.html, placeholders)),
+    applyTypographer(
+      `${normalizeOxHtml(
+        highlightCodeBlocks(
+          renderTableOfContents(
+            restoreHtmlPlaceholders(result.html, placeholders),
+            lang,
+          ),
+        ),
+      )}${renderedFootnotes}`,
     ),
   );
 };
@@ -941,7 +1335,7 @@ export const getPost = async (
     getAllPosts(lang).find((post) => post.slug === slug && post.lang === lang)
       ?.tags ?? meta.tags;
   const rewrittenContent = rewriteRelativeImagePaths(content, slug);
-  const html = await renderMarkdown(rewrittenContent);
+  const html = await renderMarkdown(rewrittenContent, lang);
   return { ...meta, tags, content: rewrittenContent, html };
 };
 
