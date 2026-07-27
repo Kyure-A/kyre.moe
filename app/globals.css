@@ -416,6 +416,15 @@ body {
   font-size: 1.3rem;
 }
 
+.blog-content h1,
+.blog-content h2,
+.blog-content h3,
+.blog-content h4,
+.blog-content h5,
+.blog-content h6 {
+  scroll-margin-top: 1.5rem;
+}
+
 .blog-content p {
   margin: 1.1rem 0;
 }
@@ -463,6 +472,10 @@ body {
   accent-color: var(--theme-accent);
 }
 
+.blog-content .task-list-item > label {
+  display: inline;
+}
+
 .blog-content .task-list-item > p {
   display: inline;
   margin: 0;
@@ -476,6 +489,51 @@ body {
   margin-bottom: 0.6rem;
   margin-left: 0.8rem;
   padding-left: 1.1rem;
+}
+
+.blog-content .blog-toc {
+  margin: 1.8rem 0 2.4rem;
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--blog-chip-border);
+  border-radius: 12px;
+  background: var(--blog-chip-bg);
+}
+
+.blog-content .blog-toc-title {
+  margin: 0;
+  color: var(--blog-heading);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.blog-content .blog-toc ol {
+  margin: 0.5rem 0 0;
+  padding-left: 1.4rem;
+}
+
+.blog-content .blog-toc ol ol {
+  margin: 0.2rem 0;
+  padding-left: 1.2rem;
+}
+
+.blog-content .blog-toc li {
+  margin: 0.2rem 0;
+}
+
+.blog-content .blog-toc a {
+  color: var(--blog-body);
+  border-bottom: none;
+}
+
+.blog-content .blog-toc a:hover {
+  color: var(--blog-link-hover);
+  border-bottom: none;
+}
+
+.blog-content .blog-toc a:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid var(--theme-accent);
+  outline-offset: 3px;
 }
 
 .blog-content blockquote {
@@ -528,6 +586,36 @@ body {
 
 .blog-content .markdown-alert-caution {
   --alert-color: #e06c75;
+}
+
+.blog-content .footnotes-sep {
+  width: 4rem;
+  margin: 2.8rem 0 1.2rem;
+  border-color: var(--border-subtle);
+}
+
+.blog-content .footnotes {
+  color: var(--blog-quote-text);
+  font-size: 0.9rem;
+}
+
+.blog-content .footnotes-list {
+  margin-top: 0;
+}
+
+.blog-content .footnotes li:target {
+  color: var(--blog-body);
+}
+
+.blog-content .footnote-ref {
+  margin-left: 0.1em;
+  font-size: 0.75em;
+  line-height: 0;
+}
+
+.blog-content .footnote-backref {
+  margin-left: 0.2em;
+  border-bottom: none;
 }
 
 .blog-content .markdown-magic-link {
