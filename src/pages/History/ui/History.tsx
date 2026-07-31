@@ -58,6 +58,12 @@ const TIMELINE_DATA: Record<SiteLang, TimelineItem[]> = {
       description: "図書館情報大学",
       url: "https://klis.tsukuba.ac.jp/",
     },
+    {
+      date: "July, 2026",
+      title: "Sansan 株式会社 インターンシップ",
+      description: "Eight 事業部で 1 か月間の実務を経験",
+      url: "https://newgradsevents.corp-sansan.com/engineer/200001",
+    },
   ],
   en: [
     {
@@ -112,6 +118,13 @@ const TIMELINE_DATA: Record<SiteLang, TimelineItem[]> = {
         "Transferred into the third year of the College of Knowledge and Library Sciences, School of Informatics, University of Tsukuba",
       description: "University of Library and Information Science",
       url: "https://klis.tsukuba.ac.jp/",
+    },
+    {
+      date: "July, 2026",
+      title: "Internship at Sansan, Inc.",
+      description:
+        "One month of hands-on work in the Eight Division",
+      url: "https://newgradsevents.corp-sansan.com/engineer/200001",
     },
   ],
 };
