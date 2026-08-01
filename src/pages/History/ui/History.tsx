@@ -51,6 +51,7 @@ const TIMELINE_DATA: Record<SiteLang, TimelineItem[]> = {
       title:
         "大阪公立大学工業高等専門学校 総合工学システム学科 電子情報コース 卒業",
       description: "準学士 (工学)",
+      url: "https://www.ct.omu.ac.jp/info/news/entry-105601.html",
     },
     {
       date: "April, 2026",
@@ -111,6 +112,7 @@ const TIMELINE_DATA: Record<SiteLang, TimelineItem[]> = {
       title:
         "Graduated from Osaka Metropolitan University College of Technology, Dept. of Technological Systems: Electronics and Information Course",
       description: "Associate Degree in Engineering",
+      url: "https://www.ct.omu.ac.jp/info/news/entry-105601.html",
     },
     {
       date: "April, 2026",
