@@ -122,8 +122,7 @@ const TIMELINE_DATA: Record<SiteLang, TimelineItem[]> = {
     {
       date: "July, 2026",
       title: "Internship at Sansan, Inc.",
-      description:
-        "One month of hands-on work in the Eight Division",
+      description: "One month of hands-on work in the Eight Division",
       url: "https://newgradsevents.corp-sansan.com/engineer/200001",
     },
   ],
