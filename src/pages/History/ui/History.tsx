@@ -65,6 +65,12 @@ const TIMELINE_DATA: Record<SiteLang, TimelineItem[]> = {
       description: "Eight 事業部で 1 か月間の実務を経験",
       url: "https://newgradsevents.corp-sansan.com/engineer/200001",
     },
+    {
+      date: "August, 2026",
+      title: "株式会社 Progate インターンシップ",
+      description: "5 Days Git インターンに参加",
+      url: "https://prog-8.com/",
+    },
   ],
   en: [
     {
@@ -126,6 +132,12 @@ const TIMELINE_DATA: Record<SiteLang, TimelineItem[]> = {
       title: "Internship at Sansan, Inc.",
       description: "One month of hands-on work in the Eight Division",
       url: "https://newgradsevents.corp-sansan.com/engineer/200001",
+    },
+    {
+      date: "August, 2026",
+      title: "Internship at Progate, Inc.",
+      description: "Took part in the five-day Git internship",
+      url: "https://prog-8.com/",
     },
   ],
 };
