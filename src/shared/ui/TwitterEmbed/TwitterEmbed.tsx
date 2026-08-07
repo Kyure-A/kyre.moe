@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useTheme } from "@/shared/ui/ThemeProvider/ThemeProvider";
+import { DEFAULT_THEME, isSiteTheme } from "@/shared/lib/theme";
 
 const TWITTER_SCRIPT_SRC = "https://platform.twitter.com/widgets.js";
 
@@ -30,20 +30,22 @@ const loadTwitterWidgets = () => {
 };
 
 const TwitterEmbedEnhancer = () => {
-  const { theme } = useTheme();
-
   useEffect(() => {
     const embeds = Array.from(
-      document.querySelectorAll<HTMLElement>(".twitter-tweet"),
+      document.querySelectorAll<HTMLElement>("blockquote.twitter-tweet"),
     );
     if (embeds.length === 0) return;
+
+    // ThemeScript が起動時に設定した実テーマを widgets.js の処理前に反映する
+    const domTheme = document.documentElement.dataset.theme;
+    const theme = isSiteTheme(domTheme) ? domTheme : DEFAULT_THEME;
 
     for (const embed of embeds) {
       embed.setAttribute("data-theme", theme);
     }
 
     loadTwitterWidgets();
-  }, [theme]);
+  }, []);
 
   return null;
 };

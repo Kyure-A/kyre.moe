@@ -35,7 +35,7 @@
   --control-border: rgba(255, 255, 255, 0.12);
   --control-orb: rgba(255, 255, 255, 0.08);
   --control-label-active: #1f2937;
-  --control-label-muted: rgba(255, 255, 255, 0.12);
+  --control-label-muted: rgba(255, 255, 255, 0.35);
   --control-knob: #ffffff;
   --control-knob-inner: #f3f4f6;
   --timeline-line: rgba(96, 96, 96, 0.72);
@@ -104,7 +104,7 @@
   --control-border: rgba(17, 24, 39, 0.16);
   --control-orb: rgba(17, 24, 39, 0.1);
   --control-label-active: #1f2937;
-  --control-label-muted: rgba(17, 24, 39, 0.32);
+  --control-label-muted: rgba(17, 24, 39, 0.45);
   --control-knob: #ffffff;
   --control-knob-inner: #e5e7eb;
   --timeline-line: rgba(71, 85, 105, 0.35);

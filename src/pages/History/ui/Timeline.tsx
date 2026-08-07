@@ -38,6 +38,9 @@ const styles = {
   }),
   title: css({
     textWrap: "balance",
+    // Chrome の BudouX による文節折返し (非対応ブラウザでは無視される)
+    wordBreak: "auto-phrase",
+    lineBreak: "strict",
     fontSize: "lg",
     fontWeight: "semibold",
     color: "timeline.title",
