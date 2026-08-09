@@ -1,6 +1,7 @@
 import { Mesh, Program, Renderer, Triangle } from "ogl";
 import { useCallback, useEffect, useRef } from "react";
 import { css } from "styled-system/css";
+import type { ShaderWorkerMessage } from "./shader.worker";
 
 interface MysteriousShaderProps {
   spinRotation?: number;
@@ -252,10 +253,19 @@ const BackgroundShader = ({
   const resizeFrameRef = useRef<number | null>(null);
   const timeOffsetRef = useRef(0);
   const pausedAtRef = useRef<number | null>(null);
+  const workerRef = useRef<Worker | null>(null);
+  const maxFpsRef = useRef(maxFps);
   const offsetX = offset[0];
   const offsetY = offset[1];
 
   const pauseAnimation = useCallback(() => {
+    // Worker 経路では時刻補正も Worker 側で行う
+    if (workerRef.current) {
+      workerRef.current.postMessage({
+        type: "pause",
+      } satisfies ShaderWorkerMessage);
+      return;
+    }
     if (pausedAtRef.current === null) {
       pausedAtRef.current = performance.now();
     }
@@ -267,6 +277,12 @@ const BackgroundShader = ({
 
   const resumeAnimation = useCallback(() => {
     if (!activeRef.current || !visibleRef.current) return;
+    if (workerRef.current) {
+      workerRef.current.postMessage({
+        type: "resume",
+      } satisfies ShaderWorkerMessage);
+      return;
+    }
     if (pausedAtRef.current !== null) {
       timeOffsetRef.current += performance.now() - pausedAtRef.current;
       pausedAtRef.current = null;
@@ -304,6 +320,7 @@ const BackgroundShader = ({
   }, [pauseAnimation, resumeAnimation]);
 
   useEffect(() => {
+    maxFpsRef.current = maxFps;
     frameIntervalRef.current = maxFps > 0 ? 1000 / maxFps : 0;
   }, [maxFps]);
 
@@ -324,8 +341,139 @@ const BackgroundShader = ({
           })
         : null;
 
+    // OffscreenCanvas + Worker が使えるか。Worker 側で WebGL が取れない環境
+    // (旧 Safari 等)を除外するため 1x1 の OffscreenCanvas で事前確認する
+    const canUseWorker = () => {
+      if (
+        typeof Worker === "undefined" ||
+        typeof OffscreenCanvas === "undefined" ||
+        typeof HTMLCanvasElement === "undefined" ||
+        !("transferControlToOffscreen" in HTMLCanvasElement.prototype)
+      ) {
+        return false;
+      }
+      try {
+        const probe = new OffscreenCanvas(1, 1);
+        const probeGl = (probe.getContext("webgl2") ??
+          probe.getContext("webgl")) as WebGLRenderingContext | null;
+        if (!probeGl) return false;
+        probeGl.getExtension("WEBGL_lose_context")?.loseContext();
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
+    // シェーダーのコンパイルと描画を Worker(OffscreenCanvas)へ逃がす経路
+    const setupWorker = () => {
+      if (!containerRef.current) return;
+      const container = containerRef.current;
+      const getDpr = () => {
+        const baseDpr =
+          typeof window !== "undefined" ? window.devicePixelRatio : 1;
+        return Math.max(0.5, Math.min(2, baseDpr * resolutionScale));
+      };
+      const canvas = document.createElement("canvas");
+      // 移譲後の canvas は width/height を触れないため style のみ更新する
+      const applySize = () => {
+        const width = container.offsetWidth;
+        const height = container.offsetHeight;
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+        containerRectRef.current = container.getBoundingClientRect();
+        return { width, height };
+      };
+      container.appendChild(canvas);
+      const { width, height } = applySize();
+      const offscreen = canvas.transferControlToOffscreen();
+      const worker = new Worker(new URL("./shader.worker.ts", import.meta.url));
+      workerRef.current = worker;
+      worker.postMessage(
+        {
+          type: "init",
+          canvas: offscreen,
+          width,
+          height,
+          dpr: getDpr(),
+          maxFps: maxFpsRef.current,
+          uniforms: {
+            uSpinRotation: spinRotation,
+            uSpinSpeed: spinSpeed,
+            uOffset: [offsetX, offsetY],
+            uColor1: hexToVec4(color1),
+            uColor2: hexToVec4(color2),
+            uColor3: hexToVec4(color3),
+            uContrast: contrast,
+            uLighting: lighting,
+            uSpinAmount: spinAmount,
+            uPixelFilter: pixelFilter,
+            uSpinEase: spinEase,
+            uIsRotate: isRotate,
+            uFogDensity: fogDensity,
+            uNoiseStrength: noiseStrength,
+            uPulseFrequency: pulseFrequency,
+          },
+        } satisfies ShaderWorkerMessage,
+        [offscreen],
+      );
+      if (!activeRef.current || !visibleRef.current) {
+        worker.postMessage({ type: "pause" } satisfies ShaderWorkerMessage);
+      }
+
+      const scheduleResize = () => {
+        if (resizeFrameRef.current !== null) return;
+        resizeFrameRef.current = requestAnimationFrame(() => {
+          resizeFrameRef.current = null;
+          const size = applySize();
+          worker.postMessage({
+            type: "resize",
+            width: size.width,
+            height: size.height,
+            dpr: getDpr(),
+          } satisfies ShaderWorkerMessage);
+        });
+      };
+      window.addEventListener("resize", scheduleResize);
+
+      const handleMouseMove = (e: MouseEvent) => {
+        if (!mouseInteractionRef.current) return;
+        const rect = containerRectRef.current;
+        if (!rect) return;
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = 1.0 - (e.clientY - rect.top) / rect.height;
+        worker.postMessage({
+          type: "mouse",
+          x,
+          y,
+        } satisfies ShaderWorkerMessage);
+      };
+      container.addEventListener("mousemove", handleMouseMove);
+
+      cleanup = () => {
+        if (resizeFrameRef.current !== null) {
+          cancelAnimationFrame(resizeFrameRef.current);
+          resizeFrameRef.current = null;
+        }
+        window.removeEventListener("resize", scheduleResize);
+        container.removeEventListener("mousemove", handleMouseMove);
+        worker.postMessage({ type: "dispose" } satisfies ShaderWorkerMessage);
+        worker.terminate();
+        workerRef.current = null;
+        containerRectRef.current = null;
+        timeOffsetRef.current = 0;
+        pausedAtRef.current = null;
+        if (canvas.parentElement === container) {
+          container.removeChild(canvas);
+        }
+      };
+    };
+
     const setup = () => {
       if (!containerRef.current) return;
+      if (canUseWorker()) {
+        setupWorker();
+        return;
+      }
       const container = containerRef.current;
       const baseDpr =
         typeof window !== "undefined" ? window.devicePixelRatio : 1;
