@@ -79,7 +79,8 @@ interface AsciiFilterOptions {
 class AsciiFilter {
   renderer: WebGLRenderer;
   domElement: HTMLDivElement;
-  pre: HTMLPreElement;
+  textCanvas: HTMLCanvasElement;
+  textContext: CanvasRenderingContext2D | null;
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D | null;
   deg: number;
@@ -90,11 +91,16 @@ class AsciiFilter {
   charset: string;
   width: number = 0;
   height: number = 0;
+  dpr: number = 1;
+  charWidth: number = 0;
+  gradient: CanvasGradient | null = null;
   center: { x: number; y: number } = { x: 0, y: 0 };
   mouse: { x: number; y: number } = { x: 0, y: 0 };
   cols: number = 0;
   rows: number = 0;
+  // 行ごとの ASCII 文字列(rows 本)
   output: string[] = [];
+  rowCells: string[] = [];
 
   constructor(
     renderer: WebGLRenderer,
@@ -109,10 +115,16 @@ class AsciiFilter {
     this.domElement.style.width = "100%";
     this.domElement.style.height = "100%";
 
-    this.pre = document.createElement("pre");
-    this.domElement.appendChild(this.pre);
+    // pre(テキストノード)は LCP 候補になるため文字は canvas に描画する
+    this.textCanvas = document.createElement("canvas");
+    this.textCanvas.setAttribute("aria-hidden", "true");
+    this.textCanvas.style.zIndex = "9";
+    this.textCanvas.style.mixBlendMode = "difference";
+    this.textContext = this.textCanvas.getContext("2d");
+    this.domElement.appendChild(this.textCanvas);
 
     this.canvas = document.createElement("canvas");
+    this.canvas.className = "ascii-source-canvas";
     // 毎フレーム getImageData するため CPU 側にキャンバスを置く
     this.context = this.canvas.getContext("2d", { willReadFrequently: true });
     this.domElement.appendChild(this.canvas);
@@ -163,21 +175,39 @@ class AsciiFilter {
 
       this.canvas.width = this.cols;
       this.canvas.height = this.rows;
-      this.output = new Array((this.cols + 1) * this.rows);
-      this.pre.style.fontFamily = this.fontFamily;
-      this.pre.style.fontSize = `${this.fontSize}px`;
-      this.pre.style.margin = "0";
-      this.pre.style.padding = "0";
-      this.pre.style.lineHeight = "1em";
-      this.pre.style.position = "absolute";
-      this.pre.style.left = "50%";
-      this.pre.style.top = "50%";
-      this.pre.style.transform = "translate(-50%, -50%)";
-      this.pre.style.zIndex = "9";
-      this.pre.style.backgroundAttachment = "fixed";
-      this.pre.style.mixBlendMode = "difference";
-      this.pre.style.contain = "layout paint";
+      this.output = new Array(this.rows);
+      this.rowCells = new Array(this.cols);
+      this.charWidth = charWidth;
+
+      // text canvas は物理解像度で確保し、描画時に CSS px 座標系へスケールする
+      this.dpr = window.devicePixelRatio || 1;
+      this.textCanvas.width = Math.round(this.width * this.dpr);
+      this.textCanvas.height = Math.round(this.height * this.dpr);
+      this.updateGradient();
     }
+  }
+
+  // 旧 pre の radial-gradient + background-attachment: fixed をビューポート基準で再現する
+  updateGradient() {
+    if (!this.textContext) return;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const rect = this.textCanvas.getBoundingClientRect();
+    const cx = vw / 2 - rect.left;
+    const cy = vh / 2 - rect.top;
+    const radius = Math.hypot(vw / 2, vh / 2);
+    const gradient = this.textContext.createRadialGradient(
+      cx,
+      cy,
+      0,
+      cx,
+      cy,
+      radius,
+    );
+    gradient.addColorStop(0, "#ff6188");
+    gradient.addColorStop(0.5, "#fc9867");
+    gradient.addColorStop(1, "#ffd866");
+    this.gradient = gradient;
   }
 
   render(scene: Scene, camera: Camera) {
@@ -221,9 +251,9 @@ class AsciiFilter {
     if (w && h) {
       const imgData = ctx.getImageData(0, 0, w, h).data;
       const output = this.output;
+      const cells = this.rowCells;
       const charset = this.charset;
       const maxCharIndex = charset.length - 1;
-      let outputIndex = 0;
 
       for (let y = 0; y < h; y++) {
         const rowOffset = y * w * 4;
@@ -232,8 +262,7 @@ class AsciiFilter {
           const a = imgData[i + 3];
 
           if (a === 0) {
-            output[outputIndex] = " ";
-            outputIndex++;
+            cells[x] = " ";
             continue;
           }
 
@@ -243,13 +272,46 @@ class AsciiFilter {
           const gray = (0.3 * r + 0.6 * g + 0.1 * b) / 255;
           let idx = Math.floor((1 - gray) * maxCharIndex);
           if (this.invert) idx = maxCharIndex - idx;
-          output[outputIndex] = charset[idx];
-          outputIndex++;
+          cells[x] = charset[idx];
         }
-        output[outputIndex] = "\n";
-        outputIndex++;
+        output[y] = cells.join("");
       }
-      this.pre.textContent = output.join("");
+      this.drawText();
+    }
+  }
+
+  // 旧 pre の translate(-50%,-50%) 中央配置と line-height 1em を text canvas 上で再現する
+  drawText() {
+    const ctx = this.textContext;
+    if (!ctx || this.cols <= 0 || this.rows <= 0) return;
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, this.textCanvas.width, this.textCanvas.height);
+    ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+
+    // 毎フレーム font を設定するのでフォント遅延ロード後も自動で正しい字形になる
+    ctx.font = `${this.fontSize}px ${this.fontFamily}`;
+    ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = this.gradient ?? "#ffffff";
+
+    // 幅は実測して中央配置(フォントロード前後で pre と同様に追従する)
+    const firstRow = this.output[0] ?? "";
+    const metrics = ctx.measureText(firstRow);
+    const blockW = metrics.width || this.cols * this.charWidth;
+    const blockH = this.rows * this.fontSize;
+    const left = (this.width - blockW) / 2;
+    const top = (this.height - blockH) / 2;
+
+    // line-height: 1em の half-leading によるベースライン位置を再現
+    const ascent = metrics.fontBoundingBoxAscent || this.fontSize * 0.8;
+    const descent = metrics.fontBoundingBoxDescent || this.fontSize * 0.2;
+    const baselineY = (this.fontSize - (ascent + descent)) / 2 + ascent;
+
+    for (let y = 0; y < this.rows; y++) {
+      const row = this.output[y];
+      if (row) {
+        ctx.fillText(row, left, top + y * this.fontSize + baselineY);
+      }
     }
   }
 
@@ -762,6 +824,10 @@ const ASCIIText = ({
           top: 0;
           width: 100%;
           height: 100%;
+        }
+
+        /* 引き伸ばし表示される判定用 canvas のみピクセレート */
+        .ascii-text-root canvas.ascii-source-canvas {
           image-rendering: optimizeSpeed;
           image-rendering: -moz-crisp-edges;
           image-rendering: -o-crisp-edges;
@@ -769,23 +835,6 @@ const ASCIIText = ({
           image-rendering: optimize-contrast;
           image-rendering: crisp-edges;
           image-rendering: pixelated;
-        }
-
-        .ascii-text-root pre {
-          margin: 0;
-          user-select: none;
-          padding: 0;
-          line-height: 1em;
-          text-align: left;
-          position: absolute;
-          left: 0;
-          top: 0;
-          background-image: radial-gradient(circle, #ff6188 0%, #fc9867 50%, #ffd866 100%);
-          background-attachment: fixed;
-          -webkit-text-fill-color: transparent;
-          -webkit-background-clip: text;
-          z-index: 9;
-          mix-blend-mode: difference;
         }
       `}</style>
     </div>
