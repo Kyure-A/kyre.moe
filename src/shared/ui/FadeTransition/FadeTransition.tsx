@@ -1,7 +1,6 @@
 import {
   Children,
   isValidElement,
-  type ReactElement,
   type ReactNode,
   useEffect,
   useMemo,
@@ -25,10 +24,9 @@ const FadeTransition = ({
   blur = false,
   className = "",
 }: FadeTransitionProps) => {
+  // 全 children を常時 mount し、opacity の切替だけで順次フェードを再現する
   const [currentIndex, setCurrentIndex] = useState(activeIndex);
-  const [transitioning, setTransitioning] = useState(false);
-  const [currentOpacity, setCurrentOpacity] = useState(1);
-  const [nextChild, setNextChild] = useState<ReactElement | null>(null);
+  const [visible, setVisible] = useState(true);
 
   const childrenArray = useMemo(
     () => Children.toArray(children).filter(isValidElement),
@@ -37,49 +35,43 @@ const FadeTransition = ({
 
   useEffect(() => {
     if (activeIndex !== currentIndex) {
-      // Start fade out
-      setTransitioning(true);
-      setCurrentOpacity(0);
+      // フェードアウト開始
+      setVisible(false);
 
-      // Set the next child to be shown
+      // フェードアウト完了後に表示対象を差し替え
       const timer = setTimeout(() => {
         setCurrentIndex(activeIndex);
-        setNextChild(childrenArray[activeIndex]);
 
-        // Start fade in
+        // 少し置いてフェードイン開始
         setTimeout(() => {
-          setCurrentOpacity(1);
-
-          // End transition
-          setTimeout(() => {
-            setTransitioning(false);
-            setNextChild(null);
-          }, duration);
-        }, 50); // Small delay to ensure DOM updates
+          setVisible(true);
+        }, 50);
       }, duration);
 
       return () => clearTimeout(timer);
     }
-  }, [activeIndex, childrenArray, currentIndex, duration]);
-
-  const currentChild = childrenArray[currentIndex];
-  const displayChild = transitioning && nextChild ? nextChild : currentChild;
+  }, [activeIndex, currentIndex, duration]);
 
   return (
     <div className={className}>
-      <div
-        style={{
-          opacity: currentOpacity,
-          transition: `opacity ${duration}ms ${easing}, filter ${duration}ms ${easing}`,
-          filter: blur
-            ? currentOpacity === 1
-              ? "blur(0px)"
-              : "blur(10px)"
-            : "none",
-        }}
-      >
-        {displayChild}
-      </div>
+      {childrenArray.map((child, index) => {
+        const isCurrent = index === currentIndex;
+        const isShown = isCurrent && visible;
+        return (
+          <div
+            key={child.key ?? index}
+            aria-hidden={isCurrent ? undefined : true}
+            style={{
+              opacity: isShown ? 1 : 0,
+              pointerEvents: isCurrent ? undefined : "none",
+              transition: `opacity ${duration}ms ${easing}, filter ${duration}ms ${easing}`,
+              filter: blur ? (isShown ? "blur(0px)" : "blur(10px)") : "none",
+            }}
+          >
+            {child}
+          </div>
+        );
+      })}
     </div>
   );
 };
