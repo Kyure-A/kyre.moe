@@ -83,6 +83,7 @@ class AsciiFilter {
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D | null;
   deg: number;
+  lastFilterDeg: number = Infinity;
   invert: boolean;
   fontSize: number;
   fontFamily: string;
@@ -112,7 +113,8 @@ class AsciiFilter {
     this.domElement.appendChild(this.pre);
 
     this.canvas = document.createElement("canvas");
-    this.context = this.canvas.getContext("2d");
+    // 毎フレーム getImageData するため CPU 側にキャンバスを置く
+    this.context = this.canvas.getContext("2d", { willReadFrequently: true });
     this.domElement.appendChild(this.canvas);
 
     this.deg = 0;
@@ -124,7 +126,6 @@ class AsciiFilter {
       " .'`^\",:;Il!i~+_-?][}{1)(|/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
 
     if (this.context) {
-      this.context.imageSmoothingEnabled = false;
       this.context.imageSmoothingEnabled = false;
     }
 
@@ -139,7 +140,6 @@ class AsciiFilter {
 
     this.width = nextWidth;
     this.height = nextHeight;
-    this.renderer.setSize(nextWidth, nextHeight);
     this.reset();
 
     this.center = { x: nextWidth / 2, y: nextHeight / 2 };
@@ -156,6 +156,11 @@ class AsciiFilter {
       );
       this.rows = Math.floor(this.height / this.fontSize);
 
+      // 出力は cols×rows しか使わないので WebGL も同解像度で直接描画する
+      if (this.cols > 0 && this.rows > 0) {
+        this.renderer.setSize(this.cols, this.rows);
+      }
+
       this.canvas.width = this.cols;
       this.canvas.height = this.rows;
       this.output = new Array((this.cols + 1) * this.rows);
@@ -171,6 +176,7 @@ class AsciiFilter {
       this.pre.style.zIndex = "9";
       this.pre.style.backgroundAttachment = "fixed";
       this.pre.style.mixBlendMode = "difference";
+      this.pre.style.contain = "layout paint";
     }
   }
 
@@ -205,6 +211,9 @@ class AsciiFilter {
   hue() {
     const deg = (Math.atan2(this.dy, this.dx) * 180) / Math.PI;
     this.deg += (deg - this.deg) * 0.075;
+    // 前回書き込みから 0.25deg 未満の変化なら style 更新をスキップ
+    if (Math.abs(this.deg - this.lastFilterDeg) < 0.25) return;
+    this.lastFilterDeg = this.deg;
     this.domElement.style.filter = `hue-rotate(${this.deg.toFixed(1)}deg)`;
   }
 
