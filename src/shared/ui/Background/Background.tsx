@@ -29,6 +29,10 @@ interface MysteriousShaderProps {
 const canvasClass = css({
   width: "full",
   height: "full",
+  // シェーダー出力は uPixelFilter で量子化済みのため nearest 拡大でも見た目が変わらない
+  "& canvas": {
+    imageRendering: "pixelated",
+  },
 });
 
 const hexToVec4 = (hex: string): [number, number, number, number] => {

@@ -238,7 +238,6 @@ body {
     transparent 120deg,
     transparent 360deg
   );
-  filter: blur(1px);
   mix-blend-mode: screen;
   animation: orbit-rotate 12s linear infinite;
   opacity: 0.7;

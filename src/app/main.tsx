@@ -124,13 +124,7 @@ const App = ({ children }: Props) => {
   const { lowPerformanceMode } = useRuntimeProfile();
 
   const orbitPaused = !isHome || (orbitHovered && !orbitDragging);
-  const shaderResolution = lowPerformanceMode
-    ? isMobile
-      ? 0.42
-      : 0.36
-    : isMobile
-      ? 0.65
-      : 1;
+  const shaderResolution = lowPerformanceMode ? (isMobile ? 0.42 : 0.36) : 0.5;
   const startDelayMs = lowPerformanceMode
     ? isMobile
       ? 700
