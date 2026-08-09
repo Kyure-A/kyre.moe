@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { css } from "styled-system/css";
 import FadeTransition from "@/shared/ui/FadeTransition/FadeTransition";
 
@@ -54,6 +54,9 @@ export const FadeTextRotator = ({
   active = true,
 }: FadeTextRotatorProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  // フェードアウト中のロゴだけ描画ループを生かし、完全に隠れたら止める
+  const [fadingIndex, setFadingIndex] = useState<number | null>(null);
+  const prevIndexRef = useRef(0);
 
   useEffect(() => {
     if (!active) return;
@@ -64,13 +67,21 @@ export const FadeTextRotator = ({
     return () => clearInterval(timer);
   }, [active, interval, texts.length]);
 
+  useEffect(() => {
+    if (prevIndexRef.current === activeIndex) return;
+    setFadingIndex(prevIndexRef.current);
+    prevIndexRef.current = activeIndex;
+    const timer = setTimeout(() => setFadingIndex(null), fadeDuration + 100);
+    return () => clearTimeout(timer);
+  }, [activeIndex, fadeDuration]);
+
   return (
     <FadeTransition
       activeIndex={activeIndex}
       duration={fadeDuration}
       blur={false}
     >
-      {texts.map((text) =>
+      {texts.map((text, index) =>
         asciiEnabled ? (
           <ASCIIText
             key={text}
@@ -80,7 +91,7 @@ export const FadeTextRotator = ({
             maxFps={asciiMaxFps}
             startDelayMs={asciiStartDelayMs}
             startOnIdle={asciiStartOnIdle}
-            active={active}
+            active={active && (index === activeIndex || index === fadingIndex)}
           />
         ) : (
           <div key={text} className={styles.textFallback}>
