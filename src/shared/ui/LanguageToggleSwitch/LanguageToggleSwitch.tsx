@@ -158,8 +158,9 @@ const LanguageToggle = ({ onChange }: LanguageToggleProps) => {
           )}
         />
 
-        {/* 言語ラベル - 活性側 */}
+        {/* 言語ラベル - 装飾。状態は aria-pressed と hiddenLabel で伝える */}
         <span
+          aria-hidden="true"
           className={cx(
             styles.label,
             styles.labelJa,
@@ -170,6 +171,7 @@ const LanguageToggle = ({ onChange }: LanguageToggleProps) => {
         </span>
 
         <span
+          aria-hidden="true"
           className={cx(
             styles.label,
             styles.labelEn,
