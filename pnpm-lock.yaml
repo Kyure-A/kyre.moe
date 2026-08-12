@@ -71,8 +71,8 @@ importers:
         specifier: ^1.12.0
         version: 1.12.0(typescript@5.9.3)
       '@storybook/addon-a11y':
-        specifier: ^10.5.5
-        version: 10.5.5(storybook@10.5.6(@types/react@19.2.18)(prettier@3.2.5)(react@19.2.8))
+        specifier: ^10.5.6
+        version: 10.5.6(storybook@10.5.6(@types/react@19.2.18)(prettier@3.2.5)(react@19.2.8))
       '@storybook/nextjs-vite':
         specifier: 10.5.6
         version: 10.5.6(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(esbuild@0.28.2)(next@16.3.0(@types/node@26.1.2)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(storybook@10.5.6(@types/react@19.2.18)(prettier@3.2.5)(react@19.2.8))(typescript@5.9.3)(vite@8.2.0(@types/node@26.1.2)(esbuild@0.28.2))
@@ -1294,10 +1294,10 @@ packages:
       rollup:
         optional: true
 
-  '@storybook/addon-a11y@10.5.5':
-    resolution: {integrity: sha512-nsMnSRe7pzepXIkUUqI/rL7sp8juXOluyypU4Dz0UuYHhw/cKaxfzuO+3WJN5EtEr/gcnKYb4awxH/duPGavUw==}
+  '@storybook/addon-a11y@10.5.6':
+    resolution: {integrity: sha512-pMqbmtvkIgb7/kVE2BTNovGhSerRXWsVag62zpwQe0SwYYkgN+1Q9h4TYuIe2+npGkxgwALCjwtqkcnpOoND+A==}
     peerDependencies:
-      storybook: ^10.5.5
+      storybook: ^10.5.6
 
   '@storybook/builder-vite@10.5.6':
     resolution: {integrity: sha512-Ts8EohKPj8okDPCkueeKVN+IRGNpI3LuddsFGupqraRvK6aRWawDKA28uc0PlsLCLWbMkMsGVw+IpFXfmoLJgQ==}
@@ -1585,8 +1585,8 @@ packages:
     resolution: {integrity: sha512-Z7tMw1ytTXt5jqMcOP+OQteU1VuNK9Y02uuJtKQ1Sv69jXQKKg5cibLwGJow8yzZP+eAc18EmLGPal0bp36rvQ==}
     engines: {node: '>=8'}
 
-  axe-core@4.12.1:
-    resolution: {integrity: sha512-s7iGf5GaVMxEG0ENN9x+xTr7GFZCb1ZP/1uATUpCEK2X78nDB3RwbtFCo9pGAf9ru+VwoQ464DkaLEeRM08wJA==}
+  axe-core@4.13.0:
+    resolution: {integrity: sha512-UzGt8zg7Ny8djbYMhxl2zuEevVa7r2gJjYY5Lwr1xM7+XU2nd6CkIWFTVcCIbAP63vSz71NaVyyuSk9lHKcy0A==}
     engines: {node: '>=4'}
 
   bail@2.0.2:
@@ -3754,10 +3754,10 @@ snapshots:
       estree-walker: 2.0.2
       picomatch: 4.0.5
 
-  '@storybook/addon-a11y@10.5.5(storybook@10.5.6(@types/react@19.2.18)(prettier@3.2.5)(react@19.2.8))':
+  '@storybook/addon-a11y@10.5.6(storybook@10.5.6(@types/react@19.2.18)(prettier@3.2.5)(react@19.2.8))':
     dependencies:
       '@storybook/global': 5.0.0
-      axe-core: 4.12.1
+      axe-core: 4.13.0
       storybook: 10.5.6(@types/react@19.2.18)(prettier@3.2.5)(react@19.2.8)
 
   '@storybook/builder-vite@10.5.6(esbuild@0.28.2)(storybook@10.5.6(@types/react@19.2.18)(prettier@3.2.5)(react@19.2.8))(vite@8.2.0(@types/node@26.1.2)(esbuild@0.28.2))':
@@ -4085,7 +4085,7 @@ snapshots:
 
   astral-regex@2.0.0: {}
 
-  axe-core@4.12.1: {}
+  axe-core@4.13.0: {}
 
   bail@2.0.2: {}
 
