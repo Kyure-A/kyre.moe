@@ -100,6 +100,18 @@ const TIMELINE_DATA: TimelineEntry[] = [
     },
     url: "https://prog-8.com/",
   },
+  {
+    date: { ja: "2026 年 8 月 - 9 月", en: "August - September, 2026" },
+    title: {
+      ja: "株式会社はてな サマーインターンシップ",
+      en: "Hatena Summer Internship",
+    },
+    description: {
+      ja: "3 週間 (出社 1 週間・リモート 2 週間) の就業型インターンに参加",
+      en: "Three-week internship (one week onsite, two weeks remote)",
+    },
+    url: "https://hatena.co.jp/recruit/intern/2026",
+  },
 ];
 
 const PAGE_TITLE: Record<SiteLang, string> = {
