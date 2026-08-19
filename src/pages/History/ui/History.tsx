@@ -133,7 +133,7 @@ const TIMELINE_DATA: TimelineEntry[] = [
       ja: "5 Days Git インターンに参加",
       en: "Took part in the five-day Git internship",
     },
-    url: "https://prog-8.com/",
+    url: "https://progate.connpass.com/event/392610/",
   },
   {
     date: { ja: "2026 年 8 月 - 9 月", en: "August - September, 2026" },
