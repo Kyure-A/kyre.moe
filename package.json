@@ -29,7 +29,7 @@
     "@react-spring/web": "^10.1.2",
     "gray-matter": "^4.0.3",
     "gsap": "^3.15.0",
-    "highlight.js": "^11.11.1",
+    "highlight.js": "^11.11.2",
     "katex": "^0.18.4",
     "next": "16.3.0",
     "next-view-transitions": "^0.3.5",
@@ -42,7 +42,7 @@
     "uniorg-parse": "^3.2.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.7",
+    "@biomejs/biome": "^2.5.8",
     "@pandacss/dev": "^1.12.0",
     "@storybook/addon-a11y": "^10.5.7",
     "@storybook/nextjs-vite": "10.5.7",
