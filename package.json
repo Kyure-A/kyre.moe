@@ -25,7 +25,7 @@
     "security:semgrep": "semgrep scan --config p/default --error --metrics=off ."
   },
   "dependencies": {
-    "@ox-content/napi": "^2.81.0",
+    "@ox-content/napi": "^2.82.1",
     "@react-spring/web": "^10.1.2",
     "gray-matter": "^4.0.3",
     "gsap": "^3.15.0",
