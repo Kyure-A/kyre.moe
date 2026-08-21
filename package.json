@@ -53,7 +53,7 @@
     "@types/react-dom": "^19.2.4",
     "@types/sanitize-html": "^2.16.1",
     "@types/three": "^0.185.4",
-    "storybook": "10.5.7",
+    "storybook": "10.5.8",
     "typescript": "^5.9.3",
     "vite": "8.2.1"
   },
