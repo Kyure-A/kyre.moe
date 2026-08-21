@@ -37,7 +37,7 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-icons": "^5.7.0",
-    "sanitize-html": "^2.17.6",
+    "sanitize-html": "^2.17.7",
     "three": "^0.185.1",
     "uniorg-parse": "^3.2.2"
   },
