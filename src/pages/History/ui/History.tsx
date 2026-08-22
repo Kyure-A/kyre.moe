@@ -29,41 +29,6 @@ const TIMELINE_DATA: TimelineEntry[] = [
     url: "https://www.ct.omu.ac.jp",
   },
   {
-    date: { ja: "2023 年 9 月", en: "September, 2023" },
-    title: {
-      ja: "パソコン甲子園 2023 プログラミング部門 (予選)",
-      en: "PC Koshien 2023 Programming Division (Prelims)",
-    },
-    description: {
-      ja: "大阪 1 位 (全体 35 位)",
-      en: "Osaka #1 (35th overall)",
-    },
-    url: "http://web.archive.org/web/20230909072222/https://radon.u-aizu.ac.jp/pckosien/stats/pck2023pre_standings.html",
-  },
-  {
-    date: { ja: "2023 年 10 月", en: "October, 2023" },
-    title: {
-      ja: "第34回 高専プロコン 競技部門",
-      en: "34th KOSEN Procon (Competition Division)",
-    },
-    description: {
-      ja: "ファイナルステージまで進出",
-      en: "Advanced to the final stage",
-    },
-  },
-  {
-    date: { ja: "2023 年 11 月", en: "November, 2023" },
-    title: {
-      ja: "パソコン甲子園 2023 プログラミング部門 (本選)",
-      en: "PC Koshien 2023 Programming Division (Finals)",
-    },
-    description: {
-      ja: "24 位 / 29 チーム",
-      en: "24th / 29 teams",
-    },
-    url: "https://web.archive.org/web/20231111083450/https://radon.u-aizu.ac.jp/pckosien/stats/pck2023final_standings.html",
-  },
-  {
     date: { ja: "2024 年 9 月", en: "September, 2024" },
     title: {
       ja: "BOOTH ショップ 開設",
