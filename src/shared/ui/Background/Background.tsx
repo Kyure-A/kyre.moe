@@ -341,6 +341,20 @@ const BackgroundShader = ({
           })
         : null;
 
+    // uPixelFilter の量子化により、出力は対角 pixelFilter ブロック分の情報量しか
+    // 持たない。それを超えるバッファ解像度は同一色ブロックの再計算にしかならない
+    // ため、ブロック密度を dpr の上限にして描画コストを抑え、画面サイズへの拡大は
+    // CSS の image-rendering: pixelated に任せる(シェーダー座標は対角長で正規化
+    // されており解像度非依存なので、出力はブロック単位で一致する)
+    const getDpr = (width: number, height: number) => {
+      const baseDpr =
+        typeof window !== "undefined" ? window.devicePixelRatio : 1;
+      const clamped = Math.max(0.5, Math.min(2, baseDpr * resolutionScale));
+      const diagonal = Math.hypot(width, height);
+      if (diagonal <= 0) return clamped;
+      return Math.min(clamped, pixelFilter / diagonal);
+    };
+
     // OffscreenCanvas + Worker が使えるか。Worker 側で WebGL が取れない環境
     // (旧 Safari 等)を除外するため 1x1 の OffscreenCanvas で事前確認する
     const canUseWorker = () => {
@@ -368,11 +382,6 @@ const BackgroundShader = ({
     const setupWorker = () => {
       if (!containerRef.current) return;
       const container = containerRef.current;
-      const getDpr = () => {
-        const baseDpr =
-          typeof window !== "undefined" ? window.devicePixelRatio : 1;
-        return Math.max(0.5, Math.min(2, baseDpr * resolutionScale));
-      };
       const canvas = document.createElement("canvas");
       // 移譲後の canvas は width/height を触れないため style のみ更新する
       const applySize = () => {
@@ -394,7 +403,7 @@ const BackgroundShader = ({
           canvas: offscreen,
           width,
           height,
-          dpr: getDpr(),
+          dpr: getDpr(width, height),
           maxFps: maxFpsRef.current,
           uniforms: {
             uSpinRotation: spinRotation,
@@ -429,7 +438,7 @@ const BackgroundShader = ({
             type: "resize",
             width: size.width,
             height: size.height,
-            dpr: getDpr(),
+            dpr: getDpr(size.width, size.height),
           } satisfies ShaderWorkerMessage);
         });
       };
@@ -475,10 +484,9 @@ const BackgroundShader = ({
         return;
       }
       const container = containerRef.current;
-      const baseDpr =
-        typeof window !== "undefined" ? window.devicePixelRatio : 1;
-      const clampDpr = Math.max(0.5, Math.min(2, baseDpr * resolutionScale));
-      const renderer = new Renderer({ dpr: clampDpr });
+      const renderer = new Renderer({
+        dpr: getDpr(container.offsetWidth, container.offsetHeight),
+      });
       const gl = renderer.gl;
       gl.clearColor(0, 0, 0, 1);
 
@@ -515,9 +523,7 @@ const BackgroundShader = ({
       });
 
       const resize = () => {
-        const nextDpr =
-          typeof window !== "undefined" ? window.devicePixelRatio : 1;
-        renderer.dpr = Math.max(0.5, Math.min(2, nextDpr * resolutionScale));
+        renderer.dpr = getDpr(container.offsetWidth, container.offsetHeight);
         renderer.setSize(container.offsetWidth, container.offsetHeight);
         containerRectRef.current = container.getBoundingClientRect();
         program.uniforms.iResolution.value = [
