@@ -25,7 +25,7 @@
     "security:semgrep": "semgrep scan --config p/default --error --metrics=off ."
   },
   "dependencies": {
-    "@ox-content/napi": "^2.82.1",
+    "@ox-content/napi": "^2.86.0",
     "@react-spring/web": "^10.1.2",
     "gray-matter": "^4.0.3",
     "gsap": "^3.15.0",
@@ -42,7 +42,7 @@
     "uniorg-parse": "^3.2.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.8",
+    "@biomejs/biome": "^2.5.9",
     "@pandacss/dev": "^1.12.0",
     "@storybook/addon-a11y": "^10.5.8",
     "@storybook/nextjs-vite": "10.5.8",
@@ -53,7 +53,7 @@
     "@types/react-dom": "^19.2.4",
     "@types/sanitize-html": "^2.16.1",
     "@types/three": "^0.185.4",
-    "storybook": "10.5.8",
+    "storybook": "10.5.9",
     "typescript": "^5.9.3",
     "vite": "8.2.1"
   },
