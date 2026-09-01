@@ -31,6 +31,7 @@ export default defineConfig({
         },
         fontSizes: {
           "2xs": { value: "0.6875rem" },
+          "hatena-meta": { value: "0.8rem" },
           "account-xs": { value: "0.75rem" },
           "account-sm": { value: "0.8125rem" },
           "account-md": { value: "0.875rem" },
@@ -63,6 +64,7 @@ export default defineConfig({
           "control-offset": { value: "1.5rem" },
           "not-found-bg": { value: "110vmax" },
           "account-row-hover": { value: "1.25rem" },
+          "hatena-meta-gap": { value: "0.8rem" },
         },
         radii: {
           control: { value: "9999px" },
@@ -87,6 +89,8 @@ export default defineConfig({
           snug: { value: "1.375" },
           relaxed: { value: "1.625" },
           section: { value: "1.75rem" },
+          "hatena-meta": { value: "1.2rem" },
+          star: { value: "1.5rem" },
         },
         letterSpacings: {
           label: { value: "0.08em" },

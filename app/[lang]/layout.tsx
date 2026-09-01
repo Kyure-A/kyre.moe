@@ -6,6 +6,7 @@ import { isSiteLang } from "@/shared/lib/i18n";
 import { ibmPlexMono } from "@/shared/lib/root-font";
 import { rootMetadata } from "@/shared/lib/root-metadata";
 import AppShell from "@/shared/ui/AppShell/AppShell";
+import HatenaStarScript from "@/shared/ui/HatenaStar/HatenaStarScript";
 import ThemeScript from "@/shared/ui/ThemeProvider/ThemeScript";
 
 export const metadata = rootMetadata;
@@ -32,6 +33,7 @@ const LangLayout = async ({ children, params }: LangLayoutProps) => {
       >
         <head>
           <ThemeScript />
+          <HatenaStarScript />
         </head>
         <body suppressHydrationWarning={true}>
           <AppShell>{children}</AppShell>
