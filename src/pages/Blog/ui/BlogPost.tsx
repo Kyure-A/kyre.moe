@@ -6,6 +6,7 @@ import { css, cx } from "styled-system/css";
 import type { BlogPost } from "@/shared/lib/blog";
 import { buildTagPath, formatDate } from "@/shared/lib/blog";
 import CopyCodeBlock from "@/shared/ui/CopyCodeBlock/CopyCodeBlock";
+import HatenaStarContainer from "@/shared/ui/HatenaStar/HatenaStarContainer";
 import TwitterEmbedEnhancer from "@/shared/ui/TwitterEmbed/TwitterEmbed";
 import YouTubeEmbedEnhancer from "@/shared/ui/YouTubeEmbed/YouTubeEmbed";
 
@@ -77,6 +78,35 @@ const styles = {
   }),
   content: css({
     mt: "10",
+  }),
+  reactions: css({
+    mt: "4",
+    pt: "hatena-meta-gap",
+    borderTopWidth: "1px",
+    borderColor: "border.subtle",
+  }),
+  reactionMeta: css({
+    display: "flex",
+    alignItems: "baseline",
+    gap: "2",
+    mb: "hatena-meta-gap",
+    fontSize: "hatena-meta",
+    lineHeight: "hatena-meta",
+    fontVariantNumeric: "tabular-nums",
+    color: "text.tertiary",
+  }),
+  reactionAuthor: css({
+    color: "text.tertiary",
+    textDecorationLine: "none",
+    _hover: {
+      textDecorationLine: "underline",
+      textUnderlineOffset: "4px",
+    },
+  }),
+  hatenaStar: css({
+    display: "block",
+    mb: "2",
+    lineHeight: "star",
   }),
   canonical: css({
     mt: "8",
@@ -163,6 +193,20 @@ const BlogPostView = ({ post }: Props) => {
         /* nosemgrep: typescript.react.security.audit.react-dangerouslysetinnerhtml.react-dangerouslysetinnerhtml */
         dangerouslySetInnerHTML={{ __html: post.html }}
       />
+
+      <footer className={styles.reactions}>
+        <div className={styles.reactionMeta}>
+          <Link href={`/${post.lang}/about`} className={styles.reactionAuthor}>
+            Kyure_A
+          </Link>
+          <time dateTime={post.date}>{formatDate(post.date, post.lang)}</time>
+        </div>
+        <HatenaStarContainer
+          className={styles.hatenaStar}
+          title={post.title}
+          uri={`https://kyre.moe/${post.lang}/blog/${post.slug}`}
+        />
+      </footer>
 
       {showCanonical && (
         <div className={styles.canonical}>
