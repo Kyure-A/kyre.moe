@@ -1,6 +1,6 @@
 ---
 title: "令和 3 年度（2021 年度）高専・高校 受験記"
-description: "3 校受けました"
+description: "3 校受けました (執筆当時の表現のままです)"
 date: "2021-03-13"
 canonical: "https://kyre.hatenablog.jp/entry/jyukenki"
 tags:
