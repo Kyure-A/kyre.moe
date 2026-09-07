@@ -88,6 +88,8 @@ const CSS_ZERO_RE = /^0$/;
 const CSS_COLOR_RE = /^(?:#[\da-f]{3,8}|[a-z]+)$/i;
 const CSS_BACKGROUND_IMAGE_URL_RE =
   /^url\((?:"https?:\/\/[^"()\\\s]+"|'https?:\/\/[^'()\\\s]+'|https?:\/\/[^"'()\\\s]+)\)$/i;
+const CSS_DATA_IMAGE_URL_RE =
+  /^url\((?:"data:image\/(?:png|jpeg|gif|webp);base64,[A-Za-z0-9+/=]+"|'data:image\/(?:png|jpeg|gif|webp);base64,[A-Za-z0-9+/=]+')\)$/i;
 const BLOG_HTML_ALLOWED_TAGS = [
   "a",
   "abbr",
@@ -243,7 +245,7 @@ const BLOG_HTML_SANITIZE_OPTIONS = {
       "background-image": [CSS_BACKGROUND_IMAGE_URL_RE],
     },
     span: {
-      "background-image": [CSS_BACKGROUND_IMAGE_URL_RE],
+      "background-image": [CSS_BACKGROUND_IMAGE_URL_RE, CSS_DATA_IMAGE_URL_RE],
       "border-bottom-width": [CSS_EM_VALUE_RE, CSS_ZERO_RE],
       color: [CSS_COLOR_RE],
       height: [CSS_EM_VALUE_RE, CSS_ZERO_RE],
@@ -461,11 +463,73 @@ const addHtmlPlaceholder = (
   return token;
 };
 
-const buildMagicLink = (user: string) => {
+type MagicLinkService = "github" | "hatena";
+
+const MAGIC_LINK_PROFILES: Record<
+  MagicLinkService,
+  {
+    url: (user: string) => string;
+    avatar: (user: string) => string;
+    label: (user: string) => string;
+    // Firefox's tracking protection blocks some avatar CDNs (e.g. st-hatena.com),
+    // so those avatars are fetched at build time and inlined as data URIs.
+    inlineAvatar: boolean;
+  }
+> = {
+  github: {
+    url: (user) => `https://github.com/${user}`,
+    avatar: (user) => `https://github.com/${user}.png?size=40`,
+    label: (user) => `@${user}`,
+    inlineAvatar: false,
+  },
+  hatena: {
+    url: (user) => `https://profile.hatena.ne.jp/${user}/`,
+    avatar: (user) =>
+      `https://cdn.profile-image.st-hatena.com/users/${user}/profile.png`,
+    label: (user) => `id:${user}`,
+    inlineAvatar: true,
+  },
+};
+
+const AVATAR_FETCH_TIMEOUT_MS = 5000;
+const avatarDataUriCache = new Map<string, Promise<string>>();
+
+const fetchAvatarDataUri = async (url: string): Promise<string> => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), AVATAR_FETCH_TIMEOUT_MS);
+  try {
+    const response = await fetch(url, {
+      redirect: "follow",
+      signal: controller.signal,
+    });
+    const contentType = response.headers.get("content-type") ?? "";
+    if (!response.ok || !contentType.startsWith("image/")) return url;
+    const bytes = Buffer.from(await response.arrayBuffer());
+    return `data:${contentType};base64,${bytes.toString("base64")}`;
+  } catch {
+    return url;
+  } finally {
+    clearTimeout(timeout);
+  }
+};
+
+const getAvatarDataUri = (url: string) => {
+  const cached = avatarDataUriCache.get(url);
+  if (cached) return cached;
+  const promise = fetchAvatarDataUri(url);
+  avatarDataUriCache.set(url, promise);
+  return promise;
+};
+
+const buildMagicLink = async (service: MagicLinkService, user: string) => {
   const safeUser = escapeHtml(user);
-  const url = `https://github.com/${safeUser}`;
-  const avatar = `https://github.com/${safeUser}.png?size=40`;
-  return `<a class="markdown-magic-link" href="${url}" rel="noopener" target="_blank"><span class="markdown-magic-link-image" style="background-image: url('${avatar}');" aria-hidden="true"></span>@${safeUser}</a>`;
+  const profile = MAGIC_LINK_PROFILES[service];
+  const url = profile.url(safeUser);
+  const avatarUrl = profile.avatar(safeUser);
+  const avatar = profile.inlineAvatar
+    ? await getAvatarDataUri(avatarUrl)
+    : avatarUrl;
+  return `<a class="markdown-magic-link" href="${url}" rel="noopener" target="_blank"><span class="markdown-magic-link-image" style="background-image: url('${avatar}');" aria-hidden="true"></span>${profile.label(safeUser)}</a>`;
 };
 
 const renderMath = (source: string, displayMode: boolean) => {
@@ -547,12 +611,30 @@ const replaceInlineMath = (line: string, placeholders: HtmlPlaceholder[]) => {
   return result;
 };
 
-const replaceMagicLinks = (line: string, placeholders: HtmlPlaceholder[]) =>
-  line.replace(
-    /\{@([A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?)\}/g,
-    (_match, user: string) =>
-      addHtmlPlaceholder(placeholders, buildMagicLink(user), false),
+// `{@user}` -> GitHub, `{id:user}` / `{@hatena:user}` -> Hatena
+const MAGIC_LINK_PATTERN =
+  /\{(?:(?:id:|@hatena:)([A-Za-z][A-Za-z0-9_-]{1,31})|@([A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?))\}/g;
+
+const replaceMagicLinks = async (
+  line: string,
+  placeholders: HtmlPlaceholder[],
+) => {
+  const matches = [...line.matchAll(MAGIC_LINK_PATTERN)];
+  if (matches.length === 0) return line;
+
+  const links = await Promise.all(
+    matches.map((match) =>
+      match[1]
+        ? buildMagicLink("hatena", match[1])
+        : buildMagicLink("github", match[2]),
+    ),
   );
+
+  let index = 0;
+  return line.replace(MAGIC_LINK_PATTERN, () =>
+    addHtmlPlaceholder(placeholders, links[index++], false),
+  );
+};
 
 const replaceUnderlines = (line: string, placeholders: HtmlPlaceholder[]) => {
   let result = "";
@@ -933,7 +1015,7 @@ const preprocessMarkdown = async (source: string, lang: SiteLang) => {
     );
     const withAutolinks = replaceInlineAutolinks(normalized);
     const withMath = replaceInlineMath(withAutolinks, placeholders);
-    const withMagicLinks = replaceMagicLinks(withMath, placeholders);
+    const withMagicLinks = await replaceMagicLinks(withMath, placeholders);
     const withUnderlines = replaceUnderlines(withMagicLinks, placeholders);
     const withFootnotes = replaceFootnoteReferences(
       withUnderlines,

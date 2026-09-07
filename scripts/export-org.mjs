@@ -155,6 +155,8 @@ function renderInline(node, context = {}) {
       }
       return label ? `[${label}](${target})` : target;
     }
+    case "footnote-reference":
+      return `[^${node.label}]`;
     default:
       return renderInlineChildren(node.children, context) || node.value || "";
   }
@@ -239,6 +241,8 @@ function renderBlock(node, context = {}) {
         .join("\n");
     case "list-item":
       return renderListItem(node, 0, "unordered", context.depth ?? 0);
+    case "footnote-definition":
+      return `[^${node.label}]: ${renderBlocks(node.children).trim()}`;
     default:
       return renderInline(node);
   }
@@ -288,65 +292,79 @@ function exportOrgToMarkdown(jobs) {
   });
 }
 
-if (!fs.existsSync(ARTICLES_DIR)) {
-  console.error(`Article directory not found: ${ARTICLES_DIR}`);
-  process.exit(1);
-}
+export function exportOrg(options = {}) {
+  const { silent = false } = options;
+  if (!fs.existsSync(ARTICLES_DIR)) {
+    if (!silent) console.error(`Article directory not found: ${ARTICLES_DIR}`);
+    return [];
+  }
 
-const orgFiles = walk(ARTICLES_DIR)
-  .filter((file) => file.endsWith(ORG_EXTENSION))
-  .sort();
+  const orgFiles = walk(ARTICLES_DIR)
+    .filter((file) => file.endsWith(ORG_EXTENSION))
+    .sort();
 
-if (orgFiles.length === 0) {
-  console.log("No Org files found.");
-  process.exit(0);
-}
+  if (orgFiles.length === 0) {
+    if (!silent) console.log("No Org files found.");
+    return [];
+  }
 
-const cache = readCache();
-const scriptHash = hashContent(fs.readFileSync(SCRIPT_PATH));
-const jobs = orgFiles.map((filePath) => {
-  const source = fs.readFileSync(filePath, "utf-8");
-  const relativePath = path.relative(process.cwd(), filePath);
-  const outputPath = filePath.replace(/\.org$/i, ".md");
-  return {
-    filePath,
-    source,
-    relativePath,
-    outputPath,
-    hash: hashContent(scriptHash, source),
-  };
-});
-const changedJobs = jobs.filter(
-  ({ hash, outputPath, relativePath }) =>
-    cache[relativePath] !== hash || !fs.existsSync(outputPath),
-);
-
-if (changedJobs.length === 0) {
-  console.log("Org files are up to date.");
-  process.exit(0);
-}
-
-exportOrgToMarkdown(changedJobs)
-  .map(({ source, outputMarkdown, outputPath, relativePath, hash }) => {
-    const meta = parseOrgMeta(source);
-    const frontmatter = buildFrontmatter(meta);
+  const cache = readCache();
+  const scriptHash = hashContent(fs.readFileSync(SCRIPT_PATH));
+  const jobs = orgFiles.map((filePath) => {
+    const source = fs.readFileSync(filePath, "utf-8");
+    const relativePath = path.relative(process.cwd(), filePath);
+    const outputPath = filePath.replace(/\.org$/i, ".md");
     return {
-      content: `${frontmatter}${outputMarkdown}`,
-      hash,
-      outputPath,
+      filePath,
+      source,
       relativePath,
+      outputPath,
+      hash: hashContent(scriptHash, source),
     };
-  })
-  .forEach(({ content, hash, outputPath, relativePath }) => {
-    fs.writeFileSync(outputPath, content);
-    cache[relativePath] = hash;
-    console.log(`Exported ${path.relative(process.cwd(), outputPath)}`);
   });
+  const changedJobs = jobs.filter(
+    ({ hash, outputPath, relativePath }) =>
+      cache[relativePath] !== hash || !fs.existsSync(outputPath),
+  );
 
-const nextCache = Object.fromEntries(
-  jobs.map(({ relativePath, hash }) => [
-    relativePath,
-    cache[relativePath] ?? hash,
-  ]),
-);
-fs.writeFileSync(CACHE_PATH, `${JSON.stringify(nextCache, null, 2)}\n`);
+  if (changedJobs.length === 0) {
+    if (!silent) console.log("Org files are up to date.");
+    return [];
+  }
+
+  const exportedFiles = [];
+  exportOrgToMarkdown(changedJobs)
+    .map(({ source, outputMarkdown, outputPath, relativePath, hash }) => {
+      const meta = parseOrgMeta(source);
+      const frontmatter = buildFrontmatter(meta);
+      return {
+        content: `${frontmatter}${outputMarkdown}`,
+        hash,
+        outputPath,
+        relativePath,
+      };
+    })
+    .forEach(({ content, hash, outputPath, relativePath }) => {
+      fs.writeFileSync(outputPath, content);
+      cache[relativePath] = hash;
+      const relOut = path.relative(process.cwd(), outputPath);
+      if (!silent) console.log(`Exported ${relOut}`);
+      exportedFiles.push(relOut);
+    });
+
+  const nextCache = Object.fromEntries(
+    jobs.map(({ relativePath, hash }) => [
+      relativePath,
+      cache[relativePath] ?? hash,
+    ]),
+  );
+  fs.writeFileSync(CACHE_PATH, `${JSON.stringify(nextCache, null, 2)}\n`);
+  return exportedFiles;
+}
+
+if (
+  process.argv[1] &&
+  fileURLToPath(import.meta.url) === path.resolve(process.argv[1])
+) {
+  exportOrg();
+}

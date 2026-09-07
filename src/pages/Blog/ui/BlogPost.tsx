@@ -123,15 +123,19 @@ const styles = {
 };
 
 const BlogPostView = ({ post }: Props) => {
-  const showCanonical = (() => {
-    if (!post.canonical || post.canonical.startsWith("/")) return false;
+  const postUrl = `https://kyre.moe/${post.lang}/blog/${post.slug}`;
+  const canonicalUrl = (() => {
+    if (!post.canonical) return undefined;
     try {
-      const url = new URL(post.canonical);
-      return url.hostname !== "kyre.moe";
+      return new URL(post.canonical, "https://kyre.moe").href;
     } catch {
-      return false;
+      return undefined;
     }
   })();
+  const starUrl = canonicalUrl ?? postUrl;
+  const showCanonical = canonicalUrl
+    ? new URL(canonicalUrl).hostname !== "kyre.moe"
+    : false;
 
   return (
     <section className={styles.section}>
@@ -204,7 +208,7 @@ const BlogPostView = ({ post }: Props) => {
         <HatenaStarContainer
           className={styles.hatenaStar}
           title={post.title}
-          uri={`https://kyre.moe/${post.lang}/blog/${post.slug}`}
+          uri={starUrl}
         />
       </footer>
 
