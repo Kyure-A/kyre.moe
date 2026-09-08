@@ -63,7 +63,9 @@ export function copyBlogImages(options = {}) {
 
   if (!silent) {
     if (copiedFiles.length > 0) {
-      console.log(`Blog images copied successfully (${copiedFiles.length} file(s))`);
+      console.log(
+        `Blog images copied successfully (${copiedFiles.length} file(s))`,
+      );
     } else {
       console.log("Blog images are up to date.");
     }

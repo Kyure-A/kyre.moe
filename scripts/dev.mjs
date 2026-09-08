@@ -1,16 +1,9 @@
 import { spawn } from "node:child_process";
-import fs from "node:fs";
-import path from "node:path";
+import { createRequire } from "node:module";
 import { startContentWatcher } from "./watch-content.mjs";
 
-const isWindows = process.platform === "win32";
-const localNextBin = path.join(
-  process.cwd(),
-  "node_modules",
-  ".bin",
-  isWindows ? "next.cmd" : "next",
-);
-const nextCommand = fs.existsSync(localNextBin) ? localNextBin : "next";
+const require = createRequire(import.meta.url);
+const nextBin = require.resolve("next/dist/bin/next");
 
 const rawArgs = process.argv.slice(2);
 let nextArgs = [];
@@ -24,9 +17,9 @@ if (rawArgs.length === 0) {
 
 const watcher = startContentWatcher({ prefix: "\x1b[36m[content]\x1b[0m" });
 
-const nextProcess = spawn(nextCommand, nextArgs, {
+const nextProcess = spawn(process.execPath, [nextBin, ...nextArgs], {
   stdio: "inherit",
-  shell: isWindows,
+  shell: false,
   env: process.env,
 });
 
