@@ -92,7 +92,9 @@ export function startContentWatcher(options = {}) {
     },
   );
 
-  log(`Watching for changes in ${path.relative(process.cwd(), ARTICLES_DIR)}...`);
+  log(
+    `Watching for changes in ${path.relative(process.cwd(), ARTICLES_DIR)}...`,
+  );
 
   return {
     close() {
