@@ -5,7 +5,7 @@
 #+DRAFT: false
 
 * はじめに
-キュレェです。[[https://hatena.co.jp/recruit/intern/2026][はてなサマーインターンシップ 2026]] に参加しました。3 週間 (出社 1 週間・リモート 2 週間) でした。
+キュレェです。[[https://hatena.co.jp/recruit/intern/2026][はてなサマーインターンシップ 2026]] に、2026 年 8 月 17 日 〜 9 月 4 日の 3 週間 (出社 1 週間・リモート 2 週間) 参加しました。
 
 #+CAPTION: はてなインターンに来ました
 [[file:./hatena-intern-mascot.jpg]]
