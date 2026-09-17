@@ -463,13 +463,13 @@ const addHtmlPlaceholder = (
   return token;
 };
 
-type MagicLinkService = "github" | "hatena";
+type MagicLinkService = "github" | "hatena" | "twitter";
 
 const MAGIC_LINK_PROFILES: Record<
   MagicLinkService,
   {
     url: (user: string) => string;
-    avatar: (user: string) => string;
+    avatar: (user: string) => string | Promise<string>;
     label: (user: string) => string;
     // Firefox's tracking protection blocks some avatar CDNs (e.g. st-hatena.com),
     // so those avatars are fetched at build time and inlined as data URIs.
@@ -487,6 +487,20 @@ const MAGIC_LINK_PROFILES: Record<
     avatar: (user) =>
       `https://cdn.profile-image.st-hatena.com/users/${user}/profile.png`,
     label: (user) => `id:${user}`,
+    inlineAvatar: true,
+  },
+  twitter: {
+    url: (user) => `https://x.com/${user}`,
+    avatar: async (user) => {
+      const { image } = await getLinkPreviewData(`https://x.com/${user}`);
+      // X's twitter:image can be the banner; og:image is the profile picture.
+      return /^https:\/\/pbs\.twimg\.com\/(?:profile_images|default_profile_images)\/[A-Za-z0-9_./-]+$/.test(
+        image,
+      )
+        ? image
+        : "";
+    },
+    label: (user) => `@${user}`,
     inlineAvatar: true,
   },
 };
@@ -525,11 +539,15 @@ const buildMagicLink = async (service: MagicLinkService, user: string) => {
   const safeUser = escapeHtml(user);
   const profile = MAGIC_LINK_PROFILES[service];
   const url = profile.url(safeUser);
-  const avatarUrl = profile.avatar(safeUser);
-  const avatar = profile.inlineAvatar
-    ? await getAvatarDataUri(avatarUrl)
-    : avatarUrl;
-  return `<a class="markdown-magic-link" href="${url}" rel="noopener" target="_blank"><span class="markdown-magic-link-image" style="background-image: url('${avatar}');" aria-hidden="true"></span>${profile.label(safeUser)}</a>`;
+  const avatarUrl = await profile.avatar(safeUser);
+  const avatar =
+    avatarUrl && profile.inlineAvatar
+      ? await getAvatarDataUri(avatarUrl)
+      : avatarUrl;
+  const image = avatar
+    ? `<span class="markdown-magic-link-image" style="background-image: url('${avatar}');" aria-hidden="true"></span>`
+    : "";
+  return `<a class="markdown-magic-link" href="${url}" rel="noopener" target="_blank">${image}${profile.label(safeUser)}</a>`;
 };
 
 const renderMath = (source: string, displayMode: boolean) => {
@@ -611,9 +629,10 @@ const replaceInlineMath = (line: string, placeholders: HtmlPlaceholder[]) => {
   return result;
 };
 
-// `{@user}` -> GitHub, `{id:user}` / `{@hatena:user}` -> Hatena
+// `{@user}` -> GitHub, `{id:user}` / `{@hatena:user}` -> Hatena,
+// `{@twitter:user}` -> Twitter (X)
 const MAGIC_LINK_PATTERN =
-  /\{(?:(?:id:|@hatena:)([A-Za-z][A-Za-z0-9_-]{1,31})|@([A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?))\}/g;
+  /\{(?:(?:id:|@hatena:)([A-Za-z][A-Za-z0-9_-]{1,31})|@twitter:([A-Za-z0-9_]{1,15})|@([A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?))\}/g;
 
 const replaceMagicLinks = async (
   line: string,
@@ -623,11 +642,11 @@ const replaceMagicLinks = async (
   if (matches.length === 0) return line;
 
   const links = await Promise.all(
-    matches.map((match) =>
-      match[1]
-        ? buildMagicLink("hatena", match[1])
-        : buildMagicLink("github", match[2]),
-    ),
+    matches.map((match) => {
+      if (match[1]) return buildMagicLink("hatena", match[1]);
+      if (match[2]) return buildMagicLink("twitter", match[2]);
+      return buildMagicLink("github", match[3]);
+    }),
   );
 
   let index = 0;
