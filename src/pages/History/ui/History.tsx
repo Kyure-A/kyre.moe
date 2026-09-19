@@ -110,7 +110,19 @@ const TIMELINE_DATA: TimelineEntry[] = [
       ja: "3 週間 (出社 1 週間・リモート 2 週間) の就業型インターンに参加",
       en: "Three-week internship (one week onsite, two weeks remote)",
     },
-    url: "https://hatena.co.jp/recruit/intern/2026",
+    url: "/ja/blog/internship-hatena",
+  },
+  {
+    date: { ja: "2026 年 9 月", en: "September, 2026" },
+    title: {
+      ja: "ピクシブ株式会社 選考インターンシップ",
+      en: "Internship as part of the hiring process at pixiv Inc.",
+    },
+    description: {
+      ja: "9 月 14 日〜18 日の 5 日間、BOOTH の開発に参加",
+      en: "Five days of development on BOOTH, September 14–18",
+    },
+    url: "https://x.com/_______kyu/status/2100452536927084887",
   },
 ];
 
