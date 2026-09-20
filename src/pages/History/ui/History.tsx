@@ -119,7 +119,7 @@ const TIMELINE_DATA: TimelineEntry[] = [
       en: "Internship as part of the hiring process at pixiv Inc.",
     },
     description: {
-      ja: "9 月 14 日〜18 日の 5 日間、BOOTH の開発に参加",
+      ja: "9 月 14 日 〜 18 日の 5 日間、BOOTH の開発に参加",
       en: "Five days of development on BOOTH, September 14–18",
     },
     url: "https://x.com/_______kyu/status/2100452536927084887",
