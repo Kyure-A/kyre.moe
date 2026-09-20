@@ -38,8 +38,9 @@ const styles = {
   }),
   title: css({
     textWrap: "balance",
-    // Chrome の BudouX による文節折返し (非対応ブラウザでは無視される)
-    wordBreak: "auto-phrase",
+    // 空白で区切った語を保ち、1 行に収まらない長い語だけ途中で折り返す。
+    wordBreak: "keep-all",
+    overflowWrap: "anywhere",
     lineBreak: "strict",
     fontSize: "lg",
     fontWeight: "semibold",
@@ -47,7 +48,9 @@ const styles = {
   }),
   description: css({
     mb: "4",
-    textWrap: "wrap",
+    textWrap: "[pretty]",
+    wordBreak: "keep-all",
+    overflowWrap: "anywhere",
     fontSize: "sm",
     fontWeight: "normal",
     color: "timeline.description",
