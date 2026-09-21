@@ -19,8 +19,8 @@ importers:
   .:
     dependencies:
       '@ox-content/napi':
-        specifier: ^3.1.7
-        version: 3.1.7
+        specifier: ^3.2.3
+        version: 3.2.3
       '@react-spring/web':
         specifier: ^10.1.2
         version: 10.1.2(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -833,43 +833,43 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@ox-content/binding-darwin-arm64@3.1.7':
-    resolution: {integrity: sha512-gtuZK1PDNRpHEws+HRAivjFgd+EoFreH1E4yaAHs73OQSoebB/eYB4uvsI0Z3TZMd1gKt/3FaMDRQOz/c3ANwg==}
+  '@ox-content/binding-darwin-arm64@3.2.3':
+    resolution: {integrity: sha512-9PyNFRCe0tH/BkkpLe9aCNlnAGwlB09dK4dKjstoQF766iz4tVen2AQc/Ya5HVbdzZa/sT+1bMWBM+vWaeQcdw==}
     cpu: [arm64]
     os: [darwin]
 
-  '@ox-content/binding-darwin-x64@3.1.7':
-    resolution: {integrity: sha512-SwGoZZEHVvGI+NxeScefl32q8UsV+zjXPf/OnfkabiLgimLmLDLgLMk7ZAEs+33g8Q+tX1ex1VY0vwxHQmGo1w==}
+  '@ox-content/binding-darwin-x64@3.2.3':
+    resolution: {integrity: sha512-O/PSNmmUc9lJScF9qIzCdrGfvSH3xp4JBP7zeYSU829ZkitJwGGBzGlBfSfJIux1fD1cm+8rYPESZhamUl/2hg==}
     cpu: [x64]
     os: [darwin]
 
-  '@ox-content/binding-linux-arm64-gnu@3.1.7':
-    resolution: {integrity: sha512-O+uuQa4NKql5iYAwDFgLUikJdTww7QTPli4IFkzWl9P2RCM03vLXOPHwk7vLJQIgbg3+K2yvWCZbVka+Y4btDA==}
+  '@ox-content/binding-linux-arm64-gnu@3.2.3':
+    resolution: {integrity: sha512-LOTg8a6co4+2YJ1UVu6MhzFxfpUNsHac2LNx/neZ68gRd/XCtjvqm7we7HOYMMIWjoqblvQgYVUo5MrZyXXTZw==}
     cpu: [arm64]
     os: [linux]
 
-  '@ox-content/binding-linux-arm64-musl@3.1.7':
-    resolution: {integrity: sha512-xGOMAJ10YNo63cFy3hR9RtrasrUNvy89CnAFv7irmBjdExecoYkYv6oyItkCPAysVYtK/1QyePVr150sbt377g==}
+  '@ox-content/binding-linux-arm64-musl@3.2.3':
+    resolution: {integrity: sha512-PgBnauzGK6LPFbl+ObwDLUAm/J4m9PLwC4JNikhnx6v8WTZPS617cGzy9xpwVuQTiEWeHSiPNApIL8rdpUieoQ==}
     cpu: [arm64]
     os: [linux]
 
-  '@ox-content/binding-linux-x64-gnu@3.1.7':
-    resolution: {integrity: sha512-hBf7uNIp5biBketpjubvcJ2nyBTFPpg9RIWxcynHNIy/PUeJTZKlM9C3/W18s/bmlxU60Xe4uwteEy99ChcJeQ==}
+  '@ox-content/binding-linux-x64-gnu@3.2.3':
+    resolution: {integrity: sha512-K5PYgJqitlIxwnU6nb647S+TdTyfsuxODjZkw01cOqgrXKNiVYRyHQAb2RG1B4uYTtIau8O5kHuvm/YBlofd4A==}
     cpu: [x64]
     os: [linux]
 
-  '@ox-content/binding-linux-x64-musl@3.1.7':
-    resolution: {integrity: sha512-aEeKKPdBpPL8SQ7wT9geW6ER0/8LPlVOerna74nt6ovGMJqUpkn/3tgSWO6evRoZZZMYvsFby3eGwZ/N35bfBg==}
+  '@ox-content/binding-linux-x64-musl@3.2.3':
+    resolution: {integrity: sha512-2qBnx8KtaRlJHFmevIxOrnYQ8cpPtxu0kZnB3zV8m5LGN5097B8Rul9Ex1bTLFwMUGod376FISQaEyK/5EZf2g==}
     cpu: [x64]
     os: [linux]
 
-  '@ox-content/binding-win32-x64-msvc@3.1.7':
-    resolution: {integrity: sha512-DF6sIgcAHEfoy+O06AfN4VOe3FfmuJBRruJWH6zEHuxYiA6M215zCIi9wvfMdvST2xTOd3xcT6AhrteUn3xrjw==}
+  '@ox-content/binding-win32-x64-msvc@3.2.3':
+    resolution: {integrity: sha512-7ewLKogvRR8eJnZW/UgrfNHimD9AyLIsLRklRAd99kYzMWCV+glnIryMdSpibrP05Y4FXBEUjpYACDfYHLF7Rw==}
     cpu: [x64]
     os: [win32]
 
-  '@ox-content/napi@3.1.7':
-    resolution: {integrity: sha512-NfoF/gB/JoyWMD+7Guk9IQjcC5xWhrs0Ny8XrYCadgn94diEjC28r+W0dzagPCSVsMBPotp3YxEnsbUc0jo/fQ==}
+  '@ox-content/napi@3.2.3':
+    resolution: {integrity: sha512-/r9ePoceq2UCprelvxR0EYUm10ybYG8DmfRL+VKiFD1jagF5G/IzRX5cg0Puir3Oi8qFOhZPR5/dTa81T+ZPEw==}
 
   '@oxc-parser/binding-android-arm-eabi@0.127.0':
     resolution: {integrity: sha512-0LC7ye4hvqbIKxAzThzvswgHLFu2AURKzYLeSVvLdu2TBOYWQDmHnTqPLeA597BcUCxiLqLsS4CJ5uoI5WYWCQ==}
@@ -3302,36 +3302,36 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.3
 
-  '@ox-content/binding-darwin-arm64@3.1.7':
+  '@ox-content/binding-darwin-arm64@3.2.3':
     optional: true
 
-  '@ox-content/binding-darwin-x64@3.1.7':
+  '@ox-content/binding-darwin-x64@3.2.3':
     optional: true
 
-  '@ox-content/binding-linux-arm64-gnu@3.1.7':
+  '@ox-content/binding-linux-arm64-gnu@3.2.3':
     optional: true
 
-  '@ox-content/binding-linux-arm64-musl@3.1.7':
+  '@ox-content/binding-linux-arm64-musl@3.2.3':
     optional: true
 
-  '@ox-content/binding-linux-x64-gnu@3.1.7':
+  '@ox-content/binding-linux-x64-gnu@3.2.3':
     optional: true
 
-  '@ox-content/binding-linux-x64-musl@3.1.7':
+  '@ox-content/binding-linux-x64-musl@3.2.3':
     optional: true
 
-  '@ox-content/binding-win32-x64-msvc@3.1.7':
+  '@ox-content/binding-win32-x64-msvc@3.2.3':
     optional: true
 
-  '@ox-content/napi@3.1.7':
+  '@ox-content/napi@3.2.3':
     optionalDependencies:
-      '@ox-content/binding-darwin-arm64': 3.1.7
-      '@ox-content/binding-darwin-x64': 3.1.7
-      '@ox-content/binding-linux-arm64-gnu': 3.1.7
-      '@ox-content/binding-linux-arm64-musl': 3.1.7
-      '@ox-content/binding-linux-x64-gnu': 3.1.7
-      '@ox-content/binding-linux-x64-musl': 3.1.7
-      '@ox-content/binding-win32-x64-msvc': 3.1.7
+      '@ox-content/binding-darwin-arm64': 3.2.3
+      '@ox-content/binding-darwin-x64': 3.2.3
+      '@ox-content/binding-linux-arm64-gnu': 3.2.3
+      '@ox-content/binding-linux-arm64-musl': 3.2.3
+      '@ox-content/binding-linux-x64-gnu': 3.2.3
+      '@ox-content/binding-linux-x64-musl': 3.2.3
+      '@ox-content/binding-win32-x64-msvc': 3.2.3
 
   '@oxc-parser/binding-android-arm-eabi@0.127.0':
     optional: true
