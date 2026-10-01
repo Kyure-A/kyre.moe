@@ -5,7 +5,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { Camera } from "three/src/cameras/Camera.js";
 import { PerspectiveCamera } from "three/src/cameras/PerspectiveCamera.js";
 import { NearestFilter } from "three/src/constants.js";
 import type { Object3D } from "three/src/core/Object3D.js";
@@ -15,6 +14,7 @@ import { Mesh } from "three/src/objects/Mesh.js";
 import { WebGLRenderer } from "three/src/renderers/WebGLRenderer.js";
 import { Scene } from "three/src/scenes/Scene.js";
 import { CanvasTexture } from "three/src/textures/CanvasTexture.js";
+import { GpuAsciiFilter } from "./GpuAsciiFilter";
 
 const vertexShader = `
 varying vec2 vUv;
@@ -66,259 +66,6 @@ const map = (
 ): number => {
   return ((n - start) / (stop - start)) * (stop2 - start2) + start2;
 };
-
-const PX_RATIO = typeof window !== "undefined" ? window.devicePixelRatio : 1;
-
-interface AsciiFilterOptions {
-  fontSize?: number;
-  fontFamily?: string;
-  charset?: string;
-  invert?: boolean;
-}
-
-class AsciiFilter {
-  renderer: WebGLRenderer;
-  domElement: HTMLDivElement;
-  textCanvas: HTMLCanvasElement;
-  textContext: CanvasRenderingContext2D | null;
-  canvas: HTMLCanvasElement;
-  context: CanvasRenderingContext2D | null;
-  deg: number;
-  lastFilterDeg: number = Infinity;
-  invert: boolean;
-  fontSize: number;
-  fontFamily: string;
-  charset: string;
-  width: number = 0;
-  height: number = 0;
-  dpr: number = 1;
-  charWidth: number = 0;
-  gradient: CanvasGradient | null = null;
-  center: { x: number; y: number } = { x: 0, y: 0 };
-  mouse: { x: number; y: number } = { x: 0, y: 0 };
-  cols: number = 0;
-  rows: number = 0;
-  // 行ごとの ASCII 文字列(rows 本)
-  output: string[] = [];
-  rowCells: string[] = [];
-
-  constructor(
-    renderer: WebGLRenderer,
-    { fontSize, fontFamily, charset, invert }: AsciiFilterOptions = {},
-  ) {
-    this.renderer = renderer;
-    this.domElement = document.createElement("div");
-    this.domElement.className = "ascii-text-root";
-    this.domElement.style.position = "absolute";
-    this.domElement.style.top = "0";
-    this.domElement.style.left = "0";
-    this.domElement.style.width = "100%";
-    this.domElement.style.height = "100%";
-
-    // pre(テキストノード)は LCP 候補になるため文字は canvas に描画する
-    this.textCanvas = document.createElement("canvas");
-    this.textCanvas.setAttribute("aria-hidden", "true");
-    this.textCanvas.style.zIndex = "9";
-    this.textCanvas.style.mixBlendMode = "difference";
-    this.textContext = this.textCanvas.getContext("2d");
-    this.domElement.appendChild(this.textCanvas);
-
-    this.canvas = document.createElement("canvas");
-    this.canvas.className = "ascii-source-canvas";
-    // 毎フレーム getImageData するため CPU 側にキャンバスを置く
-    this.context = this.canvas.getContext("2d", { willReadFrequently: true });
-    this.domElement.appendChild(this.canvas);
-
-    this.deg = 0;
-    this.invert = invert ?? true;
-    this.fontSize = fontSize ?? 12;
-    this.fontFamily = fontFamily ?? "'Courier New', monospace";
-    this.charset =
-      charset ??
-      " .'`^\",:;Il!i~+_-?][}{1)(|/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
-
-    if (this.context) {
-      this.context.imageSmoothingEnabled = false;
-    }
-
-    this.onMouseMove = this.onMouseMove.bind(this);
-    document.addEventListener("mousemove", this.onMouseMove);
-  }
-
-  setSize(width: number, height: number) {
-    const nextWidth = Math.floor(width);
-    const nextHeight = Math.floor(height);
-    if (nextWidth === this.width && nextHeight === this.height) return;
-
-    this.width = nextWidth;
-    this.height = nextHeight;
-    this.reset();
-
-    this.center = { x: nextWidth / 2, y: nextHeight / 2 };
-    this.mouse = { x: this.center.x, y: this.center.y };
-  }
-
-  reset() {
-    if (this.context) {
-      this.context.font = `${this.fontSize}px ${this.fontFamily}`;
-      const charWidth = this.context.measureText("A").width;
-
-      this.cols = Math.floor(
-        this.width / (this.fontSize * (charWidth / this.fontSize)),
-      );
-      this.rows = Math.floor(this.height / this.fontSize);
-
-      // 出力は cols×rows しか使わないので WebGL も同解像度で直接描画する
-      if (this.cols > 0 && this.rows > 0) {
-        this.renderer.setSize(this.cols, this.rows);
-      }
-
-      this.canvas.width = this.cols;
-      this.canvas.height = this.rows;
-      this.output = new Array(this.rows);
-      this.rowCells = new Array(this.cols);
-      this.charWidth = charWidth;
-
-      // text canvas は物理解像度で確保し、描画時に CSS px 座標系へスケールする
-      this.dpr = window.devicePixelRatio || 1;
-      this.textCanvas.width = Math.round(this.width * this.dpr);
-      this.textCanvas.height = Math.round(this.height * this.dpr);
-      this.updateGradient();
-    }
-  }
-
-  // 旧 pre の radial-gradient + background-attachment: fixed をビューポート基準で再現する
-  updateGradient() {
-    if (!this.textContext) return;
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const rect = this.textCanvas.getBoundingClientRect();
-    const cx = vw / 2 - rect.left;
-    const cy = vh / 2 - rect.top;
-    const radius = Math.hypot(vw / 2, vh / 2);
-    const gradient = this.textContext.createRadialGradient(
-      cx,
-      cy,
-      0,
-      cx,
-      cy,
-      radius,
-    );
-    gradient.addColorStop(0, "#ff6188");
-    gradient.addColorStop(0.5, "#fc9867");
-    gradient.addColorStop(1, "#ffd866");
-    this.gradient = gradient;
-  }
-
-  render(scene: Scene, camera: Camera) {
-    this.renderer.render(scene, camera);
-
-    const w = this.canvas.width;
-    const h = this.canvas.height;
-    if (this.context) {
-      this.context.clearRect(0, 0, w, h);
-      if (this.context && w && h) {
-        this.context.drawImage(this.renderer.domElement, 0, 0, w, h);
-      }
-
-      this.asciify(this.context, w, h);
-      this.hue();
-    }
-  }
-
-  onMouseMove(e: MouseEvent) {
-    this.mouse = { x: e.clientX * PX_RATIO, y: e.clientY * PX_RATIO };
-  }
-
-  get dx() {
-    return this.mouse.x - this.center.x;
-  }
-
-  get dy() {
-    return this.mouse.y - this.center.y;
-  }
-
-  hue() {
-    const deg = (Math.atan2(this.dy, this.dx) * 180) / Math.PI;
-    this.deg += (deg - this.deg) * 0.075;
-    // 前回書き込みから 0.25deg 未満の変化なら style 更新をスキップ
-    if (Math.abs(this.deg - this.lastFilterDeg) < 0.25) return;
-    this.lastFilterDeg = this.deg;
-    this.domElement.style.filter = `hue-rotate(${this.deg.toFixed(1)}deg)`;
-  }
-
-  asciify(ctx: CanvasRenderingContext2D, w: number, h: number) {
-    if (w && h) {
-      const imgData = ctx.getImageData(0, 0, w, h).data;
-      const output = this.output;
-      const cells = this.rowCells;
-      const charset = this.charset;
-      const maxCharIndex = charset.length - 1;
-
-      for (let y = 0; y < h; y++) {
-        const rowOffset = y * w * 4;
-        for (let x = 0; x < w; x++) {
-          const i = rowOffset + x * 4;
-          const a = imgData[i + 3];
-
-          if (a === 0) {
-            cells[x] = " ";
-            continue;
-          }
-
-          const r = imgData[i];
-          const g = imgData[i + 1];
-          const b = imgData[i + 2];
-          const gray = (0.3 * r + 0.6 * g + 0.1 * b) / 255;
-          let idx = Math.floor((1 - gray) * maxCharIndex);
-          if (this.invert) idx = maxCharIndex - idx;
-          cells[x] = charset[idx];
-        }
-        output[y] = cells.join("");
-      }
-      this.drawText();
-    }
-  }
-
-  // 旧 pre の translate(-50%,-50%) 中央配置と line-height 1em を text canvas 上で再現する
-  drawText() {
-    const ctx = this.textContext;
-    if (!ctx || this.cols <= 0 || this.rows <= 0) return;
-
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, this.textCanvas.width, this.textCanvas.height);
-    ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
-
-    // 毎フレーム font を設定するのでフォント遅延ロード後も自動で正しい字形になる
-    ctx.font = `${this.fontSize}px ${this.fontFamily}`;
-    ctx.textBaseline = "alphabetic";
-    ctx.fillStyle = this.gradient ?? "#ffffff";
-
-    // 幅は実測して中央配置(フォントロード前後で pre と同様に追従する)
-    const firstRow = this.output[0] ?? "";
-    const metrics = ctx.measureText(firstRow);
-    const blockW = metrics.width || this.cols * this.charWidth;
-    const blockH = this.rows * this.fontSize;
-    const left = (this.width - blockW) / 2;
-    const top = (this.height - blockH) / 2;
-
-    // line-height: 1em の half-leading によるベースライン位置を再現
-    const ascent = metrics.fontBoundingBoxAscent || this.fontSize * 0.8;
-    const descent = metrics.fontBoundingBoxDescent || this.fontSize * 0.2;
-    const baselineY = (this.fontSize - (ascent + descent)) / 2 + ascent;
-
-    for (let y = 0; y < this.rows; y++) {
-      const row = this.output[y];
-      if (row) {
-        ctx.fillText(row, left, top + y * this.fontSize + baselineY);
-      }
-    }
-  }
-
-  dispose() {
-    document.removeEventListener("mousemove", this.onMouseMove);
-  }
-}
 
 interface CanvasTxtOptions {
   fontSize?: number;
@@ -427,7 +174,7 @@ class CanvAscii {
   material!: ShaderMaterial;
   mesh!: Mesh;
   renderer!: WebGLRenderer;
-  filter!: AsciiFilter;
+  filter!: GpuAsciiFilter;
   center!: { x: number; y: number };
   animationFrameId: number = 0;
   resizeFrameId: number = 0;
@@ -466,7 +213,12 @@ class CanvAscii {
     this.frameInterval = this.maxFps > 0 ? 1000 / this.maxFps : 0;
     this.lastFrameTime = 0;
 
-    this.camera = new PerspectiveCamera(45, this.width / this.height, 1, 1000);
+    this.camera = new PerspectiveCamera(
+      45,
+      width / Math.max(height, 1),
+      1,
+      1000,
+    );
     this.camera.position.z = 30;
 
     this.scene = new Scene();
@@ -518,7 +270,7 @@ class CanvAscii {
     this.renderer.setPixelRatio(1);
     this.renderer.setClearColor(0x000000, 0);
 
-    this.filter = new AsciiFilter(this.renderer, {
+    this.filter = new GpuAsciiFilter(this.renderer, {
       fontFamily: this.fontFamily,
       fontSize: this.asciiFontSize,
       invert: true,
@@ -531,11 +283,35 @@ class CanvAscii {
     this.container.addEventListener("touchmove", this.onMouseMove);
   }
 
+  refreshFont() {
+    this.textCanvas.resize();
+    this.textCanvas.render();
+    const previousTexture = this.texture;
+    this.texture = new CanvasTexture(this.textCanvas.texture);
+    this.texture.minFilter = NearestFilter;
+    this.material.uniforms.uTexture.value = this.texture;
+    previousTexture.dispose();
+
+    const textAspect = this.textCanvas.width / this.textCanvas.height;
+    this.geometry.dispose();
+    this.geometry = new PlaneGeometry(
+      this.planeBaseHeight * textAspect,
+      this.planeBaseHeight,
+      36,
+      36,
+    );
+    this.mesh.geometry = this.geometry;
+    this.filter.refreshFont();
+  }
+
   setSize(w: number, h: number) {
     const nextWidth = Math.floor(w);
     const nextHeight = Math.floor(h);
     if (nextWidth <= 0 || nextHeight <= 0) return;
-    if (nextWidth === this.width && nextHeight === this.height) return;
+    if (nextWidth === this.width && nextHeight === this.height) {
+      this.filter.setSize(nextWidth, nextHeight);
+      return;
+    }
 
     this.width = nextWidth;
     this.height = nextHeight;
@@ -648,6 +424,7 @@ class CanvAscii {
     this.container.removeEventListener("mousemove", this.onMouseMove);
     this.container.removeEventListener("touchmove", this.onMouseMove);
     this.clear();
+    this.texture.dispose();
     this.renderer.dispose();
   }
 }
@@ -753,6 +530,13 @@ const ASCIIText = ({
         width,
         height,
       );
+      const ascii = asciiRef.current;
+      let disposed = false;
+      const refreshFont = () => ascii.refreshFont();
+      document.fonts.addEventListener("loadingdone", refreshFont);
+      void document.fonts.ready.then(() => {
+        if (!disposed) refreshFont();
+      });
       if (activeRef.current && visibleRef.current) {
         asciiRef.current.start();
       }
@@ -763,12 +547,21 @@ const ASCIIText = ({
         asciiRef.current?.scheduleSize(w, h);
       });
       ro.observe(containerRef.current);
+      const handleResize = () => {
+        if (!containerRef.current) return;
+        const { width, height } = containerRef.current.getBoundingClientRect();
+        ascii.scheduleSize(width, height);
+      };
+      // DPR can change when moving between displays without changing CSS size.
+      window.addEventListener("resize", handleResize);
 
       cleanup = () => {
+        disposed = true;
+        document.fonts.removeEventListener("loadingdone", refreshFont);
+        window.removeEventListener("resize", handleResize);
         ro.disconnect();
-        if (asciiRef.current) {
-          asciiRef.current.dispose();
-        }
+        ascii.dispose();
+        if (asciiRef.current === ascii) asciiRef.current = null;
       };
     };
 
@@ -826,16 +619,6 @@ const ASCIIText = ({
           height: 100%;
         }
 
-        /* 引き伸ばし表示される判定用 canvas のみピクセレート */
-        .ascii-text-root canvas.ascii-source-canvas {
-          image-rendering: optimizeSpeed;
-          image-rendering: -moz-crisp-edges;
-          image-rendering: -o-crisp-edges;
-          image-rendering: -webkit-optimize-contrast;
-          image-rendering: optimize-contrast;
-          image-rendering: crisp-edges;
-          image-rendering: pixelated;
-        }
       `}</style>
     </div>
   );
