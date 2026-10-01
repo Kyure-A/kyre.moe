@@ -2,7 +2,7 @@ name: Dependabot Auto Merge
 
 on:
   workflow_run:
-    workflows: ["Deploy Next.js site to Pages"]
+    workflows: ["Deploy rshono site to Pages"]
     types: [completed]
   check_suite:
     types: [completed]

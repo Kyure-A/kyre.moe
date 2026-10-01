@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import Image from "next/image";
 import { css } from "styled-system/css";
 import GlitchImage from "./GlitchImage";
 
@@ -18,7 +17,7 @@ const styles = {
 const GlitchImageStory = (props: StoryProps) => (
   <div className={styles.frame}>
     <GlitchImage {...props}>
-      <Image
+      <img
         src="/kyure_a.png"
         alt="Kyure_A"
         width={460}

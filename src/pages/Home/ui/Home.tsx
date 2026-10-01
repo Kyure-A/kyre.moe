@@ -1,6 +1,5 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import {
   type CSSProperties,
   useCallback,
@@ -10,6 +9,7 @@ import {
 } from "react";
 import { css } from "styled-system/css";
 import { visuallyHidden } from "styled-system/patterns";
+import { usePathname } from "@/shared/hooks/usePathname";
 import useRuntimeProfile from "@/shared/hooks/useRuntimeProfile";
 import { DEFAULT_LANG, getLangFromPath } from "@/shared/lib/i18n";
 import { srcPath } from "@/shared/lib/path";

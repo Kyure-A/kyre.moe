@@ -56,22 +56,6 @@
         "type": "github"
       }
     },
-    "next-skills": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1778178722,
-        "narHash": "sha256-w9sdMOFGuDnGULNTaZ8QU92YkvYebevc5Xg+87NHAI0=",
-        "owner": "vercel-labs",
-        "repo": "next-skills",
-        "rev": "dc1de9caf7612d73f56a8dec3cb1bd6c9ec096b9",
-        "type": "github"
-      },
-      "original": {
-        "owner": "vercel-labs",
-        "repo": "next-skills",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1780749050,
@@ -108,7 +92,6 @@
       "inputs": {
         "agent-skills": "agent-skills",
         "anthropic-skills": "anthropic-skills",
-        "next-skills": "next-skills",
         "nixpkgs": "nixpkgs_2",
         "ui-skills": "ui-skills"
       }

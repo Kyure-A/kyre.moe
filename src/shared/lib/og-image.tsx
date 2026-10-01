@@ -1,7 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { ImageResponse } from "next/og";
-import { SITE_LANGS } from "./i18n";
+import { ImageResponse } from "@vercel/og";
 
 export const OG_IMAGE_SIZE = {
   width: 1200,
@@ -14,16 +13,6 @@ export type OgImageProps = {
   title: string;
   subtitle?: string;
   tags?: string[];
-};
-
-export const ogImageExports = {
-  dynamic: "force-static" as const,
-  size: OG_IMAGE_SIZE,
-  contentType: OG_IMAGE_CONTENT_TYPE,
-};
-
-export const generateLangStaticParams = () => {
-  return SITE_LANGS.map((lang) => ({ lang }));
 };
 
 const OG_ICON_DATA_URL = (() => {
@@ -245,7 +234,6 @@ export const generateOgImage = async ({
             }}
           >
             {OG_ICON_DATA_URL ? (
-              // biome-ignore lint/performance/noImgElement: ImageResponse requires a plain img element.
               <img
                 src={OG_ICON_DATA_URL}
                 width={40}

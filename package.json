@@ -2,6 +2,7 @@
   "name": "kyre.moe",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "packageManager": "pnpm@9.15.9",
   "scripts": {
     "prepare": "panda codegen",
@@ -11,19 +12,21 @@
     "prebuild-storybook": "panda codegen",
     "panda": "panda codegen",
     "dev": "node scripts/dev.mjs",
-    "build": "next build",
-    "start": "next start",
+    "build": "rshono build && node scripts/finalize-static.mjs",
+    "start": "node scripts/serve-static.mjs",
+    "typecheck": "tsc --noEmit",
+    "check:static": "node scripts/check-static.mjs",
     "storybook": "storybook dev -p ${STORYBOOK_PORT:-7006}",
     "storybook:reset-cache": "rm -rf node_modules/.cache/storybook",
     "build-storybook": "storybook build",
-    "content": "node scripts/export-org.mjs && node scripts/copy-blog-images.mjs",
+    "content": "node scripts/export-org.mjs && node scripts/copy-blog-images.mjs && tsx scripts/prepare-content.ts",
     "watch:content": "node scripts/watch-content.mjs",
-    "fix:ogp-export": "node scripts/fix-ogp-export.mjs",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
     "lint:actions": "actionlint",
-    "security:semgrep": "semgrep scan --config p/default --error --metrics=off ."
+    "security:semgrep": "semgrep scan --config p/default --error --metrics=off .",
+    "build:framework": "rshono build && node scripts/finalize-static.mjs"
   },
   "dependencies": {
     "@ox-content/napi": "^3.2.8",
@@ -32,21 +35,23 @@
     "gsap": "^3.15.0",
     "highlight.js": "^11.12.0",
     "katex": "^0.18.9",
-    "next": "16.3.6",
-    "next-view-transitions": "^0.3.5",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@vercel/og": "1.0.1",
     "ogl": "^1.0.11",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
     "react-icons": "^5.7.0",
     "sanitize-html": "^2.17.7",
     "three": "^0.186.0",
-    "uniorg-parse": "^3.2.2"
+    "uniorg-parse": "^3.2.2",
+    "@rshono/core": "1.0.0-rc.23",
+    "hono": "4.13.8"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.14",
     "@pandacss/dev": "^1.12.1",
     "@storybook/addon-a11y": "^10.6.0",
-    "@storybook/nextjs-vite": "10.6.0",
+    "@storybook/react-vite": "10.6.0",
     "@storybook/react": "10.6.0",
     "@testing-library/dom": "10.4.2",
     "@types/node": "26.6.2",
@@ -55,8 +60,11 @@
     "@types/sanitize-html": "^2.16.1",
     "@types/three": "^0.186.0",
     "storybook": "10.6.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "tsx": "^4.23.15",
     "typescript": "^5.9.3",
-    "vite": "8.3.0"
+    "vite": "8.3.0",
+    "postcss-loader": "8.2.0"
   },
   "pnpm": {
     "overrides": {

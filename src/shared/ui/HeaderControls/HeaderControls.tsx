@@ -1,8 +1,7 @@
-"use client";
-
-import { usePathname, useRouter } from "next/navigation";
+import { useNavigation } from "@rshono/core/client";
 import { FaArrowLeft } from "react-icons/fa6";
 import { css, cx } from "styled-system/css";
+import { usePathname } from "@/shared/hooks/usePathname";
 import { DEFAULT_LANG, getLangFromPath } from "@/shared/lib/i18n";
 import LanguageToggle from "@/shared/ui/LanguageToggleSwitch/LanguageToggleSwitch";
 import ThemeToggle from "@/shared/ui/ThemeToggleSwitch/ThemeToggleSwitch";
@@ -71,18 +70,19 @@ const styles = {
 };
 
 const HeaderControls = () => {
-  const router = useRouter();
+  const { router } = useNavigation();
   const pathname = usePathname();
   const lang = getLangFromPath(pathname) ?? DEFAULT_LANG;
   const homePath = `/${lang}`;
-  const showBack = pathname !== "/" && pathname !== homePath;
+  const path = pathname.replace(/\/+$/, "") || "/";
+  const showBack = path !== "/" && path !== homePath;
 
   const handleBack = () => {
     if (typeof window !== "undefined" && window.history.length > 1) {
       router.back();
       return;
     }
-    router.push(homePath);
+    router.push(`/${lang}`);
   };
 
   return (

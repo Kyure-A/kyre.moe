@@ -1,4 +1,5 @@
-import { Link } from "next-view-transitions";
+"use client";
+
 import { css } from "styled-system/css";
 import BlogPostList from "@/pages/Blog/ui/BlogPostList";
 import BlogSection from "@/pages/Blog/ui/BlogSection";
@@ -80,9 +81,12 @@ const BlogTagIndex = ({ lang, tag, posts }: Props) => {
         <p className={styles.label}>{copy.label}</p>
         <h1 className={styles.title}>#{tag}</h1>
         <p className={styles.count}>{copy.count(posts.length)}</p>
-        <Link href={`/${lang}/blog/tag`} className={styles.back}>
+        <a
+          href={`/${encodeURIComponent(lang)}/blog/tag`}
+          className={styles.back}
+        >
           ← {copy.back}
-        </Link>
+        </a>
       </header>
       <BlogPostList posts={posts} emptyLabel={copy.empty} />
     </BlogSection>

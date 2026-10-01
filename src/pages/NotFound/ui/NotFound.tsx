@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { css } from "styled-system/css";
+import { usePathname } from "@/shared/hooks/usePathname";
 import {
   DEFAULT_LANG,
   getLangFromPath,
@@ -131,9 +130,9 @@ const NotFound = () => {
         <p className={styles.code}>404</p>
         <h1 className={styles.title}>{copy.title}</h1>
         <p className={styles.description}>{copy.description}</p>
-        <Link href={`/${lang}`} className={styles.action}>
+        <a href={`/${encodeURIComponent(lang)}`} className={styles.action}>
           {copy.action}
-        </Link>
+        </a>
       </div>
     </section>
   );

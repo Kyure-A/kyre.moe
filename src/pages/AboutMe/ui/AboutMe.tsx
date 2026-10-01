@@ -1,3 +1,5 @@
+"use client";
+
 import { css } from "styled-system/css";
 import { visuallyHidden } from "styled-system/patterns";
 import type { SiteLang } from "@/shared/lib/i18n";

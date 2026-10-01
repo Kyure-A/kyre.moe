@@ -13,9 +13,15 @@
 # testing
 /coverage
 
-# next.js
-/.next/
-/out/
+# rshono and generated content
+/dist/
+/.rshono/
+/src/generated/
+/public/og/blog/
+/public/ja/blog/**/opengraph-image.png
+/public/en/blog/**/opengraph-image.png
+/public/sitemap.xml
+/public/robots.txt
 
 # panda css
 /styled-system/
@@ -44,12 +50,8 @@ debug-storybook.log
 # env files (can opt-in for committing if needed)
 .env*
 
-# vercel
-.vercel
-
 # typescript
 *.tsbuildinfo
-next-env.d.ts
 
 # Devenv
 .devenv*
@@ -66,3 +68,7 @@ devenv.local.yaml
 .claude/skills/
 .codex/skills/
 .agent-shell/
+
+# Local comparison data and dependencies
+/benchmark/node_modules/
+/benchmark/results/

@@ -2,8 +2,6 @@
 	Installed from https://reactbits.dev/ts/
  */
 
-"use client";
-
 import { useEffect, useRef } from "react";
 import { PerspectiveCamera } from "three/src/cameras/PerspectiveCamera.js";
 import { NearestFilter } from "three/src/constants.js";

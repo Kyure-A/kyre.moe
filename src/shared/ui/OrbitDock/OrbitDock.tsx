@@ -1,5 +1,3 @@
-"use client";
-
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
 import { memo, useCallback, useRef, useState } from "react";
 import { css, cx } from "styled-system/css";

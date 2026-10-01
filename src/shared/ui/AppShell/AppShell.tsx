@@ -1,3 +1,5 @@
+"use client";
+
 import type { ReactNode } from "react";
 import App from "@/app/main";
 import ThemeProvider from "@/shared/ui/ThemeProvider/ThemeProvider";

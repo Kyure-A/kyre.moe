@@ -1,4 +1,5 @@
-import { Link } from "next-view-transitions";
+"use client";
+
 import { css } from "styled-system/css";
 import { visuallyHidden } from "styled-system/patterns";
 import BlogPostList from "@/pages/Blog/ui/BlogPostList";
@@ -56,9 +57,12 @@ const BlogIndex = ({ lang, posts }: Props) => {
       <h1 className={styles.title}>{copy.title}</h1>
       <BlogPostList posts={posts} emptyLabel={copy.empty} />
       <div className={styles.footer}>
-        <Link href={`/${lang}/blog/tag`} className={styles.tagLink}>
+        <a
+          href={`/${encodeURIComponent(lang)}/blog/tag`}
+          className={styles.tagLink}
+        >
           {copy.tags} →
-        </Link>
+        </a>
       </div>
     </BlogSection>
   );

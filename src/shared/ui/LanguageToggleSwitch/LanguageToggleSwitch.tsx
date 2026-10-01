@@ -1,7 +1,7 @@
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useNavigation } from "@rshono/core/client";
 import { css, cx } from "styled-system/css";
 import { visuallyHidden } from "styled-system/patterns";
+import { usePathname } from "@/shared/hooks/usePathname";
 import {
   DEFAULT_LANG,
   getLangFromPath,
@@ -12,8 +12,6 @@ import {
 type LanguageToggleProps = {
   onChange: (s: string) => void;
 };
-
-const STORAGE_KEY = "kyre-lang";
 
 const styles = {
   root: css({
@@ -102,24 +100,9 @@ const styles = {
 };
 
 const LanguageToggle = ({ onChange }: LanguageToggleProps) => {
-  const router = useRouter();
+  const { router } = useNavigation();
   const pathname = usePathname();
-  const pathLang = useMemo(() => {
-    return getLangFromPath(pathname);
-  }, [pathname]);
-  const [language, setLanguage] = useState<SiteLang>(pathLang ?? DEFAULT_LANG);
-
-  useEffect(() => {
-    if (pathLang) {
-      setLanguage(pathLang);
-      return;
-    }
-    if (typeof window === "undefined") return;
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    if (stored === "ja" || stored === "en") {
-      setLanguage(stored);
-    }
-  }, [pathLang]);
+  const language = getLangFromPath(pathname) ?? DEFAULT_LANG;
 
   const getNextPath = (lang: SiteLang) => {
     if (!pathname) return `/${lang}`;
@@ -128,10 +111,6 @@ const LanguageToggle = ({ onChange }: LanguageToggleProps) => {
 
   const handleToggle = () => {
     const newLanguage = language === "ja" ? "en" : "ja";
-    setLanguage(newLanguage);
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(STORAGE_KEY, newLanguage);
-    }
     router.replace(getNextPath(newLanguage));
     if (onChange) {
       onChange(newLanguage);

@@ -8,10 +8,11 @@
   "files": {
     "includes": [
       "**",
-      "!**/.next",
-      "!**/out",
+      "!**/dist",
+      "!**/src/generated",
       "!**/storybook-static",
-      "!**/styled-system"
+      "!**/styled-system",
+      "!**/benchmark/results"
     ]
   },
   "formatter": {

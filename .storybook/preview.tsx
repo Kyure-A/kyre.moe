@@ -1,5 +1,7 @@
 import type { Preview } from "@storybook/react";
-import "../app/globals.css";
+import type { ComponentType } from "react";
+import { StoryNavigation } from "./rshono-navigation";
+import "../src/app/globals.css";
 import { css } from "styled-system/css";
 import ThemeProvider from "@/shared/ui/ThemeProvider/ThemeProvider";
 
@@ -10,12 +12,27 @@ const previewFrameClass = css({
   px: "6",
 });
 
+const StoryRouter = ({
+  Story,
+  pathname,
+}: {
+  Story: ComponentType;
+  pathname: string;
+}) => {
+  return (
+    <StoryNavigation pathname={pathname}>
+      <ThemeProvider>
+        <div className={previewFrameClass}>
+          <Story />
+        </div>
+      </ThemeProvider>
+    </StoryNavigation>
+  );
+};
+
 const preview: Preview = {
   parameters: {
     layout: "centered",
-    nextjs: {
-      appDirectory: true,
-    },
     controls: {
       matchers: {
         color: /(background|color)$/i,
@@ -27,12 +44,11 @@ const preview: Preview = {
     },
   },
   decorators: [
-    (Story) => (
-      <ThemeProvider>
-        <div className={previewFrameClass}>
-          <Story />
-        </div>
-      </ThemeProvider>
+    (Story, context) => (
+      <StoryRouter
+        Story={Story}
+        pathname={context.parameters.router?.pathname ?? "/ja"}
+      />
     ),
   ],
 };
