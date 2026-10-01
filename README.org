@@ -42,6 +42,10 @@ The static site is emitted to =dist/client=. =pnpm start= serves those files loc
 
 For GitHub Pages, =src/app/static-flight.ts= redirects rshono navigation requests to the generated =index.rsc= files and adapts their response MIME type. This is needed because Pages cannot serve HTML and Flight at the same URL based on the =RSC= request header. Browsers without the Navigation API use full page navigation.
 
+=patches/@rshono__core@1.0.0-rc.23.patch= wraps rshono's payload commit in a native View Transition. The callback waits for React's layout commit and scroll restoration, so blog titles and descriptions morph between the list and article, including Back/Forward, in development and production. Fetching finishes before the transition starts. Reduced motion and browsers without the API skip the animation. Keep this patch when updating rshono until the framework exposes equivalent navigation support.
+
+With =pnpm start= running, =pnpm --dir benchmark install= and =pnpm check:transitions= run the browser regression check using the benchmark's Playwright dependency. It verifies actual shared-element animation geometry, history scroll restoration, delayed Flight responses, reduced motion, API fallback, and hash links. Set =BASE_URL=http://localhost:3000= to check =pnpm dev= instead. On macOS it uses installed Chrome; elsewhere provide =CHROME_EXECUTABLE= or an installed Playwright Chromium. =PLAYWRIGHT_MODULE_PATH= can point to another local directory containing =playwright-core=.
+
 =pnpm build:framework= runs only the framework build and static finalizer, using the already generated content and Panda snapshot. This is the command used for framework build comparisons.
 
 ** Framework comparison

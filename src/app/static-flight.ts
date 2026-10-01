@@ -31,36 +31,3 @@ window.fetch = async (input, init) => {
     headers,
   });
 };
-
-// Keep page transitions consistent during RSC navigation. rshono owns the
-// navigation commit; waiting for it gives the browser the old and new snapshots.
-type NavigationLike = {
-  transition?: { finished: Promise<void> } | null;
-  addEventListener(
-    type: "navigate",
-    callback: (event: {
-      canIntercept: boolean;
-      hashChange: boolean;
-      destination: { url: string };
-    }) => void,
-  ): void;
-};
-const navigation = (window as Window & { navigation?: NavigationLike })
-  .navigation;
-if (navigation && document.startViewTransition) {
-  navigation.addEventListener("navigate", (event) => {
-    if (
-      !event.canIntercept ||
-      event.hashChange ||
-      new URL(event.destination.url).origin !== window.location.origin ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
-      return;
-    }
-    queueMicrotask(() => {
-      const finished = navigation.transition?.finished;
-      if (finished)
-        document.startViewTransition(() => finished.catch(() => {}));
-    });
-  });
-}
