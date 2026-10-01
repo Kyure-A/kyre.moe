@@ -26,7 +26,8 @@
     "format": "biome format --write .",
     "lint:actions": "actionlint",
     "security:semgrep": "semgrep scan --config p/default --error --metrics=off .",
-    "build:framework": "rshono build && node scripts/finalize-static.mjs"
+    "build:framework": "rshono build && node scripts/finalize-static.mjs",
+    "check:transitions": "node scripts/check-transitions.mjs"
   },
   "dependencies": {
     "@ox-content/napi": "^3.2.8",
@@ -73,7 +74,8 @@
       "ws": "^8.21.0"
     },
     "patchedDependencies": {
-      "gray-matter@4.0.3": "patches/gray-matter@4.0.3.patch"
+      "gray-matter@4.0.3": "patches/gray-matter@4.0.3.patch",
+      "@rshono/core@1.0.0-rc.23": "patches/@rshono__core@1.0.0-rc.23.patch"
     }
   }
 }
