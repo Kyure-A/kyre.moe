@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Home from "@/pages/Home/ui/Home";
 import { DEFAULT_LANG } from "@/shared/lib/i18n";
+import { siteOgImage } from "@/shared/lib/root-metadata";
 import { duplicatePageRobots } from "@/shared/lib/seo";
 
 export const metadata: Metadata = {
@@ -17,13 +18,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: "kyre.moe",
     description: "キュレェ (Kyure_A)'s portfolio website",
-    images: [`/${DEFAULT_LANG}/opengraph-image`],
+    images: [siteOgImage],
   },
   twitter: {
     card: "summary_large_image",
     title: "ホーム",
     description: "キュレェ (Kyure_A)'s portfolio website",
-    images: [`/${DEFAULT_LANG}/opengraph-image`],
+    images: [siteOgImage],
   },
 };
 
