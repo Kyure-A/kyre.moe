@@ -1,9 +1,8 @@
-import { Link } from "next-view-transitions";
 import type { CSSProperties } from "react";
 import { css } from "styled-system/css";
 import { visuallyHidden } from "styled-system/patterns";
 import type { BlogPostMeta } from "@/shared/lib/blog";
-import { buildTagPath, formatDate } from "@/shared/lib/blog";
+import { formatDate, getTagSlug } from "@/shared/lib/blog";
 
 type Props = {
   posts: BlogPostMeta[];
@@ -144,13 +143,13 @@ const BlogPostList = ({ posts, emptyLabel }: Props) => {
         posts.map((post) => (
           <li key={`${post.slug}-${post.lang}`} className={styles.item}>
             <div className={styles.card} style={accentStyle}>
-              <Link
-                href={`/${post.lang}/blog/${post.slug}`}
+              <a
+                href={`/${encodeURIComponent(post.lang)}/blog/${encodeURIComponent(post.slug)}`}
                 className={styles.overlayLink}
                 aria-label={post.title}
               >
                 <span className={styles.hiddenTitle}>{post.title}</span>
-              </Link>
+              </a>
               <div className={styles.content} data-blog-content="">
                 <div className={styles.meta} data-blog-meta="">
                   <span>{formatDate(post.date, post.lang)}</span>
@@ -174,14 +173,14 @@ const BlogPostList = ({ posts, emptyLabel }: Props) => {
                 {post.tags.length > 0 && (
                   <div className={styles.tags} data-blog-tags="">
                     {post.tags.map((tag) => (
-                      <Link
+                      <a
                         key={`${post.slug}-${tag}`}
-                        href={buildTagPath(tag, post.lang)}
+                        href={`/${encodeURIComponent(post.lang)}/blog/tag/${encodeURIComponent(getTagSlug(tag))}`}
                         className={styles.tag}
                         data-blog-tag=""
                       >
                         #{tag}
-                      </Link>
+                      </a>
                     ))}
                   </div>
                 )}

@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect } from "react";
 import { DEFAULT_THEME, isSiteTheme } from "@/shared/lib/theme";
 

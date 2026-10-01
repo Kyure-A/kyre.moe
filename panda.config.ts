@@ -7,11 +7,7 @@ export default defineConfig({
   strictTokens: true,
   strictPropertyValues: true,
   syntax: "object-literal",
-  include: [
-    "./app/**/*.{ts,tsx}",
-    "./src/**/*.{ts,tsx}",
-    "./.storybook/**/*.{ts,tsx}",
-  ],
+  include: ["./src/**/*.{ts,tsx}", "./.storybook/**/*.{ts,tsx}"],
   exclude: [],
   outdir: "styled-system",
   theme: {

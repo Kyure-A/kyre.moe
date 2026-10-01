@@ -1,7 +1,8 @@
-import { Link } from "next-view-transitions";
+"use client";
+
 import { css } from "styled-system/css";
 import BlogSection from "@/pages/Blog/ui/BlogSection";
-import { type BlogTagItem, buildTagPath } from "@/shared/lib/blog";
+import type { BlogTagItem } from "@/shared/lib/blog";
 import type { SiteLang } from "@/shared/lib/i18n";
 
 type Props = {
@@ -102,14 +103,14 @@ const BlogTagList = ({ lang, tags }: Props) => {
       ) : (
         <div className={styles.tags}>
           {tags.map((item) => (
-            <Link
+            <a
               key={item.slug}
-              href={buildTagPath(item.slug, lang)}
+              href={`/${encodeURIComponent(lang)}/blog/tag/${encodeURIComponent(item.slug)}`}
               className={styles.tag}
             >
               <span>#{item.label}</span>
               <span className={styles.tagCount}>{item.count}</span>
-            </Link>
+            </a>
           ))}
         </div>
       )}

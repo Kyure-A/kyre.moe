@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect } from "react";
 
 const COPY_BUTTON_CLASS = "code-copy-button";

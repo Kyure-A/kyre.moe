@@ -13,7 +13,7 @@ export type BlogPostMeta = {
 };
 
 export type BlogPost = BlogPostMeta & {
-  content: string;
+  content?: string;
   html: string;
 };
 

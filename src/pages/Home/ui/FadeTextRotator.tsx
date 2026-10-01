@@ -1,6 +1,6 @@
-import dynamic from "next/dynamic";
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { css } from "styled-system/css";
+import ClientOnly from "@/shared/ui/ClientOnly/ClientOnly";
 import FadeTransition from "@/shared/ui/FadeTransition/FadeTransition";
 
 const styles = {
@@ -22,11 +22,7 @@ const styles = {
   }),
 };
 
-// dynamic import すればコードが独立したチャンクに分離され、初期バンドルサイズが削減されるらしい
-const ASCIIText = dynamic(() => import("@/shared/ui/ASCIIText/ASCIIText"), {
-  ssr: false,
-  loading: () => <div className={styles.center} />,
-});
+const ASCIIText = lazy(() => import("@/shared/ui/ASCIIText/ASCIIText"));
 
 type FadeTextRotatorProps = {
   texts?: string[];
@@ -83,16 +79,21 @@ export const FadeTextRotator = ({
     >
       {texts.map((text, index) =>
         asciiEnabled ? (
-          <ASCIIText
-            key={text}
-            text={text}
-            asciiFontSize={asciiFontSize}
-            textFontSize={textFontSize}
-            maxFps={asciiMaxFps}
-            startDelayMs={asciiStartDelayMs}
-            startOnIdle={asciiStartOnIdle}
-            active={active && (index === activeIndex || index === fadingIndex)}
-          />
+          <ClientOnly key={text} fallback={<div className={styles.center} />}>
+            <Suspense fallback={<div className={styles.center} />}>
+              <ASCIIText
+                text={text}
+                asciiFontSize={asciiFontSize}
+                textFontSize={textFontSize}
+                maxFps={asciiMaxFps}
+                startDelayMs={asciiStartDelayMs}
+                startOnIdle={asciiStartOnIdle}
+                active={
+                  active && (index === activeIndex || index === fadingIndex)
+                }
+              />
+            </Suspense>
+          </ClientOnly>
         ) : (
           <div key={text} className={styles.textFallback}>
             {text}

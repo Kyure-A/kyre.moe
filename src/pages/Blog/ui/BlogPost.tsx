@@ -1,10 +1,10 @@
 // biome-ignore-all lint/security/noDangerouslySetInnerHtml: Blog post HTML is generated server-side with raw HTML disabled and sanitized at the content boundary.
 
-import Image from "next/image";
-import { Link } from "next-view-transitions";
+"use client";
+
 import { css, cx } from "styled-system/css";
 import type { BlogPost } from "@/shared/lib/blog";
-import { buildTagPath, formatDate } from "@/shared/lib/blog";
+import { formatDate, getTagSlug } from "@/shared/lib/blog";
 import CopyCodeBlock from "@/shared/ui/CopyCodeBlock/CopyCodeBlock";
 import HatenaStarContainer from "@/shared/ui/HatenaStar/HatenaStarContainer";
 import TwitterEmbedEnhancer from "@/shared/ui/TwitterEmbed/TwitterEmbed";
@@ -166,27 +166,27 @@ const BlogPostView = ({ post }: Props) => {
         {post.tags.length > 0 && (
           <div className={styles.tags}>
             {post.tags.map((tag) => (
-              <Link
+              <a
                 key={`${post.slug}-${tag}`}
-                href={buildTagPath(tag, post.lang)}
+                href={`/${encodeURIComponent(post.lang)}/blog/tag/${encodeURIComponent(getTagSlug(tag))}`}
                 className={styles.tag}
                 style={{ viewTransitionName: `blog-tag-${post.slug}-${tag}` }}
               >
                 #{tag}
-              </Link>
+              </a>
             ))}
           </div>
         )}
         {post.cover && (
           <div className={styles.cover}>
-            <Image
+            <img
               src={post.cover}
               alt={post.title}
               width={1600}
               height={900}
-              sizes="(min-width: 768px) 768px, 100vw"
               className={styles.coverImage}
               loading="lazy"
+              decoding="async"
             />
           </div>
         )}
@@ -200,9 +200,12 @@ const BlogPostView = ({ post }: Props) => {
 
       <footer className={styles.reactions}>
         <div className={styles.reactionMeta}>
-          <Link href={`/${post.lang}/about`} className={styles.reactionAuthor}>
+          <a
+            href={`/${encodeURIComponent(post.lang)}/about`}
+            className={styles.reactionAuthor}
+          >
             Kyure_A
-          </Link>
+          </a>
           <time dateTime={post.date}>{formatDate(post.date, post.lang)}</time>
         </div>
         <HatenaStarContainer

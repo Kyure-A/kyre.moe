@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { css } from "styled-system/css";
 import type { SiteLang } from "@/shared/lib/i18n";

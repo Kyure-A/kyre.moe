@@ -1,3 +1,5 @@
+"use client";
+
 import type { Omit } from "@react-spring/web";
 import { FaGithub as FaGitHub } from "react-icons/fa";
 import {

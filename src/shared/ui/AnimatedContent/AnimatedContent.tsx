@@ -1,8 +1,6 @@
 /*
 	Installed from https://reactbits.dev/ts/
 */
-"use client";
-
 import { animated, type SpringConfig, useSpring } from "@react-spring/web";
 import {
   type HTMLAttributes,

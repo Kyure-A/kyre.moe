@@ -8,10 +8,6 @@
       url = "github:anthropics/skills";
       flake = false;
     };
-    next-skills = {
-      url = "github:vercel-labs/next-skills";
-      flake = false;
-    };
     ui-skills = {
       url = "github:ibelick/ui-skills";
       flake = false;
@@ -19,7 +15,7 @@
   };
 
   outputs =
-    { nixpkgs, agent-skills, anthropic-skills, next-skills, ui-skills, ... }:
+    { nixpkgs, agent-skills, anthropic-skills, ui-skills, ... }:
     let
       eachSystem =
         f:
@@ -32,10 +28,6 @@
       sources = {
         anthropic-skills = {
           path = anthropic-skills;
-          subdir = "skills";
-        };
-        next-skills = {
-          path = next-skills;
           subdir = "skills";
         };
         ui-skills = {
@@ -53,7 +45,6 @@
             "frontend-design"
           ];
           enableAll = [
-            "next-skills"
             "ui-skills"
           ];
         };

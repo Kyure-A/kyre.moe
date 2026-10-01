@@ -1,9 +1,8 @@
-"use client";
-
-import { usePathname, useRouter } from "next/navigation";
+import { useNavigation } from "@rshono/core/client";
 import { useMemo } from "react";
 import { FaHome } from "react-icons/fa";
 import { FaAt, FaFeatherPointed, FaTimeline, FaUser } from "react-icons/fa6";
+import { usePathname } from "@/shared/hooks/usePathname";
 import { DEFAULT_LANG, getLangFromPath } from "@/shared/lib/i18n";
 
 export type DockItemData = {
@@ -14,40 +13,39 @@ export type DockItemData = {
 };
 
 const useDockItems = (): DockItemData[] => {
-  const router = useRouter();
+  const { router } = useNavigation();
   const pathname = usePathname();
   const lang = getLangFromPath(pathname) ?? DEFAULT_LANG;
-  const basePath = `/${lang}`;
 
   return useMemo(
     () => [
       {
         icon: <FaHome />,
         label: "Home",
-        onClick: () => router.push(basePath),
+        onClick: () => router.push(`/${lang}`),
       },
       {
         icon: <FaFeatherPointed />,
         label: "Blog",
-        onClick: () => router.push(`${basePath}/blog`),
+        onClick: () => router.push(`/${lang}/blog`),
       },
       {
         icon: <FaAt />,
         label: "Accounts",
-        onClick: () => router.push(`${basePath}/accounts`),
+        onClick: () => router.push(`/${lang}/accounts`),
       },
       {
         icon: <FaTimeline style={{ transform: "rotate(90deg)" }} />,
         label: "History",
-        onClick: () => router.push(`${basePath}/history`),
+        onClick: () => router.push(`/${lang}/history`),
       },
       {
         icon: <FaUser />,
         label: "About me",
-        onClick: () => router.push(`${basePath}/about`),
+        onClick: () => router.push(`/${lang}/about`),
       },
     ],
-    [basePath, router],
+    [lang, router],
   );
 };
 

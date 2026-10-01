@@ -1,0 +1,13 @@
+{
+  "name": "kyre-moe-framework-benchmark",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "builds": "node measure-builds.mjs",
+    "browser": "node measure-browser.mjs",
+    "report": "node report.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "1.62.1"
+  }
+}

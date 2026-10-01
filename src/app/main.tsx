@@ -1,12 +1,17 @@
-"use client";
-
-import dynamic from "next/dynamic";
-import { usePathname } from "next/navigation";
-import { type CSSProperties, type ReactNode, useMemo, useState } from "react";
+import {
+  type CSSProperties,
+  lazy,
+  type ReactNode,
+  Suspense,
+  useMemo,
+  useState,
+} from "react";
 import { css, cx } from "styled-system/css";
 import useDockItems from "@/shared/hooks/useDockItems";
 import useIsMobile from "@/shared/hooks/useIsMobile";
+import { usePathname } from "@/shared/hooks/usePathname";
 import useRuntimeProfile from "@/shared/hooks/useRuntimeProfile";
+import ClientOnly from "@/shared/ui/ClientOnly/ClientOnly";
 import HeaderControls from "@/shared/ui/HeaderControls/HeaderControls";
 import OrbitDock from "@/shared/ui/OrbitDock/OrbitDock";
 
@@ -70,21 +75,10 @@ const styles = {
   }),
 };
 
-const BackgroundShader = dynamic(
+const BackgroundShader = lazy(
   () => import("@/shared/ui/Background/Background"),
-  {
-    ssr: false,
-    loading: () => <div className={styles.fullSize} />,
-  },
 );
-
-const FadeTextRotator = dynamic(
-  () => import("@/pages/Home/ui/FadeTextRotator"),
-  {
-    ssr: false,
-    loading: () => <div className={styles.fullWidth} />,
-  },
-);
+const FadeTextRotator = lazy(() => import("@/pages/Home/ui/FadeTextRotator"));
 
 const ORBIT_VARS: CSSProperties = {
   "--home-orbit-size": "clamp(300px, 86vmin, 760px)",
@@ -101,7 +95,8 @@ type Props = { children: ReactNode };
 
 const isHomePath = (pathname: string | null): boolean => {
   if (!pathname) return false;
-  return pathname === "/ja" || pathname === "/en" || pathname === "/";
+  const path = pathname.replace(/\/+$/, "") || "/";
+  return path === "/ja" || path === "/en" || path === "/";
 };
 
 const App = ({ children }: Props) => {
@@ -157,22 +152,26 @@ const App = ({ children }: Props) => {
         style={homeLayerStyle}
         aria-hidden={!isHome}
       >
-        <BackgroundShader
-          pixelFilter={250}
-          fogDensity={shaderFogDensity}
-          noiseStrength={shaderNoiseStrength}
-          mouseInteraction={shaderMouseInteraction}
-          isRotate={false}
-          pulseFrequency={0.05}
-          color1="#272822"
-          color2="#66d9ef"
-          color3="#000000"
-          maxFps={shaderMaxFps}
-          resolutionScale={shaderResolution}
-          startDelayMs={startDelayMs}
-          startOnIdle
-          active={isHome}
-        />
+        <ClientOnly fallback={<div className={styles.fullSize} />}>
+          <Suspense fallback={<div className={styles.fullSize} />}>
+            <BackgroundShader
+              pixelFilter={250}
+              fogDensity={shaderFogDensity}
+              noiseStrength={shaderNoiseStrength}
+              mouseInteraction={shaderMouseInteraction}
+              isRotate={false}
+              pulseFrequency={0.05}
+              color1="#272822"
+              color2="#66d9ef"
+              color3="#000000"
+              maxFps={shaderMaxFps}
+              resolutionScale={shaderResolution}
+              startDelayMs={startDelayMs}
+              startOnIdle
+              active={isHome}
+            />
+          </Suspense>
+        </ClientOnly>
       </div>
 
       <div
@@ -200,13 +199,17 @@ const App = ({ children }: Props) => {
       >
         <div className={styles.textOverlayInner}>
           <div className={styles.textSlot}>
-            <FadeTextRotator
-              asciiMaxFps={asciiMaxFps}
-              asciiStartDelayMs={startDelayMs}
-              asciiStartOnIdle
-              asciiEnabled
-              active={isHome}
-            />
+            <ClientOnly fallback={<div className={styles.fullWidth} />}>
+              <Suspense fallback={<div className={styles.fullWidth} />}>
+                <FadeTextRotator
+                  asciiMaxFps={asciiMaxFps}
+                  asciiStartDelayMs={startDelayMs}
+                  asciiStartOnIdle
+                  asciiEnabled
+                  active={isHome}
+                />
+              </Suspense>
+            </ClientOnly>
           </div>
           {/* 画像のスペースを確保（実際の画像は children で描画） */}
           <div className={styles.spacer} />

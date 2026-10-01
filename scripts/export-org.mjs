@@ -303,12 +303,29 @@ export function exportOrg(options = {}) {
     .filter((file) => file.endsWith(ORG_EXTENSION))
     .sort();
 
-  if (orgFiles.length === 0) {
-    if (!silent) console.log("No Org files found.");
-    return [];
-  }
-
   const cache = readCache();
+  const currentOrgFiles = new Set(orgFiles);
+  const removedFiles = [];
+  for (const relativePath of Object.keys(cache)) {
+    const filePath = path.resolve(process.cwd(), relativePath);
+    const articlePath = path.relative(ARTICLES_DIR, filePath);
+    if (
+      articlePath.startsWith("..") ||
+      path.isAbsolute(articlePath) ||
+      !filePath.endsWith(ORG_EXTENSION) ||
+      currentOrgFiles.has(filePath)
+    ) {
+      continue;
+    }
+    const outputPath = filePath.replace(/\.org$/i, ".md");
+    if (fs.existsSync(outputPath)) {
+      fs.unlinkSync(outputPath);
+      const relativeOutput = path.relative(process.cwd(), outputPath);
+      removedFiles.push(relativeOutput);
+      if (!silent) console.log(`Removed stale export ${relativeOutput}`);
+    }
+    delete cache[relativePath];
+  }
   const scriptHash = hashContent(fs.readFileSync(SCRIPT_PATH));
   const jobs = orgFiles.map((filePath) => {
     const source = fs.readFileSync(filePath, "utf-8");
@@ -327,12 +344,12 @@ export function exportOrg(options = {}) {
       cache[relativePath] !== hash || !fs.existsSync(outputPath),
   );
 
-  if (changedJobs.length === 0) {
+  if (changedJobs.length === 0 && removedFiles.length === 0) {
     if (!silent) console.log("Org files are up to date.");
     return [];
   }
 
-  const exportedFiles = [];
+  const exportedFiles = [...removedFiles];
   exportOrgToMarkdown(changedJobs)
     .map(({ source, outputMarkdown, outputPath, relativePath, hash }) => {
       const meta = parseOrgMeta(source);
