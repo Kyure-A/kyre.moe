@@ -85,10 +85,8 @@ const styles = {
     minWidth: "0",
     display: "flex",
     flexDirection: "column",
-    minHeight: "account-copy",
-  }),
-  copyCentered: css({
     justifyContent: "center",
+    minHeight: "account-copy",
   }),
   id: css({
     overflow: "hidden",
@@ -141,12 +139,7 @@ const Account = (props: AccountProps) => {
             >
               {props.platform}
             </span>
-            <div
-              className={cx(
-                styles.copy,
-                !hasDescription && styles.copyCentered,
-              )}
-            >
+            <div className={styles.copy}>
               <p
                 className={styles.id}
                 data-account-id=""

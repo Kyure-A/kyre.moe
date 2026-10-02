@@ -423,7 +423,11 @@ body {
 .blog-content h4,
 .blog-content h5,
 .blog-content h6 {
-  scroll-margin-top: 1.5rem;
+  scroll-margin-top: calc(
+    var(--spacing-control-offset) +
+    var(--sizes-control) +
+    var(--spacing-4)
+  );
 }
 
 .blog-content p {
@@ -789,6 +793,7 @@ body {
 }
 
 .blog-content .markdown-embed-youtube .markdown-youtube-thumbnail {
+  margin: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
