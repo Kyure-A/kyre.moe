@@ -11,7 +11,7 @@
 *** フレームワークを変更
 Next.js はこのプロジェクトに Too much であるなと常に思っていた（前回記事にも書いたはず）
 
-長年の FF こと LaPh に以前 TanStack Start を勧められたので LLM に移行させて終わってすぐこいつが rshono を勧めてきやがった。
+長年の FF こと LaPh に以前 TanStack Start を勧められたので LLM に移行させて終わってすぐこいつが [[https://github.com/rshono/rshono][rshono]] を勧めてきやがった。
 https://x.com/R0u9h/status/2105618180551082051
 
 パフォーマンス計測した感じも rshono が良さげであったので採用とした。
