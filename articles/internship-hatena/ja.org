@@ -125,6 +125,8 @@ AI エージェントとチーム開発の講義がありました。
 * リモート
 サービスプラットフォーム (以下 SPF) に配属されました。メンターは {@hatena:laminne} さんでした。アサインされたタスクは、[[https://www.w3.org/TR/fedcm/][FedCM]][fn:4] (Federated Credential Management API) に関わる実装を行い、[[https://hatelabo.jp][はてラボ]]から利用するようにするというものでした。
 
+https://x.com/kyremoe/status/2092586167049113788
+
 ** 1 週目
 はてラボは Go で実装されているものの、俺は Go をほぼ書いたことがない（前述した通り）ので、同じ配属先のインターン生である {@hatena:fum1kun} さんにおんぶに抱っこでした。
 
