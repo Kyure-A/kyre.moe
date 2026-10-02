@@ -53,6 +53,10 @@ const styles = {
     color: "text.tertiary",
   }),
   tag: css({
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    lineHeight: "none",
     borderRadius: "tag",
     borderWidth: "1px",
     borderColor: "border.subtle",

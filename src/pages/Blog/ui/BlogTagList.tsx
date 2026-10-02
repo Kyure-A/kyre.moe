@@ -68,6 +68,8 @@ const styles = {
   tag: css({
     display: "inline-flex",
     alignItems: "center",
+    justifyContent: "center",
+    lineHeight: "none",
     gap: "2",
     borderRadius: "tag",
     borderWidth: "1px",
