@@ -85,6 +85,10 @@ const styles = {
     transitionTimingFunction: "easeOut",
   }),
   title: css({
+    textWrap: "balance",
+    wordBreak: "keep-all",
+    overflowWrap: "anywhere",
+    lineBreak: "strict",
     fontSize: { base: "lg", md: "xl" },
     fontWeight: "semibold",
     lineHeight: "snug",

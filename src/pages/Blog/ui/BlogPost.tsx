@@ -32,6 +32,10 @@ const styles = {
   }),
   title: css({
     mt: "4",
+    textWrap: "balance",
+    wordBreak: "keep-all",
+    overflowWrap: "anywhere",
+    lineBreak: "strict",
     fontSize: { base: "3xl", md: "4xl" },
     fontWeight: "semibold",
     letterSpacing: "tight",
