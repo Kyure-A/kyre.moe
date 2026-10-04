@@ -13,6 +13,8 @@ Personal website and blog built with Hono JSX, statically rendered for GitHub Pa
 
 ** Dev
 
+Node.js 26 or newer is required. The Nix shell and CI use Node.js 26; content preparation runs TypeScript directly with Node's built-in type stripping.
+
 #+begin_src bash
   nix develop
   pnpm install

@@ -1,13 +1,11 @@
 import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import fs from "node:fs";
-import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { copyBlogImages } from "./copy-blog-images.mjs";
 import { exportOrg } from "./export-org.mjs";
 
-const require = createRequire(import.meta.url);
 const ARTICLES_DIR = path.join(process.cwd(), "articles");
 const PREPARE_SCRIPT = fileURLToPath(
   new URL("./prepare-content.ts", import.meta.url),
@@ -54,8 +52,7 @@ export async function startContentWatcher(options = {}) {
 
   const prepare = () =>
     new Promise((resolve, reject) => {
-      const tsxBin = require.resolve("tsx/cli");
-      const child = spawn(process.execPath, [tsxBin, PREPARE_SCRIPT], {
+      const child = spawn(process.execPath, [PREPARE_SCRIPT], {
         stdio: "inherit",
         shell: false,
         env: process.env,

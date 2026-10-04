@@ -1,7 +1,6 @@
 import * as fs from "node:fs";
 import { createRequire } from "node:module";
 import * as path from "node:path";
-import matter from "gray-matter";
 import hljs from "highlight.js";
 import katex from "katex";
 import sanitizeHtml from "sanitize-html";
@@ -11,8 +10,8 @@ import {
   type BlogTagItem,
   getTagSlug,
   normalizeTagLabel,
-} from "./blog";
-import { DEFAULT_LANG, isSiteLang, type SiteLang } from "./i18n";
+} from "./blog.ts";
+import { DEFAULT_LANG, isSiteLang, type SiteLang } from "./i18n.ts";
 
 const ARTICLES_DIR = path.join(process.cwd(), "articles");
 const MARKDOWN_EXTENSIONS = [".md", ".mdx"];
@@ -59,6 +58,10 @@ type OxParserOptions = {
   autolinks?: boolean;
 };
 type OxContentModule = {
+  parseFrontmatter: (source: string) => {
+    content: string;
+    frontmatter: Record<string, unknown>;
+  };
   parseAndRender: (
     source: string,
     options?: OxParserOptions,
@@ -1233,7 +1236,7 @@ const parseFrontmatter = (
   filePath: string,
 ): { meta: BlogPostMeta; content: string } => {
   const raw = fs.readFileSync(filePath, "utf-8");
-  const { data, content } = matter(raw);
+  const { frontmatter: data, content } = loadOxContent().parseFrontmatter(raw);
   const title = typeof data.title === "string" ? data.title : slug;
   const description =
     typeof data.description === "string"

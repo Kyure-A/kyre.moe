@@ -2,18 +2,18 @@ import { createHash } from "node:crypto";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
-import { type BlogPostMeta, buildTagPath } from "../src/shared/lib/blog";
 import {
   getAllPosts,
   getAllTagItems,
   getPost,
-} from "../src/shared/lib/blog.server";
-import { SITE_LANGS } from "../src/shared/lib/i18n";
+} from "../src/shared/lib/blog.server.ts";
+import { type BlogPostMeta, buildTagPath } from "../src/shared/lib/blog.ts";
+import { SITE_LANGS } from "../src/shared/lib/i18n.ts";
 import {
   generateOgImage,
   OG_IMAGE_FINGERPRINT,
   type OgImageProps,
-} from "../src/shared/lib/og-image";
+} from "../src/shared/lib/og-image.ts";
 
 const ROOT = process.cwd();
 const GENERATED_DIR = path.join(ROOT, "src", "generated");

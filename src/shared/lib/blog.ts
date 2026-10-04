@@ -1,4 +1,4 @@
-import type { SiteLang } from "./i18n";
+import type { SiteLang } from "./i18n.ts";
 
 export type BlogPostMeta = {
   slug: string;

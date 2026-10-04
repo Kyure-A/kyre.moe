@@ -4,6 +4,9 @@
   "private": true,
   "type": "module",
   "packageManager": "pnpm@9.15.9",
+  "engines": {
+    "node": ">=26"
+  },
   "scripts": {
     "prepare": "panda codegen",
     "prelint": "panda codegen",
@@ -14,7 +17,7 @@
     "start": "node scripts/serve-static.mjs",
     "typecheck": "tsc --noEmit",
     "check:static": "node scripts/check-static.mjs",
-    "content": "node scripts/export-org.mjs && node scripts/copy-blog-images.mjs && tsx scripts/prepare-content.ts",
+    "content": "node scripts/export-org.mjs && node scripts/copy-blog-images.mjs && node scripts/prepare-content.ts",
     "watch:content": "node scripts/watch-content.mjs",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
@@ -27,7 +30,6 @@
   },
   "dependencies": {
     "@ox-content/napi": "^3.2.9",
-    "gray-matter": "^4.0.3",
     "highlight.js": "^11.12.0",
     "katex": "^0.18.9",
     "@fontsource/ibm-plex-mono": "^5.3.0",
@@ -45,17 +47,12 @@
     "@types/sanitize-html": "^2.16.1",
     "@types/three": "^0.186.0",
     "csstype": "3.2.3",
-    "tsx": "^4.23.15",
     "typescript": "^5.9.3",
     "vite": "8.3.1"
   },
   "pnpm": {
     "overrides": {
-      "gray-matter>js-yaml": "^4.2.0",
       "postcss": "^8.5.15"
-    },
-    "patchedDependencies": {
-      "gray-matter@4.0.3": "patches/gray-matter@4.0.3.patch"
     }
   }
 }
