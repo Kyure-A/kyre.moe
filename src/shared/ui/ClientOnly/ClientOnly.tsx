@@ -1,15 +1,13 @@
-"use client";
-
-import { type ReactNode, useEffect, useState } from "react";
+import { type Child, useEffect, useState } from "hono/jsx";
 
 export default function ClientOnly({
   children,
   fallback = null,
 }: {
-  children: ReactNode;
-  fallback?: ReactNode;
+  children: Child;
+  fallback?: Child;
 }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-  return mounted ? children : fallback;
+  return <>{mounted ? children : fallback}</>;
 }

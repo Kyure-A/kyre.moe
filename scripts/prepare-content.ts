@@ -9,7 +9,11 @@ import {
   getPost,
 } from "../src/shared/lib/blog.server";
 import { SITE_LANGS } from "../src/shared/lib/i18n";
-import { generateOgImage, type OgImageProps } from "../src/shared/lib/og-image";
+import {
+  generateOgImage,
+  OG_IMAGE_FINGERPRINT,
+  type OgImageProps,
+} from "../src/shared/lib/og-image";
 
 const ROOT = process.cwd();
 const GENERATED_DIR = path.join(ROOT, "src", "generated");
@@ -128,10 +132,9 @@ export const prepareContent = async () => {
   const imageFingerprint = createHash("sha256")
     .update(fs.readFileSync(fileURLToPath(import.meta.url)))
     .update(
-      fs.readFileSync(path.join(ROOT, "src", "shared", "lib", "og-image.tsx")),
+      fs.readFileSync(path.join(ROOT, "src", "shared", "lib", "og-image.ts")),
     )
-    .update(fs.readFileSync(path.join(PUBLIC_DIR, "icon.jpg")))
-    .update(process.env.OG_IMAGE_FONT_PATH ?? "")
+    .update(OG_IMAGE_FINGERPRINT)
     .digest("hex");
 
   const writeOgImage = async (
@@ -148,9 +151,9 @@ export const prepareContent = async () => {
     const filePath = path.join(PUBLIC_DIR, imagePath);
     if (previousOgCache[imagePath] === imageHash && fs.existsSync(filePath))
       return;
-    const response = await generateOgImage(props);
+    const image = await generateOgImage(props);
     fs.mkdirSync(path.dirname(filePath), { recursive: true });
-    fs.writeFileSync(filePath, Buffer.from(await response.arrayBuffer()));
+    fs.writeFileSync(filePath, image);
   };
 
   for (const lang of SITE_LANGS) {

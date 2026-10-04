@@ -1,5 +1,3 @@
-"use client";
-
 import { css } from "styled-system/css";
 import { visuallyHidden } from "styled-system/patterns";
 import Timeline, { type TimelineItem } from "@/pages/History/ui/Timeline";

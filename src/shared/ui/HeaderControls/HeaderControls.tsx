@@ -1,8 +1,8 @@
-import { useNavigation } from "@rshono/core/client";
-import { FaArrowLeft } from "react-icons/fa6";
 import { css, cx } from "styled-system/css";
 import { usePathname } from "@/shared/hooks/usePathname";
+import { FaArrowLeft } from "@/shared/icons/site";
 import { DEFAULT_LANG, getLangFromPath } from "@/shared/lib/i18n";
+import { useNavigation } from "@/shared/lib/navigation";
 import LanguageToggle from "@/shared/ui/LanguageToggleSwitch/LanguageToggleSwitch";
 import ThemeToggle from "@/shared/ui/ThemeToggleSwitch/ThemeToggleSwitch";
 

@@ -1,5 +1,3 @@
-"use client";
-
 import { css } from "styled-system/css";
 import BlogSection from "@/pages/Blog/ui/BlogSection";
 import type { BlogTagItem } from "@/shared/lib/blog";

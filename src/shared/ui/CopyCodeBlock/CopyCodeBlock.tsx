@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect } from "hono/jsx";
 
 const COPY_BUTTON_CLASS = "code-copy-button";
 const COPY_ICON = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="9" y="9" width="10" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /><path d="M5 15V5a2 2 0 0 1 2-2h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>`;
@@ -10,6 +10,9 @@ const CopyCodeBlock = () => {
       document.querySelectorAll<HTMLPreElement>(".blog-content pre"),
     );
 
+    let active = true;
+    const cleanups: Array<() => void> = [];
+    const timers = new Set<number>();
     for (const block of blocks) {
       if (block.dataset.copyBound === "true") continue;
       block.dataset.copyBound = "true";
@@ -21,7 +24,7 @@ const CopyCodeBlock = () => {
       button.setAttribute("aria-label", "Copy code");
       button.setAttribute("title", "Copy code");
 
-      button.addEventListener("click", async () => {
+      const handleClick = async () => {
         const code = block.querySelector("code");
         const text = code?.textContent ?? "";
         if (!text) return;
@@ -39,16 +42,34 @@ const CopyCodeBlock = () => {
           textarea.remove();
         }
 
+        if (!active) return;
         button.innerHTML = CHECK_ICON;
         button.setAttribute("data-copied", "true");
-        window.setTimeout(() => {
+        const timer = window.setTimeout(() => {
+          timers.delete(timer);
           button.innerHTML = COPY_ICON;
           button.removeAttribute("data-copied");
         }, 1400);
+        timers.add(timer);
+      };
+      button.addEventListener("click", handleClick);
+      cleanups.push(() => {
+        button.removeEventListener("click", handleClick);
+        button.remove();
+        delete block.dataset.copyBound;
       });
 
       block.appendChild(button);
     }
+    return () => {
+      active = false;
+      timers.forEach((timer) => {
+        window.clearTimeout(timer);
+      });
+      cleanups.forEach((cleanup) => {
+        cleanup();
+      });
+    };
   }, []);
 
   return null;

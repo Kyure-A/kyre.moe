@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { css } from "styled-system/css";
 import type { SiteLang } from "@/shared/lib/i18n";
 
@@ -34,29 +33,32 @@ const LiveAgeText = ({
   dateLabel: string;
   lang: SiteLang;
 }) => {
-  const [age, setAge] = useState(getAgeInYears);
-
-  useEffect(() => {
-    const timer = window.setInterval(
-      () => setAge(getAgeInYears()),
-      UPDATE_INTERVAL_MS,
-    );
-    return () => window.clearInterval(timer);
-  }, []);
-
   return (
     <span>
       {dateLabel} (
-      {/* prerendered build-time age never matches the live value */}
       <span
         className={css({ fontVariantNumeric: "tabular-nums" })}
-        suppressHydrationWarning
+        data-live-age={lang}
       >
-        {AGE_FORMATTER[lang].format(age)}
+        {AGE_FORMATTER[lang].format(getAgeInYears())}
       </span>{" "}
       {AGE_SUFFIX[lang]})
     </span>
   );
+};
+
+export const enhanceLiveAge = () => {
+  const elements = document.querySelectorAll<HTMLElement>("[data-live-age]");
+  if (!elements.length) return () => {};
+  const update = () => {
+    for (const element of elements) {
+      const lang = element.dataset.liveAge === "en" ? "en" : "ja";
+      element.textContent = AGE_FORMATTER[lang].format(getAgeInYears());
+    }
+  };
+  update();
+  const timer = window.setInterval(update, UPDATE_INTERVAL_MS);
+  return () => window.clearInterval(timer);
 };
 
 export default LiveAgeText;

@@ -1,5 +1,6 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "hono/jsx";
 import { css } from "styled-system/css";
+import { lazy } from "@/shared/lib/lazy";
 import ClientOnly from "@/shared/ui/ClientOnly/ClientOnly";
 import FadeTransition from "@/shared/ui/FadeTransition/FadeTransition";
 

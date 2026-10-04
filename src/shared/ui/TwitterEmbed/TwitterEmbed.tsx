@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect } from "hono/jsx";
 import { DEFAULT_THEME, isSiteTheme } from "@/shared/lib/theme";
 
 const TWITTER_SCRIPT_SRC = "https://platform.twitter.com/widgets.js";

@@ -1,7 +1,5 @@
 excludes = [
   "node_modules/**",
-  "out/**",
-  ".next/**",
   "dist/**"
 ]
 

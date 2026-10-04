@@ -1,4 +1,4 @@
-// biome-ignore-all lint/security/noDangerouslySetInnerHtml: Inline bootstrap script prevents theme flash before React hydration.
+// biome-ignore-all lint/security/noDangerouslySetInnerHtml: Inline bootstrap script prevents theme flash before client mounting.
 
 import { DEFAULT_THEME, THEME_STORAGE_KEY } from "@/shared/lib/theme";
 

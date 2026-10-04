@@ -1,5 +1,3 @@
-"use client";
-
 import { css } from "styled-system/css";
 import BlogPostList from "@/pages/Blog/ui/BlogPostList";
 import BlogSection from "@/pages/Blog/ui/BlogSection";

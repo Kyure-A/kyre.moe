@@ -1,18 +1,15 @@
-"use client";
-
 import {
   type CSSProperties,
   useCallback,
   useEffect,
   useRef,
   useState,
-} from "react";
+} from "hono/jsx";
 import { css } from "styled-system/css";
 import { visuallyHidden } from "styled-system/patterns";
 import { usePathname } from "@/shared/hooks/usePathname";
 import useRuntimeProfile from "@/shared/hooks/useRuntimeProfile";
 import { DEFAULT_LANG, getLangFromPath } from "@/shared/lib/i18n";
-import { srcPath } from "@/shared/lib/path";
 import GlitchImage from "@/shared/ui/GlitchImage/GlitchImage";
 
 const HERO_STYLE: CSSProperties = {
@@ -67,6 +64,7 @@ const styles = {
 const Home = () => {
   const { lowPerformanceMode } = useRuntimeProfile();
   const pathname = usePathname();
+  const isHome = /^\/(?:ja|en)?\/?$/.test(pathname);
   const lang = getLangFromPath(pathname) ?? DEFAULT_LANG;
   const [useWebp, setUseWebp] = useState(process.env.NODE_ENV === "production");
   const [glitchReady, setGlitchReady] = useState(false);
@@ -171,7 +169,7 @@ const Home = () => {
         </div>
         <div className={styles.imageSlot}>
           <GlitchImage
-            maskSrc={srcPath("/kyure_a.png")}
+            maskSrc="/kyure_a.png"
             startDelayMs={1000}
             maskScale={1}
             ambientNoiseStrength={ambientNoiseStrength}
@@ -179,19 +177,19 @@ const Home = () => {
             interval={glitchInterval}
             probability={glitchProbability}
             intensity={glitchIntensity}
-            active={glitchReady}
+            active={glitchReady && isHome}
           >
             <picture>
               {useWebp && (
                 <source
                   type="image/webp"
-                  srcSet={`${srcPath("/kyure_a-640.webp")} 640w, ${srcPath("/kyure_a-1000.webp")} 1000w, ${srcPath("/kyure_a-1600.webp")} 1600w, ${srcPath("/kyure_a.webp")} 2305w`}
+                  srcSet="/kyure_a-640.webp 640w, /kyure_a-1000.webp 1000w, /kyure_a-1600.webp 1600w, /kyure_a.webp 2305w"
                   sizes="(max-width: 768px) 60vw, 1000px"
                 />
               )}
               <img
                 alt="Kyure_A"
-                src={srcPath("/kyure_a.png")}
+                src="/kyure_a.png"
                 width={HERO_WIDTH}
                 height={HERO_HEIGHT}
                 loading="eager"

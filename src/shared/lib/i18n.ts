@@ -17,12 +17,6 @@ export const getLangFromPath = (pathname?: string | null): SiteLang | null => {
   return match ? (match[1] as SiteLang) : null;
 };
 
-export const withLangPrefix = (path: string, lang: SiteLang): string => {
-  const normalized = path.startsWith("/") ? path : `/${path}`;
-  if (normalized === "/") return `/${lang}`;
-  return `/${lang}${normalized}`;
-};
-
 export const replacePathLang = (pathname: string, lang: SiteLang): string => {
   if (!pathname || pathname === "/") return `/${lang}`;
   const normalized = pathname.startsWith("/") ? pathname : `/${pathname}`;

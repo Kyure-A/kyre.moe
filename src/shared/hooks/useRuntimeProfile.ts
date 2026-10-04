@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "hono/jsx";
 
 type RuntimeProfile = {
   isFirefox: boolean;

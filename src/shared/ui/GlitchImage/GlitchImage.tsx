@@ -1,17 +1,16 @@
 import {
+  type Child,
   type CSSProperties,
-  type ReactElement,
-  type ReactNode,
   useCallback,
   useEffect,
   useMemo,
   useRef,
-} from "react";
+} from "hono/jsx";
 import { css } from "styled-system/css";
 
 interface GlitchImageProps {
   /** The image element to apply the glitch effect to */
-  children: ReactNode;
+  children: Child;
   /** Optional mask image to clip non-image glitch layers */
   maskSrc?: string;
   /** Mask scale (1 = original size, >1 expands) */
@@ -125,7 +124,7 @@ const GlitchImage = ({
   active = true,
   intensity = 5,
   startDelayMs = 1000,
-}: GlitchImageProps): ReactElement => {
+}: GlitchImageProps) => {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const visibleRef = useRef(true);
@@ -394,16 +393,15 @@ const GlitchImage = ({
         {/* Distorted blocks */}
         {Array.from({ length: blockCount }, (_, i) => (
           <div
-            // biome-ignore lint/suspicious/noArrayIndexKey: 個数固定の常駐レイヤーで並べ替えは起きない
             key={i}
-            ref={(el) => {
+            ref={(el: HTMLDivElement | null) => {
               blockRefs.current[i] = el;
             }}
             className={styles.block}
             style={{ opacity: 0, willChange: "transform, opacity" }}
           >
             <div
-              ref={(el) => {
+              ref={(el: HTMLDivElement | null) => {
                 blockInnerRefs.current[i] = el;
               }}
             >
@@ -420,9 +418,8 @@ const GlitchImage = ({
           {/* Sharp horizontal glitch lines */}
           {Array.from({ length: lineCount }, (_, i) => (
             <div
-              // biome-ignore lint/suspicious/noArrayIndexKey: 個数固定の常駐レイヤーで並べ替えは起きない
               key={i}
-              ref={(el) => {
+              ref={(el: HTMLDivElement | null) => {
                 lineRefs.current[i] = el;
               }}
               className={styles.line}

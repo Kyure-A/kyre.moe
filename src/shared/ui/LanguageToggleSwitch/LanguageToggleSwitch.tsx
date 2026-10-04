@@ -1,4 +1,3 @@
-import { useNavigation } from "@rshono/core/client";
 import { css, cx } from "styled-system/css";
 import { visuallyHidden } from "styled-system/patterns";
 import { usePathname } from "@/shared/hooks/usePathname";
@@ -8,6 +7,7 @@ import {
   replacePathLang,
   type SiteLang,
 } from "@/shared/lib/i18n";
+import { useNavigation } from "@/shared/lib/navigation";
 
 type LanguageToggleProps = {
   onChange: (s: string) => void;
@@ -123,7 +123,7 @@ const LanguageToggle = ({ onChange }: LanguageToggleProps) => {
         type="button"
         onClick={handleToggle}
         className={styles.button}
-        aria-pressed={language === "en"}
+        aria-pressed={language === "en" ? "true" : "false"}
       >
         <span className={styles.hiddenLabel}>
           Toggle language between Japanese and English

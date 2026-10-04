@@ -1354,14 +1354,6 @@ export const getAllPosts = (lang?: SiteLang): BlogPostMeta[] => {
     .sort(comparePostsByDateDesc);
 };
 
-export const getPostsByTag = (tag: string, lang?: SiteLang): BlogPostMeta[] => {
-  const slug = getTagSlug(tag);
-  if (!slug) return [];
-  return getAllPosts(lang).filter((post) =>
-    post.tags.some((postTag) => getTagSlug(postTag) === slug),
-  );
-};
-
 export const getAllTagItems = (lang?: SiteLang): BlogTagItem[] => {
   const tags = new Map<string, BlogTagItem>();
 
@@ -1389,19 +1381,6 @@ export const getAllTagItems = (lang?: SiteLang): BlogTagItem[] => {
   return Array.from(tags.values()).sort((a, b) =>
     a.label.localeCompare(b.label),
   );
-};
-
-export const getTagItem = (
-  tag: string,
-  lang?: SiteLang,
-): BlogTagItem | null => {
-  const slug = getTagSlug(tag);
-  if (!slug) return null;
-  return getAllTagItems(lang).find((item) => item.slug === slug) ?? null;
-};
-
-export const getAllTags = (lang?: SiteLang): string[] => {
-  return getAllTagItems(lang).map((item) => item.slug);
 };
 
 const rewriteRelativeImagePaths = (content: string, slug: string): string => {
@@ -1437,19 +1416,4 @@ export const getPost = async (
   const rewrittenContent = rewriteRelativeImagePaths(content, slug);
   const html = await renderMarkdown(rewrittenContent, lang);
   return { ...meta, tags, content: rewrittenContent, html };
-};
-
-export const getPostLanguages = (slug: string): SiteLang[] => {
-  const dirPath = path.join(ARTICLES_DIR, slug);
-  const files = safeReadDir(dirPath).filter((file) => file.isFile());
-  const langs = new Set(
-    files
-      .map((file) => {
-        const ext = path.extname(file.name);
-        if (!MARKDOWN_EXTENSIONS.includes(ext)) return null;
-        return resolveLangFromFile(file.name);
-      })
-      .filter((fileLang): fileLang is SiteLang => Boolean(fileLang)),
-  );
-  return Array.from(langs);
 };

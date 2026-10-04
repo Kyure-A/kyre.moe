@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "hono/jsx";
 
 const MOBILE_QUERY = "(max-width: 768px)";
 

@@ -17,24 +17,16 @@
     "paths": {
       "@/*": ["./src/*"],
       "styled-system/*": ["./styled-system/*"]
-    }
+    },
+    "jsxImportSource": "hono/jsx"
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
     "scripts/**/*.ts",
-    "rshono.config.ts",
     "panda.config.ts",
-    "styled-system"
+    "styled-system",
+    "vite.config.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "storybook-static",
-    ".next",
-    "out",
-    "next-env.d.ts",
-    ".rshono",
-    "src/**/*.stories.tsx"
-  ]
+  "exclude": ["node_modules", "dist"]
 }
