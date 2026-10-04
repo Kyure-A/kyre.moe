@@ -66,6 +66,5 @@ devenv.local.yaml
 .codex/skills/
 .agent-shell/
 
-# Local comparison data and dependencies
-/benchmark/node_modules/
-/benchmark/results/
+# Local comparison tooling and data
+/benchmark/

@@ -45,12 +45,8 @@ The static site is emitted to =dist/client=. =pnpm start= serves those files loc
 
 Client navigation fetches the destination HTML, replaces the static page content and updates metadata and document language. The controls and Home background stay mounted. Native View Transitions morph blog titles and descriptions, including Back/Forward with scroll restoration. Fetching completes before the transition starts. Reduced motion and browsers without the API skip the animation; links also work without JavaScript.
 
-With =pnpm start= running, =pnpm --dir benchmark install= and =pnpm check:transitions= verify actual shared-element animation geometry, history scroll restoration, delayed HTML responses, reduced motion, API fallback, and hash links. Set =BASE_URL=http://localhost:3000= to check =pnpm dev= instead. On macOS it uses installed Chrome; elsewhere provide =CHROME_EXECUTABLE= or an installed Playwright Chromium. =PLAYWRIGHT_MODULE_PATH= can point to another local directory containing =playwright-core=.
+With =pnpm start= running, =pnpm check:transitions= verifies actual shared-element animation geometry, history scroll restoration, delayed HTML responses, reduced motion, API fallback, and hash links. Set =BASE_URL=http://localhost:3000= to check =pnpm dev= instead. On macOS it uses installed Chrome; elsewhere provide =CHROME_EXECUTABLE= or an installed Playwright Chromium. =PLAYWRIGHT_MODULE_PATH= can point to another local directory containing =playwright-core=.
 
 =pnpm check:interactions= also checks theme persistence, language and metadata, code copying, live age, keyboard navigation through the Home dock, cached Home content, 404 recovery and delayed hash-history navigation. Component interaction checks run against the actual site.
 
-=pnpm build:framework= runs only Vite bundles and static HTML generation, using the already generated content and Panda snapshot. This excludes shared preparation from framework build comparisons.
-
-** Framework comparison
-
-[[file:./benchmark/HONO-RESULTS.md][The measured rshono, hono/jsx, Astro and HonoX comparison]] and [[file:./benchmark/README.md][benchmark commands]] describe the implementations, measurements and reproduction steps. The earlier [[file:./benchmark/RESULTS.md][Next.js, TanStack Start and rshono comparison]] remains historical evidence. Detailed raw measurements remain local under =benchmark/results/=.
+=pnpm build:framework= runs only Vite bundles and static HTML generation, using the already generated content and Panda snapshot. It skips content preparation.

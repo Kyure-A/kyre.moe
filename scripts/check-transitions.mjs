@@ -6,7 +6,7 @@ import { pathToFileURL } from "node:url";
 const modulePath = process.env.PLAYWRIGHT_MODULE_PATH;
 const require = modulePath
   ? createRequire(pathToFileURL(resolve(modulePath, "package.json")))
-  : createRequire(new URL("../benchmark/package.json", import.meta.url));
+  : createRequire(new URL("../package.json", import.meta.url));
 const { chromium } = require("playwright-core");
 const base = new URL(process.env.BASE_URL ?? "http://localhost:4173");
 const listPath = "/ja/blog";

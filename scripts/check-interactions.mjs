@@ -9,7 +9,7 @@ const require = process.env.PLAYWRIGHT_MODULE_PATH
         resolve(process.env.PLAYWRIGHT_MODULE_PATH, "package.json"),
       ),
     )
-  : createRequire(new URL("../benchmark/package.json", import.meta.url));
+  : createRequire(new URL("../package.json", import.meta.url));
 const { chromium } = require("playwright-core");
 const base = new URL(process.env.BASE_URL ?? "http://localhost:4173");
 const browser = await chromium.launch({

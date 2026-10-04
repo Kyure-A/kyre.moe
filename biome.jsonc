@@ -6,13 +6,7 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": [
-      "**",
-      "!**/dist",
-      "!**/src/generated",
-      "!**/styled-system",
-      "!**/benchmark/results"
-    ]
+    "includes": ["**", "!**/dist", "!**/src/generated", "!**/styled-system"]
   },
   "formatter": {
     "indentStyle": "space",
