@@ -43,7 +43,7 @@
     "@biomejs/biome": "^2.5.14",
     "@pandacss/dev": "^1.12.1",
     "@takumi-rs/core": "2.14.0",
-    "@types/node": "26.6.2",
+    "@types/node": "26.6.3",
     "@types/sanitize-html": "^2.16.1",
     "@types/three": "^0.186.0",
     "csstype": "3.2.3",
