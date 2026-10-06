@@ -37,7 +37,7 @@
     "sanitize-html": "^2.17.7",
     "three": "^0.186.1",
     "uniorg-parse": "^3.2.2",
-    "hono": "4.13.9",
+    "hono": "4.13.11",
     "@rshono/core": "1.0.0-rc.23",
     "react": "19.3.0",
     "react-dom": "19.3.0",
