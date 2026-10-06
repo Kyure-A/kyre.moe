@@ -11,6 +11,7 @@ import {
   getTagSlug,
   normalizeTagLabel,
 } from "./blog.ts";
+import { createContentRequestCache } from "./content-request-cache.ts";
 import { DEFAULT_LANG, isSiteLang, type SiteLang } from "./i18n.ts";
 
 const ARTICLES_DIR = path.join(process.cwd(), "articles");
@@ -48,7 +49,19 @@ const HTML_REPLACEMENTS: Record<string, string> = {
   "'": "&#39;",
 };
 const LINK_PREVIEW_TIMEOUT_MS = 5000;
-const linkPreviewCache = new Map<string, Promise<LinkPreviewData>>();
+const linkPreviewCache = createContentRequestCache(
+  "link-preview-v1",
+  (value): value is LinkPreviewData =>
+    Boolean(
+      value &&
+        typeof value === "object" &&
+        ["title", "description", "image", "site_name", "url"].every(
+          (key) =>
+            key in value &&
+            typeof (value as Record<string, unknown>)[key] === "string",
+        ),
+    ),
+);
 type OxParserOptions = {
   gfm?: boolean;
   footnotes?: boolean;
@@ -368,16 +381,17 @@ const parseLinkPreviewData = (html: string, url: string): LinkPreviewData => {
   };
 };
 
-const fetchLinkPreviewData = async (url: string): Promise<LinkPreviewData> => {
+const fetchLinkPreviewData = async (url: string) => {
+  const unavailable = () => ({ value: emptyLinkPreview(url), ok: false });
   let parsedUrl: URL;
   try {
     parsedUrl = new URL(url);
   } catch {
-    return emptyLinkPreview(url);
+    return unavailable();
   }
 
   if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
-    return emptyLinkPreview(url);
+    return unavailable();
   }
 
   const controller = new AbortController();
@@ -392,23 +406,26 @@ const fetchLinkPreviewData = async (url: string): Promise<LinkPreviewData> => {
       redirect: "follow",
       signal: controller.signal,
     });
-    if (!response.ok) return emptyLinkPreview(url);
-    return parseLinkPreviewData(await response.text(), response.url || url);
+    if (!response.ok) return unavailable();
+    const value = parseLinkPreviewData(
+      await response.text(),
+      response.url || url,
+    );
+    return {
+      value,
+      ok: Boolean(
+        value.title || value.description || value.image || value.site_name,
+      ),
+    };
   } catch {
-    return emptyLinkPreview(url);
+    return unavailable();
   } finally {
     clearTimeout(timeout);
   }
 };
 
-const getLinkPreviewData = (url: string) => {
-  const cached = linkPreviewCache.get(url);
-  if (cached) return cached;
-
-  const preview = fetchLinkPreviewData(url);
-  linkPreviewCache.set(url, preview);
-  return preview;
-};
+const getLinkPreviewData = (url: string) =>
+  linkPreviewCache(url, () => fetchLinkPreviewData(url));
 
 const linkPreviewHtml = (ogData: LinkPreviewData) => {
   const url = escapeHtml(ogData.url);
@@ -508,9 +525,14 @@ const MAGIC_LINK_PROFILES: Record<
 };
 
 const AVATAR_FETCH_TIMEOUT_MS = 5000;
-const avatarDataUriCache = new Map<string, Promise<string>>();
+const avatarDataUriCache = createContentRequestCache(
+  "avatar-data-uri-v1",
+  (value): value is string =>
+    typeof value === "string" &&
+    /^(?:https?:\/\/|data:image\/[^;,]+;base64,)/.test(value),
+);
 
-const fetchAvatarDataUri = async (url: string): Promise<string> => {
+const fetchAvatarDataUri = async (url: string) => {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), AVATAR_FETCH_TIMEOUT_MS);
   try {
@@ -519,23 +541,22 @@ const fetchAvatarDataUri = async (url: string): Promise<string> => {
       signal: controller.signal,
     });
     const contentType = response.headers.get("content-type") ?? "";
-    if (!response.ok || !contentType.startsWith("image/")) return url;
+    if (!response.ok || !contentType.startsWith("image/"))
+      return { value: url, ok: false };
     const bytes = Buffer.from(await response.arrayBuffer());
-    return `data:${contentType};base64,${bytes.toString("base64")}`;
+    return {
+      value: `data:${contentType};base64,${bytes.toString("base64")}`,
+      ok: true,
+    };
   } catch {
-    return url;
+    return { value: url, ok: false };
   } finally {
     clearTimeout(timeout);
   }
 };
 
-const getAvatarDataUri = (url: string) => {
-  const cached = avatarDataUriCache.get(url);
-  if (cached) return cached;
-  const promise = fetchAvatarDataUri(url);
-  avatarDataUriCache.set(url, promise);
-  return promise;
-};
+const getAvatarDataUri = (url: string) =>
+  avatarDataUriCache(url, () => fetchAvatarDataUri(url));
 
 const buildMagicLink = async (service: MagicLinkService, user: string) => {
   const safeUser = escapeHtml(user);
@@ -1406,16 +1427,13 @@ const rewriteRelativeImagePaths = (content: string, slug: string): string => {
 };
 
 export const getPost = async (
-  slug: string,
-  lang: SiteLang,
+  postMeta: BlogPostMeta,
 ): Promise<BlogPost | null> => {
+  const { slug, lang, tags } = postMeta;
   const filePath = getPostFilePath(slug, lang);
   if (!filePath) return null;
   const { meta, content } = parseFrontmatter(slug, lang, filePath);
   if (meta.draft) return null;
-  const tags =
-    getAllPosts(lang).find((post) => post.slug === slug && post.lang === lang)
-      ?.tags ?? meta.tags;
   const rewrittenContent = rewriteRelativeImagePaths(content, slug);
   const html = await renderMarkdown(rewrittenContent, lang);
   return { ...meta, tags, content: rewrittenContent, html };

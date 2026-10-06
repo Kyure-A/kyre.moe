@@ -14,6 +14,7 @@
 /coverage
 
 # generated content
+/.cache/content/
 /dist/
 /src/generated/
 /public/og/blog/

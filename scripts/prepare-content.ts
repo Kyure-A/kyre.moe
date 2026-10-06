@@ -30,6 +30,15 @@ const STATIC_ROUTES = [
   "/blog/tag",
 ];
 
+const runJobs = async (jobs: (() => Promise<void>)[], concurrency = 4) => {
+  const remaining = jobs.values();
+  await Promise.all(
+    Array.from({ length: Math.min(concurrency, jobs.length) }, async () => {
+      for (const job of remaining) await job();
+    }),
+  );
+};
+
 const writeIfChanged = (filePath: string, content: string) => {
   if (
     fs.existsSync(filePath) &&
@@ -129,15 +138,15 @@ export const prepareContent = async () => {
   const ogImages: Record<string, string> = {};
   const previousOgCache = readOgCache();
   const nextOgCache: Record<string, string> = {};
+  const ogJobs: (() => Promise<void>)[] = [];
   const imageFingerprint = createHash("sha256")
-    .update(fs.readFileSync(fileURLToPath(import.meta.url)))
     .update(
       fs.readFileSync(path.join(ROOT, "src", "shared", "lib", "og-image.ts")),
     )
     .update(OG_IMAGE_FINGERPRINT)
     .digest("hex");
 
-  const writeOgImage = async (
+  const queueOgImage = (
     routePath: string,
     imagePath: string,
     props: OgImageProps,
@@ -151,27 +160,25 @@ export const prepareContent = async () => {
     const filePath = path.join(PUBLIC_DIR, imagePath);
     if (previousOgCache[imagePath] === imageHash && fs.existsSync(filePath))
       return;
-    const image = await generateOgImage(props);
-    fs.mkdirSync(path.dirname(filePath), { recursive: true });
-    fs.writeFileSync(filePath, image);
+    ogJobs.push(async () => {
+      const image = await generateOgImage(props);
+      fs.mkdirSync(path.dirname(filePath), { recursive: true });
+      fs.writeFileSync(filePath, image);
+    });
   };
 
   for (const lang of SITE_LANGS) {
-    await writeOgImage(`/${lang}/blog`, `/${lang}/blog/opengraph-image.png`, {
+    queueOgImage(`/${lang}/blog`, `/${lang}/blog/opengraph-image.png`, {
       title: "Blog",
       subtitle: "Kyure_A / キュレェ",
     });
-    await writeOgImage(
-      `/${lang}/blog/tag`,
-      `/${lang}/blog/tag/opengraph-image.png`,
-      {
-        title: lang === "ja" ? "タグ一覧" : "Tags",
-        subtitle: "Kyure_A / キュレェ",
-      },
-    );
+    queueOgImage(`/${lang}/blog/tag`, `/${lang}/blog/tag/opengraph-image.png`, {
+      title: lang === "ja" ? "タグ一覧" : "Tags",
+      subtitle: "Kyure_A / キュレェ",
+    });
     for (const tag of tags[lang]) {
       const tagHash = createHash("sha256").update(tag.slug).digest("hex");
-      await writeOgImage(
+      queueOgImage(
         buildTagPath(tag.slug, lang),
         `/og/blog/tag/${lang}/${tagHash}.png`,
         {
@@ -183,8 +190,19 @@ export const prepareContent = async () => {
     }
   }
 
-  for (const postMeta of posts) {
-    const post = await getPost(postMeta.slug, postMeta.lang);
+  // Queue images from metadata before rendering posts so native image work can
+  // overlap network requests without allowing an unbounded number of renders.
+  for (const post of posts) {
+    const routePath = `/${post.lang}/blog/${post.slug}`;
+    queueOgImage(routePath, `${routePath}/opengraph-image.png`, {
+      title: post.title,
+      subtitle: post.date || undefined,
+      tags: post.tags,
+    });
+  }
+
+  const postJobs = posts.map((postMeta) => async () => {
+    const post = await getPost(postMeta);
     if (!post)
       throw new Error(
         `Published post could not be read: ${postMeta.lang}/${postMeta.slug}`,
@@ -193,13 +211,9 @@ export const prepareContent = async () => {
     const filePath = path.join(POSTS_DIR, post.lang, `${post.slug}.json`);
     expectedFiles.add(filePath);
     writeJson(filePath, publishedPost);
-    const routePath = `/${post.lang}/blog/${post.slug}`;
-    await writeOgImage(routePath, `${routePath}/opengraph-image.png`, {
-      title: post.title,
-      subtitle: post.date || undefined,
-      tags: post.tags,
-    });
-  }
+  });
+
+  await Promise.all([runJobs(postJobs), runJobs(ogJobs)]);
 
   removeStalePosts(expectedFiles);
   for (const imagePath of Object.keys(previousOgCache)) {
@@ -236,7 +250,7 @@ export const prepareContent = async () => {
     `User-agent: *\nAllow: /\n\nSitemap: ${BASE_URL}/sitemap.xml\n`,
   );
   console.log(
-    `Prepared ${posts.length} posts and ${tagPaths.length} tag archives.`,
+    `Prepared ${posts.length} posts and ${tagPaths.length} tag archives (${ogJobs.length} OGP images rendered, ${Object.keys(nextOgCache).length - ogJobs.length} cached).`,
   );
 };
 

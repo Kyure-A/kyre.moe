@@ -47,6 +47,8 @@ jobs:
         run: nix shell nixpkgs#treefmt nixpkgs#biome --command treefmt --ci
       - name: Lint
         run: pnpm lint
+      - name: Test content cache
+        run: pnpm test:content
       - name: Setup Pages
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
@@ -54,13 +56,24 @@ jobs:
         id: og-font
         run: |
           set -euo pipefail
-          mkdir -p public/fonts
-
-          FONT_PATH="public/fonts/NotoSansCJKjp-Regular.otf"
+          FONT_PATH="${RUNNER_TEMP}/NotoSansCJKjp-Regular.otf"
           curl -fL --retry 3 --retry-delay 2 \
             -o "$FONT_PATH" \
             "https://raw.githubusercontent.com/notofonts/noto-cjk/main/Sans/OTF/Japanese/NotoSansCJKjp-Regular.otf"
           echo "path=$FONT_PATH" >> "$GITHUB_OUTPUT"
+      - name: Restore content cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            .cache/content
+            src/generated/.og-image-cache.json
+            public/ja/blog/**/opengraph-image.png
+            public/en/blog/**/opengraph-image.png
+            public/og/blog
+          key: ${{ runner.os }}-content-v1-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            ${{ runner.os }}-content-v1-${{ hashFiles('pnpm-lock.yaml') }}-
+            ${{ runner.os }}-content-v1-
       - name: Build static site
         env:
           CI: false
