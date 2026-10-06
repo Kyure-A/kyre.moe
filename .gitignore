@@ -15,6 +15,7 @@
 
 # generated content
 /dist/
+/.rshono/
 /src/generated/
 /public/og/blog/
 /public/ja/blog/**/opengraph-image.png

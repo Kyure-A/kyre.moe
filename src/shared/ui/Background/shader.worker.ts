@@ -328,6 +328,7 @@ const init = (message: ShaderWorkerInitMessage) => {
     gl = null;
     return;
   }
+  // biome-ignore lint/correctness/useHookAtTopLevel: WebGL の useProgram で React フックではない
   gl.useProgram(program);
 
   // OGL の Triangle 相当のフルスクリーン三角形

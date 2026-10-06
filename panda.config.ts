@@ -4,6 +4,7 @@ const cssVar = (name: string) => ({ value: `var(--${name})` });
 
 export default defineConfig({
   preflight: true,
+  jsxFramework: "react",
   strictTokens: true,
   strictPropertyValues: true,
   syntax: "object-literal",

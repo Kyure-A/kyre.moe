@@ -1,4 +1,4 @@
-import type { CSSProperties } from "hono/jsx";
+import type { CSSProperties } from "react";
 import { css } from "styled-system/css";
 
 const ANNICT_LOGO_URL =

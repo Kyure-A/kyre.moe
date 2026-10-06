@@ -1,10 +1,10 @@
-import type { Child } from "hono/jsx";
+import type { ReactNode } from "react";
 import { css, cx } from "styled-system/css";
 
 type BlogSectionSize = "default" | "narrow";
 
 type Props = {
-  children: Child;
+  children: ReactNode;
   size?: BlogSectionSize;
   className?: string;
 };

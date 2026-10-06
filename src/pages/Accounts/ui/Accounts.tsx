@@ -1,12 +1,9 @@
-import { css } from "styled-system/css";
-import { visuallyHidden } from "styled-system/patterns";
-import { AnnictIcon } from "@/shared/icons/annict";
-import { CosenseIcon } from "@/shared/icons/cosense";
-import { HatenaBlogIcon } from "@/shared/icons/hatenablog";
-import { NostrIcon } from "@/shared/icons/nostr";
+"use client";
+
+import type { Omit } from "@react-spring/web";
+import { FaGithub as FaGitHub } from "react-icons/fa";
 import {
   FaBluesky,
-  FaGithub as FaGitHub,
   FaInstagram,
   FaKeybase,
   FaLastfm,
@@ -16,10 +13,15 @@ import {
   FaSteam,
   FaThreads,
   FaTwitter,
-  SiHuggingface,
-  SiMisskey,
-  TbBrandMinecraft,
-} from "@/shared/icons/site";
+} from "react-icons/fa6";
+import { SiHuggingface, SiMisskey } from "react-icons/si";
+import { TbBrandMinecraft } from "react-icons/tb";
+import { css } from "styled-system/css";
+import { visuallyHidden } from "styled-system/patterns";
+import { AnnictIcon } from "@/shared/icons/annict";
+import { CosenseIcon } from "@/shared/icons/cosense";
+import { HatenaBlogIcon } from "@/shared/icons/hatenablog";
+import { NostrIcon } from "@/shared/icons/nostr";
 import { VRChatIcon } from "@/shared/icons/vrchat";
 import type { SiteLang } from "@/shared/lib/i18n";
 import Account, { type AccountProps } from "./Account";

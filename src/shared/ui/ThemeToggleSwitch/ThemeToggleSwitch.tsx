@@ -1,5 +1,5 @@
+import { FaMoon, FaSun } from "react-icons/fa6";
 import { css, cx } from "styled-system/css";
-import { FaMoon, FaSun } from "@/shared/icons/site";
 import { useTheme } from "@/shared/ui/ThemeProvider/ThemeProvider";
 
 const styles = {
@@ -58,7 +58,7 @@ const ThemeToggle = () => {
     <button
       type="button"
       onClick={toggleTheme}
-      aria-pressed={isLight ? "true" : "false"}
+      aria-pressed={isLight}
       aria-label="Toggle color theme"
       className={styles.button}
     >

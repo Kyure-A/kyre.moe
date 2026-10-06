@@ -50,8 +50,7 @@ function instrument({ disabled, names }) {
   window.fetch = (input, init) => {
     const request = input instanceof Request ? input : null;
     const headers = new Headers(init?.headers ?? request?.headers);
-    if (!headers.get("accept")?.includes("text/html"))
-      return nativeFetch(input, init);
+    if (headers.get("rsc") !== "1") return nativeFetch(input, init);
     const record = { requestedAt: performance.now(), responseAt: null };
     state.fetches.push(record);
     return nativeFetch(input, init).then((response) => {
@@ -218,10 +217,7 @@ async function createPage({
   });
   if (delay) {
     await page.route("**/*", async (route) => {
-      if (
-        route.request().headers().accept?.includes("text/html") &&
-        route.request().resourceType() === "fetch"
-      ) {
+      if (route.request().headers().rsc === "1") {
         state.delayedRequests++;
         await new Promise((done) => setTimeout(done, delay));
       }
@@ -451,16 +447,19 @@ try {
   try {
     const after = await navigate(
       delayed,
-      "400 ms HTML delay",
+      "400 ms Flight delay",
       () => clickArticle(delayed.page),
       "h2",
       "h1",
       postPath,
     );
-    assert.ok(delayed.delayedRequests > 0, "The HTML request was not delayed");
+    assert.ok(
+      delayed.delayedRequests > 0,
+      "The Flight request was not delayed",
+    );
     assert.ok(
       after.fetches.length > 0,
-      "No browser HTML response was observed",
+      "No browser Flight response was observed",
     );
     assert.ok(
       after.fetches.every(
@@ -468,7 +467,7 @@ try {
           fetch.responseAt !== null &&
           fetch.responseAt <= after.calls[0].startedAt,
       ),
-      "Transition froze the old page before the delayed HTML response arrived",
+      "Transition froze the old page before the delayed Flight response arrived",
     );
   } finally {
     await delayed.context.close();
@@ -494,7 +493,7 @@ try {
     }
   }
   console.log(
-    "Verified native shared title/description geometry, history, delayed HTML, motion/API fallbacks and hash navigation.",
+    "Verified native shared title/description geometry, history, delayed Flight, motion/API fallbacks and hash navigation.",
   );
 } catch (error) {
   console.error(JSON.stringify(results.at(-1) ?? {}, null, 2));

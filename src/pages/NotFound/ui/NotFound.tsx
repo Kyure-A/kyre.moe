@@ -1,3 +1,5 @@
+"use client";
+
 import { css } from "styled-system/css";
 import { usePathname } from "@/shared/hooks/usePathname";
 import {

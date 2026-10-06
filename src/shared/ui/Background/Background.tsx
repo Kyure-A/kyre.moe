@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef } from "hono/jsx";
 import { Mesh, Program, Renderer, Triangle } from "ogl";
+import { useCallback, useEffect, useRef } from "react";
 import { css } from "styled-system/css";
 import type { ShaderWorkerMessage } from "./shader.worker";
 
@@ -395,10 +395,7 @@ const BackgroundShader = ({
       container.appendChild(canvas);
       const { width, height } = applySize();
       const offscreen = canvas.transferControlToOffscreen();
-      const worker = new Worker(
-        new URL("./shader.worker.ts", import.meta.url),
-        { type: "module" },
-      );
+      const worker = new Worker(new URL("./shader.worker.ts", import.meta.url));
       workerRef.current = worker;
       worker.postMessage(
         {

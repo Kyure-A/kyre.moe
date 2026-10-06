@@ -1,4 +1,4 @@
-import type { CSSProperties } from "hono/jsx";
+import type { CSSProperties } from "react";
 import { css } from "styled-system/css";
 import { visuallyHidden } from "styled-system/patterns";
 import type { BlogPostMeta } from "@/shared/lib/blog";

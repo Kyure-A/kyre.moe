@@ -13,7 +13,7 @@
     "prebuild": "panda codegen && pnpm content",
     "panda": "panda codegen",
     "dev": "node scripts/dev.mjs",
-    "build": "node scripts/build.mjs",
+    "build": "rshono build && node scripts/finalize-static.mjs",
     "start": "node scripts/serve-static.mjs",
     "typecheck": "tsc --noEmit",
     "check:static": "node scripts/check-static.mjs",
@@ -24,7 +24,7 @@
     "format": "biome format --write .",
     "lint:actions": "actionlint",
     "security:semgrep": "semgrep scan --config p/default --error --metrics=off .",
-    "build:framework": "node scripts/build.mjs",
+    "build:framework": "rshono build && node scripts/finalize-static.mjs",
     "check:transitions": "node scripts/check-transitions.mjs",
     "check:interactions": "node scripts/check-interactions.mjs"
   },
@@ -37,7 +37,12 @@
     "sanitize-html": "^2.17.7",
     "three": "^0.186.1",
     "uniorg-parse": "^3.2.2",
-    "hono": "4.13.9"
+    "hono": "4.13.9",
+    "@rshono/core": "1.0.0-rc.23",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-icons": "^5.7.0",
+    "@react-spring/web": "^10.1.2"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.14",
@@ -46,14 +51,20 @@
     "@types/node": "26.6.3",
     "@types/sanitize-html": "^2.16.2",
     "@types/three": "^0.186.0",
-    "csstype": "3.2.3",
     "playwright-core": "1.63.0",
     "typescript": "^5.9.3",
-    "vite": "8.3.1"
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "postcss-loader": "8.2.1",
+    "csstype": "3.2.3"
   },
   "pnpm": {
     "overrides": {
-      "postcss": "^8.5.15"
+      "postcss": "^8.5.15",
+      "ws": "^8.21.0"
+    },
+    "patchedDependencies": {
+      "@rshono/core@1.0.0-rc.23": "patches/@rshono__core@1.0.0-rc.23.patch"
     }
   }
 }

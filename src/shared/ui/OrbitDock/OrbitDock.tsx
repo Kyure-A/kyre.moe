@@ -1,5 +1,5 @@
-import type { CSSProperties, RefObject } from "hono/jsx";
-import { memo, useCallback, useRef, useState } from "hono/jsx";
+import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
+import { memo, useCallback, useRef, useState } from "react";
 import { css, cx } from "styled-system/css";
 import type { DockItemData } from "@/shared/hooks/useDockItems";
 
@@ -31,8 +31,8 @@ type OrbitDockItemProps = {
   isHovered: boolean;
   interactive: boolean;
   onItemClick: (item: DockItemData) => void;
-  suppressClickRef: RefObject<boolean>;
-  dragStateRef: RefObject<{ dragged: boolean }>;
+  suppressClickRef: React.MutableRefObject<boolean>;
+  dragStateRef: React.MutableRefObject<{ dragged: boolean }>;
 };
 
 const styles = {
@@ -142,6 +142,8 @@ const OrbitDockItem = memo(
   },
 );
 
+OrbitDockItem.displayName = "OrbitDockItem";
+
 const OrbitDock = ({
   items,
   className = "",
@@ -230,7 +232,7 @@ const OrbitDock = ({
     return value;
   };
 
-  const handlePointerDown = (event: PointerEvent) => {
+  const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (!dragEnabled || layer !== "front") return;
     if (event.button !== 0) return;
     dragState.current.active = true;
@@ -251,7 +253,7 @@ const OrbitDock = ({
     dragState.current.baseRotation = rotationValue;
   };
 
-  const handlePointerMove = (event: PointerEvent) => {
+  const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (!dragEnabled || layer !== "front") return;
     if (!dragState.current.active) return;
     const dx = event.clientX - dragState.current.startX;
@@ -267,9 +269,7 @@ const OrbitDock = ({
     dragState.current.dragged = true;
     if (!dragState.current.captured) {
       dragState.current.captured = true;
-      (event.currentTarget as HTMLDivElement).setPointerCapture(
-        event.pointerId,
-      );
+      event.currentTarget.setPointerCapture(event.pointerId);
     }
     if (!isDragging) {
       setIsDragging(true);
@@ -279,16 +279,14 @@ const OrbitDock = ({
     event.preventDefault();
   };
 
-  const handlePointerUp = (event: PointerEvent) => {
+  const handlePointerUp = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (!dragEnabled || layer !== "front") return;
     if (!dragState.current.active) return;
     dragState.current.active = false;
     setIsPressing(false);
     setIsDragging(false);
     if (dragState.current.captured) {
-      (event.currentTarget as HTMLDivElement).releasePointerCapture(
-        event.pointerId,
-      );
+      event.currentTarget.releasePointerCapture(event.pointerId);
       dragState.current.captured = false;
     }
     if (!dragState.current.dragged && dragState.current.pressedIndex >= 0) {
@@ -315,7 +313,7 @@ const OrbitDock = ({
     }
   };
 
-  const handlePointerOver = (event: PointerEvent) => {
+  const handlePointerOver = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (layer !== "front") return;
     const target = event.target as HTMLElement | null;
     const item = target?.closest<HTMLButtonElement>("[data-orbit-index]");
@@ -328,7 +326,7 @@ const OrbitDock = ({
     }
   };
 
-  const handlePointerOut = (event: PointerEvent) => {
+  const handlePointerOut = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (layer !== "front") return;
     const target = event.target as HTMLElement | null;
     const leftItem = target?.closest<HTMLButtonElement>("[data-orbit-index]");
@@ -360,7 +358,7 @@ const OrbitDock = ({
       data-dragging={isDragging ? "true" : "false"}
       data-pressing={isPressing ? "true" : "false"}
       data-paused={paused && !isDragging ? "true" : "false"}
-      aria-hidden={layer === "back" ? "true" : undefined}
+      aria-hidden={layer === "back" ? true : undefined}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}

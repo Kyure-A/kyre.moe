@@ -1,11 +1,11 @@
+import type { PageProps } from "@rshono/core";
 import View from "@/pages/AboutMe/ui/AboutMe";
 import { getOgImage } from "@/shared/lib/blog.content";
 import { sectionHead } from "@/shared/lib/root-metadata";
 import { requireSiteLang } from "@/shared/lib/routing";
 import Document from "./Document";
-import type { PageProps } from "./types";
 
-export default function About({ params }: PageProps) {
+export default function About({ params }: PageProps<"/:lang/about">) {
   const lang = requireSiteLang(params.lang);
   return (
     <Document

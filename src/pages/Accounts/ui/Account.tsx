@@ -1,11 +1,11 @@
-import type { Child, CSSProperties } from "hono/jsx";
+import type { CSSProperties, ReactNode } from "react";
 import { css, cx } from "styled-system/css";
 
 export type AccountProps = {
   id: string;
   description?: string;
   serviceUrl: string;
-  serviceIcon: Child;
+  serviceIcon: ReactNode;
   platform: string;
   accentColor: string;
   iconClassName?: string;

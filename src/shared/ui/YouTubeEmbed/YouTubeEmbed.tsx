@@ -1,4 +1,4 @@
-import { useEffect } from "hono/jsx";
+import { useEffect } from "react";
 
 const PLACEHOLDER_SELECTOR =
   ".blog-content .markdown-youtube-placeholder[data-youtube-video-id]";
@@ -19,15 +19,6 @@ const createYouTubeIframe = (videoId: string) => {
 const YouTubeEmbedEnhancer = () => {
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
-      if (
-        event.defaultPrevented ||
-        event.button !== 0 ||
-        event.metaKey ||
-        event.ctrlKey ||
-        event.altKey ||
-        event.shiftKey
-      )
-        return;
       const target = event.target;
       if (!(target instanceof Element)) return;
 

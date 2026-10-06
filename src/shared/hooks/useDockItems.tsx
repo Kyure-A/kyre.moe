@@ -1,17 +1,12 @@
-import { type Child, useMemo } from "hono/jsx";
+import { useNavigation } from "@rshono/core/client";
+import { useMemo } from "react";
+import { FaHome } from "react-icons/fa";
+import { FaAt, FaFeatherPointed, FaTimeline, FaUser } from "react-icons/fa6";
 import { usePathname } from "@/shared/hooks/usePathname";
-import {
-  FaAt,
-  FaFeatherPointed,
-  FaHome,
-  FaTimeline,
-  FaUser,
-} from "@/shared/icons/site";
 import { DEFAULT_LANG, getLangFromPath } from "@/shared/lib/i18n";
-import { useNavigation } from "@/shared/lib/navigation";
 
 export type DockItemData = {
-  icon: Child;
+  icon: React.ReactNode;
   label: string;
   onClick: () => void;
   className?: string;

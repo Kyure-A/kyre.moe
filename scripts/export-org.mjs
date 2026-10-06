@@ -144,6 +144,8 @@ function renderInline(node, context = {}) {
       return `\`${node.value.replace(/`/g, "\\`")}\``;
     case "latex-fragment":
       return node.value;
+    case "entity":
+      return context.tableCell ? (node.utf8 ?? node.ascii ?? "") : "";
     case "link": {
       const target = markdownLinkTarget(node);
       const label = renderInlineChildren(node.children, context).trim();
@@ -191,6 +193,30 @@ function indentBlock(value, spaces) {
     .join("\n");
 }
 
+function renderTable(node) {
+  const rows = node.children.filter((row) => row.rowType === "standard");
+  if (rows.length === 0) return "";
+  const columnCount = Math.max(...rows.map((row) => row.children.length));
+  const firstRowIndex = node.children.indexOf(rows[0]);
+  const hasHeader = node.children[firstRowIndex + 1]?.rowType === "rule";
+  const renderRow = (row) => {
+    const cells = Array.from({ length: columnCount }, (_, index) =>
+      renderInlineChildren(row?.children[index]?.children, { tableCell: true })
+        .trim()
+        .replace(/\r?\n/g, " ")
+        .replace(/\|/g, "\\|"),
+    );
+    return `| ${cells.join(" | ")} |`;
+  };
+  // GFM requires a header; keep headerless Org rows as data below an empty one.
+  const header = hasHeader ? rows.shift() : undefined;
+  return [
+    renderRow(header),
+    `| ${Array(columnCount).fill("---").join(" | ")} |`,
+    ...rows.map(renderRow),
+  ].join("\n");
+}
+
 function renderListItem(node, index, listType, depth) {
   const marker = listType === "ordered" ? `${index + 1}.` : "-";
   const checkbox =
@@ -221,6 +247,8 @@ function renderBlock(node, context = {}) {
       return `${"#".repeat(node.level - (context.headingOffset ?? 0))} ${renderInlineChildren(node.children).trim()}`;
     case "paragraph":
       return renderParagraph(node);
+    case "table":
+      return renderTable(node);
     case "plain-list":
       return node.children
         .map((child, index) =>

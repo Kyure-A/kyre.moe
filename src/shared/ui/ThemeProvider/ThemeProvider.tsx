@@ -1,12 +1,12 @@
 import {
-  type Child,
   createContext,
+  type ReactNode,
   useCallback,
   useContext,
   useEffect,
   useMemo,
   useState,
-} from "hono/jsx";
+} from "react";
 import {
   DEFAULT_THEME,
   isSiteTheme,
@@ -39,10 +39,9 @@ const applyThemeToDom = (theme: SiteTheme) => {
   if (typeof document === "undefined") return;
   document.documentElement.dataset.theme = theme;
   document.documentElement.style.colorScheme = theme;
-  document.dispatchEvent(new Event("kyre:theme"));
 };
 
-const ThemeProvider = ({ children }: { children: Child }) => {
+const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setThemeState] = useState<SiteTheme>(DEFAULT_THEME);
 
   const setTheme = useCallback((next: SiteTheme) => {

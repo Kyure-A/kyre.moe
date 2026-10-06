@@ -50,12 +50,14 @@ async function visit(path) {
     document.body.appendChild(link);
   }, path);
   await page.locator("#interaction-test-link").evaluate((link) => link.click());
-  await page.waitForFunction(
-    (path) =>
+  await page.waitForFunction((path) => {
+    const canonical = document.querySelector('link[rel="canonical"]');
+    return (
       location.pathname.replace(/\/$/, "") === path &&
-      document.body.dataset.pathname === location.pathname,
-    path,
-  );
+      canonical &&
+      new URL(canonical.href).pathname.replace(/\/$/, "") === path
+    );
+  }, path);
   await page.waitForFunction(
     () =>
       !document
@@ -99,8 +101,10 @@ async function checkHashHistory() {
   let delayedRequests = 0;
   const delayArticle = async (route) => {
     if (
-      route.request().headers()["x-kyre-navigation"] === "1" &&
-      new URL(route.request().url()).pathname.replace(/\/$/, "") === articlePath
+      route.request().headers().rsc === "1" &&
+      new URL(route.request().url()).pathname
+        .replace(/\/index\.rsc$/, "")
+        .replace(/\/$/, "") === articlePath
     ) {
       delayedRequests++;
       await new Promise((resolve) => setTimeout(resolve, 400));
@@ -109,13 +113,15 @@ async function checkHashHistory() {
   };
   await page.route("**/*", delayArticle);
   await page.evaluate(() => history.back());
-  await page.waitForFunction(
-    (articlePath) =>
+  await page.waitForFunction((articlePath) => {
+    const canonical = document.querySelector('link[rel="canonical"]');
+    return (
       location.pathname.replace(/\/$/, "") === articlePath &&
-      document.body.dataset.pathname === location.pathname &&
-      document.querySelector("article.blog-content"),
-    articlePath,
-  );
+      document.querySelector("article.blog-content") &&
+      canonical &&
+      new URL(canonical.href).pathname.replace(/\/$/, "") === articlePath
+    );
+  }, articlePath);
   await page.waitForFunction(
     () =>
       !document
@@ -129,7 +135,11 @@ async function checkHashHistory() {
         ),
   );
   await page.unroute("**/*", delayArticle);
-  assert.equal(delayedRequests, 1, "Back must fetch the delayed article HTML");
+  assert.equal(
+    delayedRequests,
+    1,
+    "Back must fetch the delayed article Flight payload",
+  );
   assert.equal(
     await page.evaluate(() => scrollY),
     600,
@@ -165,11 +175,15 @@ try {
       () => document.documentElement.dataset.theme === "light",
     );
     await visit("/ja/about");
-    const age = page.locator("[data-live-age]");
-    const previousAge = await age.textContent();
+    const age = page.locator("main span").filter({ hasText: /^\d+\.\d{9}$/ });
+    const previousAge = Number(await age.textContent());
+    assert.ok(Number.isFinite(previousAge), "Live age must be a numeric value");
     await page.waitForFunction(
       (previous) =>
-        document.querySelector("[data-live-age]")?.textContent !== previous,
+        Array.from(document.querySelectorAll("main span")).some((span) => {
+          const text = span.textContent.trim();
+          return /^\d+\.\d{9}$/.test(text) && Number(text) > previous;
+        }),
       previousAge,
     );
     assert.equal(
@@ -180,7 +194,7 @@ try {
     assert.ok((await page.locator("[data-account-row]").count()) > 10);
     assert.ok((await page.locator("[data-account-row] svg").count()) > 10);
     await visit("/ja/history");
-    assert.ok((await page.locator("#page-content").innerText()).length > 100);
+    assert.ok((await page.locator("main").innerText()).length > 100);
     await visit("/ja/blog/tag/nix");
     await page.locator('a[href="/ja/blog/sheldon-nix"]').first().click();
     await page.waitForURL(/\/ja\/blog\/sheldon-nix\/?$/);
@@ -221,15 +235,21 @@ try {
     await page.waitForFunction(
       () =>
         document.querySelector(".home-shader canvas") &&
-        document.querySelector("#home-content img"),
+        document.querySelector('main img[alt="Kyure_A"]'),
     );
-    const hero = await page.locator("#home-content img").first().boundingBox();
+    const hero = await page
+      .locator('main img[alt="Kyure_A"]')
+      .first()
+      .boundingBox();
     assert.ok(
       hero?.width > 500 && hero.x < 1440 && hero.y < 900,
       "Home hero must occupy its visible layout",
     );
     await page.evaluate(() => {
-      window.__homeImage = document.querySelector("#home-content img");
+      window.__homeShader = document.querySelector(".home-shader canvas");
+      window.__homeDock = document.querySelector(
+        '.orbit-dock[data-layer="front"]',
+      );
     });
     const blogDockButton = page
       .locator('.orbit-dock[data-layer="front"]')
@@ -239,7 +259,7 @@ try {
     await page.waitForFunction(
       () =>
         location.pathname.replace(/\/$/, "") === "/ja/blog" &&
-        document.body.dataset.pathname === location.pathname &&
+        document.querySelector("main h1")?.textContent === "ブログ" &&
         document.querySelector(".home-shader")?.getAttribute("aria-hidden") ===
           "true",
     );
@@ -256,9 +276,21 @@ try {
     assert.equal(
       await page.evaluate(
         () =>
-          window.__homeImage === document.querySelector("#home-content img"),
+          window.__homeShader ===
+            document.querySelector(".home-shader canvas") &&
+          window.__homeDock ===
+            document.querySelector('.orbit-dock[data-layer="front"]'),
       ),
       true,
+      "Home navigation must preserve the background canvas and orbit controls",
+    );
+    await page
+      .locator('main img[alt="Kyure_A"]')
+      .first()
+      .waitFor({ state: "visible" });
+    assert.equal(
+      await page.locator("html").getAttribute("data-theme"),
+      "light",
     );
     assert.equal(await page.evaluate(() => performance.timeOrigin), origin);
     assert.deepEqual(errors, []);
@@ -269,7 +301,10 @@ try {
       .getByRole("heading", { name: "Page Not Found", exact: true })
       .waitFor();
     const fallback = await page
-      .locator("#not-found-content > section")
+      .locator("section")
+      .filter({
+        has: page.getByRole("heading", { name: "Page Not Found", exact: true }),
+      })
       .boundingBox();
     assert.ok(
       fallback?.width >= 1440 && fallback.height >= 900,
@@ -279,7 +314,7 @@ try {
     await page.getByRole("link", { name: "Back to Home", exact: true }).click();
     await page.waitForURL(/\/en\/?$/);
     await page.waitForFunction(() =>
-      document.querySelector("#home-content img"),
+      document.querySelector('main img[alt="Kyure_A"]'),
     );
     assert.deepEqual(errors, []);
     console.log(

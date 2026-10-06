@@ -1,16 +1,16 @@
 import {
   type CSSProperties,
+  lazy,
+  type ReactNode,
   Suspense,
-  useEffect,
   useMemo,
   useState,
-} from "hono/jsx";
+} from "react";
 import { css, cx } from "styled-system/css";
 import useDockItems from "@/shared/hooks/useDockItems";
 import useIsMobile from "@/shared/hooks/useIsMobile";
 import { usePathname } from "@/shared/hooks/usePathname";
 import useRuntimeProfile from "@/shared/hooks/useRuntimeProfile";
-import { lazy } from "@/shared/lib/lazy";
 import ClientOnly from "@/shared/ui/ClientOnly/ClientOnly";
 import HeaderControls from "@/shared/ui/HeaderControls/HeaderControls";
 import OrbitDock from "@/shared/ui/OrbitDock/OrbitDock";
@@ -66,6 +66,13 @@ const styles = {
     zIndex: "controls",
     transform: "translate(-50%, -50%)",
   }),
+  main: css({
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  }),
 };
 
 const BackgroundShader = lazy(
@@ -84,20 +91,17 @@ const ASCII_MAX_FPS = 24;
 const LOW_PERFORMANCE_SHADER_MAX_FPS = 12;
 const LOW_PERFORMANCE_ASCII_MAX_FPS = 12;
 
+type Props = { children: ReactNode };
+
 const isHomePath = (pathname: string | null): boolean => {
   if (!pathname) return false;
   const path = pathname.replace(/\/+$/, "") || "/";
   return path === "/ja" || path === "/en" || path === "/";
 };
 
-const App = () => {
+const App = ({ children }: Props) => {
   const pathname = usePathname();
   const isHome = isHomePath(pathname);
-  const [homeVisited, setHomeVisited] = useState(isHome);
-  useEffect(() => {
-    if (isHome) setHomeVisited(true);
-  }, [isHome]);
-  const mountHomeEffects = isHome || homeVisited;
 
   const items = useDockItems();
   const orbitItems = useMemo(
@@ -146,36 +150,34 @@ const App = () => {
       <div
         className={cx("home-shader", styles.homeShader)}
         style={homeLayerStyle}
-        aria-hidden={isHome ? "false" : "true"}
+        aria-hidden={!isHome}
       >
-        {mountHomeEffects && (
-          <ClientOnly fallback={<div className={styles.fullSize} />}>
-            <Suspense fallback={<div className={styles.fullSize} />}>
-              <BackgroundShader
-                pixelFilter={250}
-                fogDensity={shaderFogDensity}
-                noiseStrength={shaderNoiseStrength}
-                mouseInteraction={shaderMouseInteraction}
-                isRotate={false}
-                pulseFrequency={0.05}
-                color1="#272822"
-                color2="#66d9ef"
-                color3="#000000"
-                maxFps={shaderMaxFps}
-                resolutionScale={shaderResolution}
-                startDelayMs={startDelayMs}
-                startOnIdle
-                active={isHome}
-              />
-            </Suspense>
-          </ClientOnly>
-        )}
+        <ClientOnly fallback={<div className={styles.fullSize} />}>
+          <Suspense fallback={<div className={styles.fullSize} />}>
+            <BackgroundShader
+              pixelFilter={250}
+              fogDensity={shaderFogDensity}
+              noiseStrength={shaderNoiseStrength}
+              mouseInteraction={shaderMouseInteraction}
+              isRotate={false}
+              pulseFrequency={0.05}
+              color1="#272822"
+              color2="#66d9ef"
+              color3="#000000"
+              maxFps={shaderMaxFps}
+              resolutionScale={shaderResolution}
+              startDelayMs={startDelayMs}
+              startOnIdle
+              active={isHome}
+            />
+          </Suspense>
+        </ClientOnly>
       </div>
 
       <div
         className={styles.centeredBackLayer}
         style={{ ...ORBIT_VARS, ...homeLayerStyle }}
-        aria-hidden={isHome ? "false" : "true"}
+        aria-hidden={!isHome}
       >
         <OrbitDock
           items={orbitItems}
@@ -193,23 +195,21 @@ const App = () => {
       <div
         className={styles.textOverlay}
         style={{ visibility: isHome ? "visible" : "hidden" }}
-        aria-hidden={isHome ? "false" : "true"}
+        aria-hidden={!isHome}
       >
         <div className={styles.textOverlayInner}>
           <div className={styles.textSlot}>
-            {mountHomeEffects && (
-              <ClientOnly fallback={<div className={styles.fullWidth} />}>
-                <Suspense fallback={<div className={styles.fullWidth} />}>
-                  <FadeTextRotator
-                    asciiMaxFps={asciiMaxFps}
-                    asciiStartDelayMs={startDelayMs}
-                    asciiStartOnIdle
-                    asciiEnabled
-                    active={isHome}
-                  />
-                </Suspense>
-              </ClientOnly>
-            )}
+            <ClientOnly fallback={<div className={styles.fullWidth} />}>
+              <Suspense fallback={<div className={styles.fullWidth} />}>
+                <FadeTextRotator
+                  asciiMaxFps={asciiMaxFps}
+                  asciiStartDelayMs={startDelayMs}
+                  asciiStartOnIdle
+                  asciiEnabled
+                  active={isHome}
+                />
+              </Suspense>
+            </ClientOnly>
           </div>
           {/* 画像のスペースを確保（実際の画像は children で描画） */}
           <div className={styles.spacer} />
@@ -220,7 +220,7 @@ const App = () => {
       <div
         className={styles.centeredFrontLayer}
         style={{ ...ORBIT_VARS, ...homeLayerStyle }}
-        aria-hidden={isHome ? "false" : "true"}
+        aria-hidden={!isHome}
       >
         <OrbitDock
           items={orbitItems}
@@ -238,6 +238,8 @@ const App = () => {
           onDragChange={setOrbitDragging}
         />
       </div>
+
+      <main className={styles.main}>{children}</main>
     </>
   );
 };

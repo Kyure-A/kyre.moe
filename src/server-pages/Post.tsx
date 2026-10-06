@@ -1,3 +1,5 @@
+import type { PageProps } from "@rshono/core";
+import { notFound } from "@rshono/core/server";
 import BlogPost from "@/pages/Blog/ui/BlogPost";
 import {
   getOgImage,
@@ -5,11 +7,10 @@ import {
   getPostLanguages,
 } from "@/shared/lib/blog.content";
 import { pageHead } from "@/shared/lib/root-metadata";
-import { notFound, requireSiteLang } from "@/shared/lib/routing";
+import { requireSiteLang } from "@/shared/lib/routing";
 import Document from "./Document";
-import type { PageProps } from "./types";
 
-export default async function Post({ params }: PageProps) {
+export default async function Post({ params }: PageProps<"/:lang/blog/:slug">) {
   const lang = requireSiteLang(params.lang);
   const post = await getPost(params.slug, lang);
   if (!post) notFound();

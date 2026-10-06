@@ -2,7 +2,7 @@
 	Installed from https://reactbits.dev/ts/
  */
 
-import { useEffect, useRef } from "hono/jsx";
+import { useEffect, useRef } from "react";
 import { PerspectiveCamera } from "three/src/cameras/PerspectiveCamera.js";
 import { NearestFilter } from "three/src/constants.js";
 import type { Object3D } from "three/src/core/Object3D.js";

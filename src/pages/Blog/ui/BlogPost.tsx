@@ -1,9 +1,14 @@
 // biome-ignore-all lint/security/noDangerouslySetInnerHtml: Blog post HTML is generated server-side with raw HTML disabled and sanitized at the content boundary.
 
+"use client";
+
 import { css, cx } from "styled-system/css";
 import type { BlogPost } from "@/shared/lib/blog";
 import { formatDate, getTagSlug } from "@/shared/lib/blog";
+import CopyCodeBlock from "@/shared/ui/CopyCodeBlock/CopyCodeBlock";
 import HatenaStarContainer from "@/shared/ui/HatenaStar/HatenaStarContainer";
+import TwitterEmbedEnhancer from "@/shared/ui/TwitterEmbed/TwitterEmbed";
+import YouTubeEmbedEnhancer from "@/shared/ui/YouTubeEmbed/YouTubeEmbed";
 
 type Props = {
   post: BlogPost;
@@ -142,6 +147,9 @@ const BlogPostView = ({ post }: Props) => {
 
   return (
     <section className={styles.section}>
+      <CopyCodeBlock />
+      <TwitterEmbedEnhancer />
+      <YouTubeEmbedEnhancer />
       <header className={styles.header}>
         <p
           className={styles.date}

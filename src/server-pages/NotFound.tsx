@@ -1,8 +1,8 @@
+import type { PageProps } from "@rshono/core";
 import NotFoundView from "@/pages/NotFound/ui/NotFound";
 import { DEFAULT_LANG, getLangFromPath } from "@/shared/lib/i18n";
 import { pageHead } from "@/shared/lib/root-metadata";
 import Document from "./Document";
-import type { PageProps } from "./types";
 
 export default function NotFound({ url }: PageProps) {
   const lang = getLangFromPath(url.pathname) ?? DEFAULT_LANG;
@@ -18,9 +18,7 @@ export default function NotFound({ url }: PageProps) {
       lang={lang}
       shell={false}
     >
-      <div id="not-found-content" style={{ width: "100%" }}>
-        <NotFoundView />
-      </div>
+      <NotFoundView />
     </Document>
   );
 }

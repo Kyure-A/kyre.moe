@@ -6,7 +6,13 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!**/dist", "!**/src/generated", "!**/styled-system"]
+    "includes": [
+      "**",
+      "!**/dist",
+      "!**/.rshono",
+      "!**/src/generated",
+      "!**/styled-system"
+    ]
   },
   "formatter": {
     "indentStyle": "space",

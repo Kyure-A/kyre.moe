@@ -1,14 +1,14 @@
 import {
-  type Child,
   Children,
   isValidElement,
+  type ReactNode,
   useEffect,
   useMemo,
   useState,
-} from "hono/jsx";
+} from "react";
 
 type FadeTransitionProps = {
-  children: Child;
+  children: ReactNode;
   activeIndex?: number;
   duration?: number;
   easing?: string;
@@ -60,7 +60,7 @@ const FadeTransition = ({
         return (
           <div
             key={child.key ?? index}
-            aria-hidden={isCurrent ? undefined : "true"}
+            aria-hidden={isCurrent ? undefined : true}
             style={{
               opacity: isShown ? 1 : 0,
               pointerEvents: isCurrent ? undefined : "none",

@@ -1,3 +1,5 @@
+import type { PageProps } from "@rshono/core";
+import { notFound } from "@rshono/core/server";
 import BlogTagIndex from "@/pages/Blog/ui/BlogTagIndex";
 import {
   getOgImage,
@@ -5,11 +7,10 @@ import {
   getTagItem,
 } from "@/shared/lib/blog.content";
 import { pageHead } from "@/shared/lib/root-metadata";
-import { notFound, requireSiteLang } from "@/shared/lib/routing";
+import { requireSiteLang } from "@/shared/lib/routing";
 import Document from "./Document";
-import type { PageProps } from "./types";
 
-export default function Tag({ params }: PageProps) {
+export default function Tag({ params }: PageProps<"/:lang/blog/tag/:tag">) {
   const lang = requireSiteLang(params.lang);
   const tag = getTagItem(params.tag, lang);
   if (!tag) notFound();
