@@ -31,7 +31,7 @@
   "dependencies": {
     "@ox-content/napi": "^3.2.13",
     "highlight.js": "^11.12.0",
-    "katex": "^0.18.10",
+    "katex": "^0.19.0",
     "@fontsource/ibm-plex-mono": "^5.3.0",
     "ogl": "^1.0.11",
     "sanitize-html": "^2.18.0",
