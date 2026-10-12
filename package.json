@@ -45,7 +45,7 @@
     "@react-spring/web": "^10.1.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.14",
+    "@biomejs/biome": "^2.5.15",
     "@pandacss/dev": "^1.12.1",
     "@takumi-rs/core": "2.14.0",
     "@types/node": "26.6.4",
