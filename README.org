@@ -13,7 +13,9 @@ Personal website and blog built with rshono (Hono, Rspack and React Server Compo
 
 ** Dev
 
-Node.js 26.12.1 or newer within the 26.x series is required. CI reads the version from =.node-version=; the Nix shell checks that its locked Node.js meets that minimum. pnpm rejects unsupported Node.js versions. Content preparation runs TypeScript directly with Node's built-in type stripping.
+Node.js 26.12.1 or newer within the 26.x series is required. CI reads the version from =.node-version=; the Nix shell checks that its locked Node.js meets that minimum. Installation, development, content generation, builds, and the local server check the runtime version before running. Content preparation runs TypeScript directly with Node's built-in type stripping.
+
+Lockfile-only dependency updates skip lifecycle scripts, so Dependabot can update dependency metadata using its own Node.js version. Use =pnpm check:node= to check the runtime explicitly.
 
 The Nix shell also updates Node's shared c-ares to 1.34.9 until nixpkgs includes it. This temporarily requires building Node.js from source on the first =nix develop=. pnpm 10.34.5 and the TypeScript language server use the same secured Node.js runtime.
 
