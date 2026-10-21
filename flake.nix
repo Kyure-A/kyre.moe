@@ -59,17 +59,23 @@
         pkgs:
         let
           bundle = agentLib.mkBundle { inherit pkgs selection; };
+          minimumNodeVersion = pkgs.lib.trim (builtins.readFile ./.node-version);
+          nodejsSlim = import ./nix/nodejs.nix { inherit pkgs; };
+          nodejs = pkgs.nodejs_26.override { nodejs-slim = nodejsSlim; };
         in
         {
-          default = pkgs.mkShell {
+          default = assert pkgs.lib.assertMsg
+            (pkgs.lib.versionAtLeast nodejs.version minimumNodeVersion)
+            "Update nixpkgs: Node.js ${minimumNodeVersion} or newer is required.";
+          pkgs.mkShell {
             packages = with pkgs; [
               actionlint
-              nodejs_26
-              pnpm_9
+              nodejs
+              (pnpm_10.override { nodejs-slim = nodejsSlim; })
               biome
               semgrep
               treefmt
-              typescript-language-server
+              (typescript-language-server.override { inherit nodejs; })
             ];
 
             shellHook = agentLib.mkShellHook {
